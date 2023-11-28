@@ -1,0 +1,12 @@
+.vscode
+wrfita
+radar/wrfinput_d0?.template
+wrfita-2021
+chdates
+prepvars
+workdir
+workdir-ita
+build
+build.old
+postproccer
+env.sh

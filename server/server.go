@@ -1,0 +1,140 @@
+package server
+
+import (
+	"fmt"
+	"io/fs"
+	"os"
+	pt "path"
+	"path/filepath"
+	"time"
+
+	"github.com/gobwas/glob"
+	"github.com/meteocima/cmder"
+	"github.com/meteocima/wrfita/errors"
+	"github.com/meteocima/wrfita/folders"
+	"github.com/meteocima/wrfita/log"
+)
+
+func MkdirAll(dir string, mod fs.FileMode) {
+	errors.Check(os.MkdirAll(dir, 0775))
+}
+
+func Rmdir(dir string) {
+	errors.Check(os.RemoveAll(dir))
+}
+
+func CopyFile(src, dst string) {
+	bytesRead := errors.CheckResult(os.ReadFile(src))
+	errors.Check(os.WriteFile(dst, bytesRead, 0664))
+}
+
+func ExecRetry(cmd, cwd, collectStdErr, logsToSave string) {
+	var err error
+	var g glob.Glob
+	if logsToSave != "" {
+		g = glob.MustCompile(logsToSave)
+	}
+
+	for i := 0; i < 5; i++ {
+		err = tryExec(cmd, cwd, collectStdErr)
+		//if i < 2 {
+		//	err = fmt.Errorf("this is a fake command error")
+		//}
+		if err == nil {
+			break
+		}
+		log.Warning("Command `%s` has failed: %s. Retry n.%d in 1 minute", cmd, err.Error(), i+1)
+
+		if logsToSave != "" {
+			files, err := os.ReadDir(cwd)
+			if err != nil {
+				log.Warning("Cannot save logs for previous attempt: %s", err.Error())
+			} else {
+				for _, f := range files {
+					if !g.Match(f.Name()) {
+						continue
+					}
+					input, err := os.ReadFile(pt.Join(cwd, f.Name()))
+					if err != nil {
+						log.Warning("Cannot read original log file %s: %s", f.Name(), err.Error())
+						continue
+					}
+
+					destinationFile := fmt.Sprintf("%s.%d", f.Name(), i)
+					err = os.WriteFile(pt.Join(cwd, destinationFile), input, 0644)
+					if err != nil {
+						log.Warning("Cannot save log file %s to %s: %s", f.Name(), destinationFile, err.Error())
+					}
+
+				}
+			}
+		}
+
+		time.Sleep(1 * time.Minute)
+	}
+	errors.Check(err)
+}
+
+func Exec(cmd, cwd, collectStdErr string) {
+	errors.Check(tryExec(cmd, cwd, collectStdErr))
+}
+
+func ExecStdout(cmd, cwd string) {
+	//fmt.Printf("ExecStdout %s\n", cmd)
+	c := cmder.New().Cmd("bash").Args("-c", cmd).WorkDir(cwd).WithoutStdErrInErrors()
+	c = c.CollectOutW(os.Stdout).CollectErrW(os.Stderr)
+	errors.Check(c.Run())
+
+}
+
+func tryExec(cmd, cwd, collectStdErr string) error {
+	c := cmder.New().Cmd("bash").Args("-c", cmd).WorkDir(cwd) //.WithoutStdErrInErrors()
+	var errs string
+	if collectStdErr != "" {
+		c.CollectErrS(&errs)
+	}
+	err := c.Run()
+	if collectStdErr != "" {
+		if e := os.WriteFile(filepath.Join(cwd, collectStdErr), []byte(errs), 0664); e != nil {
+			fmt.Fprintf(os.Stderr, "Cannot  write log file %s: %s\n", collectStdErr, e)
+		}
+	}
+	return err
+}
+
+func RenderTemplate(targetDir, name string, startDate time.Time, durationHours int) {
+	defer errors.OnFailuresWrap("cannot render template directory `%s` to `%s`: %w", name, targetDir)
+	Exec(fmt.Sprintf(`
+		export START_DATE=%s 
+		export END_DATE=%s
+		export FORECAST_DURATION=%d
+		eval $(prepvars)
+    	rm -rf %s
+    	dirprep --strict %s/%s %s`,
+		startDate.Format("2006-01-02-15"),
+		startDate.Add(time.Duration(durationHours)*time.Hour).Format("2006-01-02-15"),
+		durationHours,
+		targetDir,
+		folders.TemplatesDir,
+		name,
+		targetDir,
+	), folders.Rootdir, "")
+}
+
+func DirExists(directory string) bool {
+	info, err := os.Stat(directory)
+	if os.IsNotExist(err) {
+		return false
+	}
+	errors.Check(err)
+	return info.IsDir()
+}
+
+func FileExists(file string) bool {
+	info, err := os.Stat(file)
+	if os.IsNotExist(err) {
+		return false
+	}
+	errors.Check(err)
+	return info.Mode().Type().IsRegular()
+}

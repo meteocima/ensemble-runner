@@ -1,0 +1,138 @@
+&wrfvar1
+var4d=false,
+print_detail_grad=false,
+/
+&wrfvar2
+calc_w_increment = true,
+/
+&wrfvar3
+ob_format=2,
+/
+&wrfvar4
+use_radarobs = true,
+use_radar_rv = false,
+use_radar_rf = true,
+use_radar_rhv = false,
+use_radar_rqv = false,
+use_synopobs = false,
+/
+&wrfvar5
+/
+&wrfvar6
+
+ntmax=100, 100, 75,
+eps=0.01,0.003,0.001,
+max_ext_its=3,
+/
+&wrfvar7
+cv_options = 5,
+cloud_cv_options=1,
+/
+&wrfvar8
+/
+&wrfvar9
+/
+&wrfvar10
+test_transforms=false,
+test_gradient=false,
+/
+&wrfvar11
+/
+&wrfvar12
+/
+&wrfvar13
+/
+&wrfvar14
+/
+&wrfvar15
+/
+&wrfvar16
+/
+&wrfvar17
+/
+&wrfvar18
+analysis_date='${ANL_DATE}'
+/
+&wrfvar19
+/
+&wrfvar20
+/
+&wrfvar21
+time_window_min='${WIN_MIN}'
+/
+&wrfvar22
+time_window_max='${WIN_MAX}'
+/
+&time_control
+ run_days = 0,
+ run_hours = $RUN_HOURS,
+ run_minutes = 0,
+ run_seconds = 0,
+ start_year = $START_YEAR,$START_YEAR,$START_YEAR,
+ start_month = $START_MONTH,$START_MONTH,$START_MONTH,
+ start_day = $START_DAY,$START_DAY,$START_DAY,
+ start_hour = $START_HOUR,$START_HOUR,$START_HOUR,
+ start_minute = 0,0,0
+ start_second = 0,0,0
+ end_year = $END_YEAR,$END_YEAR,$END_YEAR,
+ end_month = $END_MONTH,$END_MONTH,$END_MONTH,
+ end_day = $END_DAY,$END_DAY,$END_DAY,
+ end_hour = $END_HOUR,$END_HOUR,$END_HOUR,
+ end_minute = 0,0,0
+ end_second = 0,0,0
+/
+&domains
+ e_we = 523,
+ e_sn = 448,
+ e_vert = 50,
+ dx = 7500,
+ dy = 7500,
+ 
+/
+
+
+&physics
+ mp_physics = 6,
+ ra_lw_physics = 4,
+ ra_sw_physics = 4,
+ radt = 5,
+ sf_sfclay_physics = 1,
+ sf_surface_physics = 3,
+ bl_pbl_physics = 1,
+ bldt = 0,
+ cu_physics = 14,
+ cudt = 0,
+ lightning_option = 3,
+ lightning_dt = 0,
+ lightning_start_seconds = 600,
+ flashrate_factor = 1,
+ cellcount_method = 2,
+ iccg_method = 0,
+ cldtop_adjustment = 0,
+ do_radar_ref = 1,
+ isfflx = 1,
+ ifsnow = 0,
+ icloud = 1,
+ surface_input_source = 1,
+ num_soil_layers = 6,
+ sf_urban_physics = 0,
+ maxiens = 1,
+ maxens = 3,
+ maxens2 = 3,
+ maxens3 = 16,
+ ensdim = 44,
+ sst_update 		 = 0,
+ num_land_cat = 21,
+/
+&fdda
+/
+&dynamics
+/
+&bdy_control
+/
+&grib2
+/
+&namelist_quilt
+nio_tasks_per_group = 0,
+nio_groups = 1,
+/

@@ -1,0 +1,15 @@
+GeogridProc: 36
+MetgridProc: 36
+WrfProc: 361
+WrfdaProc: 50
+RealProc: 361
+
+
+MpiOptions: --prefix /opt/share/comps/gcc-8.3.1/ompi-4.1.4 -bind-to core -x LD_LIBRARY_PATH
+ObDataDir: ./obs
+GeogDataDir: /data/unsafe/geog
+GfsDir: /data/unsafe/gfs
+BeDir: ./be
+TemplatesDir: ./templates
+Workdir: ./workdir
+Bindir: ./bin

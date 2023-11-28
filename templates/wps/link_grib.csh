@@ -1,0 +1,1 @@
+$WPS_DIR/link_grib.csh
