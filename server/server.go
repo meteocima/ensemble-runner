@@ -37,9 +37,6 @@ func ExecRetry(cmd, cwd, collectStdErr, logsToSave string) {
 
 	for i := 0; i < 5; i++ {
 		err = tryExec(cmd, cwd, collectStdErr)
-		//if i < 2 {
-		//	err = fmt.Errorf("this is a fake command error")
-		//}
 		if err == nil {
 			break
 		}
@@ -79,16 +76,8 @@ func Exec(cmd, cwd, collectStdErr string) {
 	errors.Check(tryExec(cmd, cwd, collectStdErr))
 }
 
-func ExecStdout(cmd, cwd string) {
-	//fmt.Printf("ExecStdout %s\n", cmd)
-	c := cmder.New().Cmd("bash").Args("-c", cmd).WorkDir(cwd).WithoutStdErrInErrors()
-	c = c.CollectOutW(os.Stdout).CollectErrW(os.Stderr)
-	errors.Check(c.Run())
-
-}
-
 func tryExec(cmd, cwd, collectStdErr string) error {
-	c := cmder.New().Cmd("bash").Args("-c", cmd).WorkDir(cwd) //.WithoutStdErrInErrors()
+	c := cmder.New().Cmd("bash").Args("-c", cmd).WorkDir(cwd)
 	var errs string
 	if collectStdErr != "" {
 		c.CollectErrS(&errs)

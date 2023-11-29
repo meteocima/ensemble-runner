@@ -114,9 +114,6 @@ func (s *Simulation) Run() {
 	// run WRF from D for the duration of the forecast
 	s.CreateWRFForecastDir(s.Start, s.Duration)
 
-	// run postprocessing of files
-	//go server.ExecStdout("postproccer", s.Workdir)
-
 	// run REAL
 	server.CopyFile(
 		filepath.Join(folders.WrfProcWorkdir(s.Workdir, s.Start), "namelist.input"),
@@ -170,7 +167,6 @@ func (s Simulation) RunWPS(startTime time.Time, duration int) string {
 
 func (s Simulation) RunREAL(startTime time.Time, duration int) {
 	wpsPath := folders.WPSProcWorkdir(s.Workdir)
-	//server.Exec("rm -f wrfinput_d0*", wpsPath, "")
 	log.Info("running real for %02d", startTime.Hour())
 	server.ExecRetry(fmt.Sprintf("mpiexec %s -n %d ./real.exe", conf.Values.MpiOptions, conf.Values.RealProcCount), wpsPath, "real.detail.log", "{real.detail.log,rsl.out.????,rsl.error.????}")
 }
