@@ -20,8 +20,8 @@ func main() {
 	})
 
 	folders.Initialize()
-	conf.Initialize(true)
-	log.SetLevel(log.LevelInfo)
+	conf.Initialize()
+	log.SetLevel(log.LevelDebug)
 
 	sim := simulation.New()
 

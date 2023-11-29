@@ -23,11 +23,9 @@ var Values = struct {
 	BeDir            string `yaml:"BeDir"`
 }{}
 
-func Initialize(verbose bool) {
+func Initialize() {
 	cfgFile := filepath.Join(folders.Rootdir, "config.yaml")
-	if verbose {
-		log.Info("Reading configuration from %s", cfgFile)
-	}
+	log.Info("Reading configuration from %s", cfgFile)
 	cfg := errors.CheckResult(os.ReadFile(cfgFile))
 	//fmt.Printf("Configuration:\n %s\n", cfg)
 	errors.Check(os.Chdir(folders.Rootdir))

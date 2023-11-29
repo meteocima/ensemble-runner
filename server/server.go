@@ -2,14 +2,16 @@ package server
 
 import (
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
+	"os/exec"
 	pt "path"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/gobwas/glob"
-	"github.com/meteocima/ensemble-runner/cmder"
 	"github.com/meteocima/ensemble-runner/errors"
 	"github.com/meteocima/ensemble-runner/folders"
 	"github.com/meteocima/ensemble-runner/log"
@@ -26,7 +28,7 @@ func Rmdir(dir string) {
 func CopyFile(src, dst string) {
 	srcRel := errors.CheckResult(filepath.Rel(folders.Rootdir, src))
 	dstRel := errors.CheckResult(filepath.Rel(folders.Rootdir, dst))
-	log.Info(" - Copying file %s to %s", srcRel, dstRel)
+	log.Debug(" - Copying file %s to %s", srcRel, dstRel)
 	bytesRead := errors.CheckResult(os.ReadFile(src))
 	errors.Check(os.WriteFile(dst, bytesRead, 0664))
 }
@@ -82,6 +84,7 @@ func Exec(cmd, cwd, collectStdErr string) {
 func tryExec(cmd, cwd, collectStdErr string) error {
 	var log *os.File
 	if collectStdErr != "" {
+
 		l, err := os.Create(filepath.Join(cwd, collectStdErr))
 		if err != nil {
 			return fmt.Errorf("cannot write log file %s: %s", collectStdErr, err)
@@ -90,8 +93,54 @@ func tryExec(cmd, cwd, collectStdErr string) error {
 		log = l
 	}
 
-	c := cmder.New(log, log).Cmd("bash").Args("-c", cmd).WorkDir(cwd)
-	return c.Run()
+	if !filepath.IsAbs(cwd) {
+		cwd = errors.CheckResult(filepath.Abs(cwd))
+	}
+
+	c := exec.Command("bash", "-c", cmd)
+	c.Dir = cwd
+	c.Stdout = log
+	stderrPipe, err := c.StderrPipe()
+	if err != nil {
+		return err
+	}
+
+	var stderrChuncks []string
+	go func() {
+		var buf [1024]byte
+		var n int
+		for {
+			n, err = stderrPipe.Read(buf[:])
+
+			if err == io.EOF {
+				err = nil
+			} else if err != nil {
+				log.Write([]byte(fmt.Sprintf("\nERROR: cannot read stderr: %s\n", err.Error())))
+				return
+			}
+
+			if n == 0 {
+				return
+			}
+
+			log.Write(buf[0:n])
+
+			stderrChuncks = append(stderrChuncks, string(buf[0:n]))
+		}
+	}()
+
+	if err = c.Run(); err != nil {
+		return fmt.Errorf(
+			"command failed: cannot start:\n"+
+				"    => cmd: %s\n"+
+				"    => wdir: %s\n"+
+				"    => err: %w\n"+
+				"    => stderr: %s\n"+
+				"    ==",
+			cmd, cwd, err, strings.Join(stderrChuncks, ""),
+		)
+	}
+	return nil
 }
 
 func RenderTemplate(targetDir, name string, startDate time.Time, durationHours int) {
