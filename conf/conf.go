@@ -1,12 +1,12 @@
 package conf
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/meteocima/ensemble-runner/errors"
 	"github.com/meteocima/ensemble-runner/folders"
+	"github.com/meteocima/ensemble-runner/log"
 	"gopkg.in/yaml.v3"
 )
 
@@ -30,7 +30,7 @@ var Values = struct {
 func Initialize(verbose bool) {
 	cfgFile := filepath.Join(folders.Rootdir, "config.yaml")
 	if verbose {
-		fmt.Printf("Reading configuration from %s\n", cfgFile)
+		log.Info("Reading configuration from %s", cfgFile)
 	}
 	cfg := errors.CheckResult(os.ReadFile(cfgFile))
 	//fmt.Printf("Configuration:\n %s\n", cfg)
@@ -60,35 +60,24 @@ func Initialize(verbose bool) {
 	} {
 		errors.Check(os.Setenv(name, value))
 	}
-	if verbose {
-		fmt.Printf(`
-	GeogridProcCount : %d
-	MetgridProcCount : %d
-	WrfProcCount     : %d
-	WrfdaProcCount   : %d
-	RealProcCount    : %d
-	MpiOptions       : %s
-	ObDataDir        : %s
-	GeogDataDir      : %s
-	GfsDir           : %s
-	BeDir            : %s
-	TemplatesDir     : %s
-	Workdir          : %s
-	Bindir           : %s
-`,
-			Values.GeogridProcCount,
-			Values.MetgridProcCount,
-			Values.WrfProcCount,
-			Values.WrfdaProcCount,
-			Values.RealProcCount,
-			Values.MpiOptions,
-			Values.ObDataDir,
-			Values.GeogDataDir,
-			Values.GfsDir,
-			Values.BeDir,
-			Values.TemplatesDir,
-			Values.Workdir,
-			Values.Bindir,
-		)
+
+	for name, value := range map[string]any{
+		"GeogridProcCount": Values.GeogridProcCount,
+		"MetgridProcCount": Values.MetgridProcCount,
+		"WrfProcCount":     Values.WrfProcCount,
+		"WrfdaProcCount":   Values.WrfdaProcCount,
+		"RealProcCount":    Values.RealProcCount,
+		"MpiOptions":       Values.MpiOptions,
+		"ObDataDir":        Values.ObDataDir,
+		"GeogDataDir":      Values.GeogDataDir,
+		"GfsDir":           Values.GfsDir,
+		"BeDir":            Values.BeDir,
+		"TemplatesDir":     Values.TemplatesDir,
+		"Workdir":          Values.Workdir,
+		"Bindir":           Values.Bindir,
+		"PostprocRules":    Values.PostprocRules,
+	} {
+		log.Info("  -- %s: %v", name, value)
 	}
+
 }

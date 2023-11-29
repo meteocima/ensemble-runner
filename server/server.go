@@ -77,18 +77,18 @@ func Exec(cmd, cwd, collectStdErr string) {
 }
 
 func tryExec(cmd, cwd, collectStdErr string) error {
-	c := cmder.New().Cmd("bash").Args("-c", cmd).WorkDir(cwd)
-	var errs string
+	var log *os.File
 	if collectStdErr != "" {
-		c.CollectErrS(&errs)
-	}
-	err := c.Run()
-	if collectStdErr != "" {
-		if e := os.WriteFile(filepath.Join(cwd, collectStdErr), []byte(errs), 0664); e != nil {
-			fmt.Fprintf(os.Stderr, "Cannot  write log file %s: %s\n", collectStdErr, e)
+		l, err := os.Create(filepath.Join(cwd, collectStdErr))
+		if err != nil {
+			return fmt.Errorf("cannot write log file %s: %s", collectStdErr, err)
 		}
+		defer l.Close()
+		log = l
 	}
-	return err
+
+	c := cmder.New(log, log).Cmd("bash").Args("-c", cmd).WorkDir(cwd)
+	return c.Run()
 }
 
 func RenderTemplate(targetDir, name string, startDate time.Time, durationHours int) {

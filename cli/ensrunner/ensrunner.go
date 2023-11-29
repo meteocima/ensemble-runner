@@ -12,20 +12,18 @@ import (
 )
 
 func main() {
-	log.Info("wrfda ita starting")
+	log.Info("WRF runner starting. Checking configuration...")
 
 	defer errors.OnFailuresDo(func(err errors.RunTimeError) {
 		fmt.Fprintf(os.Stderr, "wrfda ita failed: %s\n", err)
 		os.Exit(1)
 	})
 
-	folders.Initialize(true)
+	folders.Initialize()
 	conf.Initialize(true)
 	log.SetLevel(log.LevelInfo)
 
 	sim := simulation.New()
-
-	log.Info("wrfda ita started")
 
 	sim.Run()
 

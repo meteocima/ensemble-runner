@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"time"
+
+	"github.com/meteocima/ensemble-runner/log"
 )
 
 var WRF string
@@ -16,11 +18,9 @@ var Rootdir string
 var TemplatesDir string
 var WorkDir string
 
-func envVar(verbose bool, varname string) string {
+func envVar(varname string) string {
 	if val, ok := os.LookupEnv(varname); !ok {
-		if verbose {
-			fmt.Fprintf(os.Stderr, "❌ System misconfiguration: cannot read environment variable $%s\n", varname)
-		}
+		log.Error("System misconfiguration: cannot read environment variable $%s\n", varname)
 		os.Exit(1)
 		return ""
 	} else {
@@ -28,28 +28,28 @@ func envVar(verbose bool, varname string) string {
 	}
 }
 
-func PrintVer(verbose bool, varname string) {
+func PrintVer(varname string) {
 	varvalue := os.Getenv(varname)
 	cmd := exec.Command("head", "-n1", varvalue+"/README")
 	buf, err := cmd.CombinedOutput()
 	if err != nil {
-		if verbose {
-			fmt.Fprintf(os.Stderr, "❌ Invalid %s directory: version not accessible:\n Path: %s\n Error: %s\n", varname, varvalue, string(buf))
-		}
+		log.Error("Invalid %s directory: version not accessible:\n Path: %s\n Error: %s\n", varname, varvalue, string(buf))
 		os.Exit(1)
 	}
-	if verbose {
-		fmt.Printf("%s='%s'\n ✅ Found %s\n", varname, varvalue, string(buf))
+	if buf[len(buf)-1] == '\n' {
+		buf = buf[0 : len(buf)-1]
 	}
+	log.Info("%s='%s'", varname, varvalue)
+	log.Info("  -- Found %s", string(buf))
 
 }
 
 // Initialize folder vars and check environment validity
-func Initialize(verbose bool) {
-	WRF = envVar(verbose, "WRF_DIR")
-	WPS = envVar(verbose, "WPS_DIR")
-	WRFDA = envVar(verbose, "WRFDA_DIR")
-	Rootdir = envVar(verbose, "WRFITA_ROOTDIR")
+func Initialize() {
+	WRF = envVar("WRF_DIR")
+	WPS = envVar("WPS_DIR")
+	WRFDA = envVar("WRFDA_DIR")
+	Rootdir = envVar("WRFITA_ROOTDIR")
 	Rootdir = os.ExpandEnv(Rootdir)
 	TemplatesDir = filepath.Join(Rootdir, "templates")
 
@@ -65,41 +65,29 @@ func Initialize(verbose bool) {
 
 	}
 
-	PrintVer(verbose, "WRF_DIR")
-	PrintVer(verbose, "WPS_DIR")
-	PrintVer(verbose, "WRFDA_DIR")
-	if verbose {
-		fmt.Fprintf(os.Stderr, "WRFITA_ROOTDIR=%s\n", Rootdir)
-	}
+	PrintVer("WRF_DIR")
+	PrintVer("WPS_DIR")
+	PrintVer("WRFDA_DIR")
+	log.Info("WRFITA_ROOTDIR=%s", Rootdir)
 
 	if info, err := os.Stat(TemplatesDir); err != nil {
-		if verbose {
-			fmt.Fprintf(os.Stderr, "❌ Invalid root directory: `templates` directory not accessible:\n Path: %s\n Error: %s\n", TemplatesDir, err)
-		}
+		log.Error("Invalid root directory: `templates` directory not accessible:\n Path: %s\n Error: %s\n", TemplatesDir, err)
 		os.Exit(1)
 	} else if !info.IsDir() {
-		if verbose {
-			fmt.Fprintf(os.Stderr, "❌ Invalid root directory: `templates` directory exists and is not a directory.\n Path: %s", TemplatesDir)
-		}
+		log.Error("Invalid root directory: `templates` directory exists and is not a directory.\n Path: %s", TemplatesDir)
 		os.Exit(1)
 	}
-	fmt.Printf(" ✅ Found templates directory\n")
+	log.Info("  -- Found templates directory")
 
 	WorkDir = filepath.Join(Rootdir, "workdir")
 	if info, err := os.Stat(WorkDir); err != nil {
-		if verbose {
-			fmt.Fprintf(os.Stderr, "❌ Invalid root directory: `workdir` directory not accessible:\n Path: %s\n Error: %s\n", TemplatesDir, err)
-		}
+		log.Error("Invalid root directory: `workdir` directory not accessible:\n Path: %s\n Error: %s\n", TemplatesDir, err)
 		os.Exit(1)
 	} else if !info.IsDir() {
-		if verbose {
-			fmt.Fprintf(os.Stderr, "❌ Invalid root directory: `workdir` directory exists and is not a directory.\n Path: %s", WorkDir)
-		}
+		log.Error("Invalid root directory: `workdir` directory exists and is not a directory.\n Path: %s", WorkDir)
 		os.Exit(1)
 	}
-	if verbose {
-		fmt.Printf(" ✅ Found workdir directory\n")
-	}
+	log.Info("  -- Found workdir directory")
 
 	// check for availability in path of dirprep, prepvars, chdates
 
