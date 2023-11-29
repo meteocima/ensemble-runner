@@ -145,20 +145,20 @@ func (s Simulation) RunWPS(startTime time.Time, duration int) string {
 
 	path := folders.WPSProcWorkdir(s.Workdir)
 	wpsRelDir := errors.CheckResult(filepath.Rel(folders.Rootdir, path))
-	log.Info("running geogrid.\t\t\tDIR: %s LOGS: %s", wpsRelDir, "geogrid.detail.log geogrid.log.*")
+	log.Info("Running geogrid.\t\t\tDIR: %s LOGS: %s", wpsRelDir, "geogrid.detail.log geogrid.log.*")
 	server.ExecRetry(fmt.Sprintf("mpiexec %s -n %d ./geogrid.exe", conf.Values.MpiOptions, conf.Values.GeogridProcCount), path, "geogrid.detail.log", "{geogrid.detail.log,geogrid.log.????}")
 
-	log.Info("running link_grib.\t\t\tDIR: %s LOGS: %s", wpsRelDir, "link_grib.detail.log")
+	log.Info("Running link_grib.\t\t\tDIR: %s LOGS: %s", wpsRelDir, "link_grib.detail.log")
 	linkCmd := "./link_grib.csh " + remoteGfsPath + "/*.grb"
 	server.ExecRetry(linkCmd, path, "link_grib.detail.log", "link_grib.detail.log")
 
-	log.Info("running ungrib.\t\t\t\tDIR: %s LOGS: %s", wpsRelDir, "ungrib.detail.log ungrib.log")
+	log.Info("Running ungrib.\t\t\t\tDIR: %s LOGS: %s", wpsRelDir, "ungrib.detail.log ungrib.log")
 	server.ExecRetry("./ungrib.exe", path, "ungrib.detail.log", "{ungrib.detail.log,ungrib.log}")
 
-	log.Info("running avg_tsfc.\t\t\tDIR: %s LOGS: %s", wpsRelDir, "avg_tsfc.detail.log")
+	log.Info("Running avg_tsfc.\t\t\tDIR: %s LOGS: %s", wpsRelDir, "avg_tsfc.detail.log")
 	server.ExecRetry("./avg_tsfc.exe", path, "avg_tsfc.detail.log", "avg_tsfc.detail.log")
 
-	log.Info("running metgrid.\t\t\tDIR: %s LOGS: %s", wpsRelDir, "metgrid.detail.log metgrid.log.*")
+	log.Info("Running metgrid.\t\t\tDIR: %s LOGS: %s", wpsRelDir, "metgrid.detail.log metgrid.log.*")
 	server.ExecRetry(fmt.Sprintf("mpiexec %s -n %d ./metgrid.exe", conf.Values.MpiOptions, conf.Values.MetgridProcCount), path, "metgrid.detail.log", "{metgrid.detail.log,metgrid.log.????}")
 
 	return path
@@ -168,7 +168,7 @@ func (s Simulation) RunREAL(startTime time.Time, duration int) {
 	wpsPath := folders.WPSProcWorkdir(s.Workdir)
 	wpsRelDir := errors.CheckResult(filepath.Rel(folders.Rootdir, wpsPath))
 
-	log.Info("running real for %02d:00\t\t\tDIR: %s LOGS: %s", startTime.Hour(), wpsRelDir, "real.detail.log,rsl.out.* rsl.error.*")
+	log.Info("Running real for %02d:00\t\t\tDIR: %s LOGS: %s", startTime.Hour(), wpsRelDir, "real.detail.log,rsl.out.* rsl.error.*")
 	server.ExecRetry(fmt.Sprintf("mpiexec %s -n %d ./real.exe", conf.Values.MpiOptions, conf.Values.RealProcCount), wpsPath, "real.detail.log", "{real.detail.log,rsl.out.????,rsl.error.????}")
 }
 
@@ -179,9 +179,8 @@ func (s Simulation) RunDA(startTime time.Time, duration int) {
 	src := filepath.Join(inputPath, "wrfvar_input_d03")
 	dest := filepath.Join(pathDA, "fg")
 	server.CopyFile(src, dest)
-
 	daRelDir := errors.CheckResult(filepath.Rel(folders.Rootdir, pathDA))
-	log.Info("running da_wrfvar for %02d:00\t\tDIR: %s LOGS: %s", startTime.Hour(), daRelDir, "da_wrfvar.detail.log rsl.out.* rsl.error.*")
+	log.Info("Running da_wrfvar for %02d:00\t\tDIR: %s LOGS: %s", startTime.Hour(), daRelDir, "da_wrfvar.detail.log rsl.out.* rsl.error.*")
 
 	server.ExecRetry(fmt.Sprintf("mpirun %s -n %d ./da_wrfvar.exe", conf.Values.MpiOptions, conf.Values.WrfdaProcCount), pathDA, "da_wrfvar.detail.log", "{da_wrfvar.detail.log,rsl.out.????,rsl.error.????}")
 }
@@ -191,7 +190,7 @@ func (s Simulation) RunWRF(startTime time.Time, duration int) string {
 
 	wrfRelDir := errors.CheckResult(filepath.Rel(folders.Rootdir, path))
 
-	log.Info("running wrf for %02d:00\t\t\tDIR: %s LOGS: %s", startTime.Hour(), wrfRelDir, "wrf.detail.log rsl.out.* rsl.error.*")
+	log.Info("Running wrf for %02d:00\t\t\tDIR: %s LOGS: %s", startTime.Hour(), wrfRelDir, "wrf.detail.log rsl.out.* rsl.error.*")
 
 	server.ExecRetry(fmt.Sprintf("mpirun %s -n %d ./wrf.exe", conf.Values.MpiOptions, conf.Values.WrfProcCount), path, "wrf.detail.log", "{wrf.detail.log,rsl.out.????,rsl.error.????}")
 

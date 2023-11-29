@@ -24,6 +24,9 @@ func Rmdir(dir string) {
 }
 
 func CopyFile(src, dst string) {
+	srcRel := errors.CheckResult(filepath.Rel(folders.Rootdir, src))
+	dstRel := errors.CheckResult(filepath.Rel(folders.Rootdir, dst))
+	log.Info(" - Copying file %s to %s", srcRel, dstRel)
 	bytesRead := errors.CheckResult(os.ReadFile(src))
 	errors.Check(os.WriteFile(dst, bytesRead, 0664))
 }
