@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/meteocima/wrfita/errors"
-	"github.com/meteocima/wrfita/folders"
+	"github.com/meteocima/ensemble-runner/errors"
+	"github.com/meteocima/ensemble-runner/folders"
 	"gopkg.in/yaml.v3"
 )
 

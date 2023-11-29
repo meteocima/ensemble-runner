@@ -9,10 +9,10 @@ import (
 	"time"
 
 	"github.com/gobwas/glob"
-	"github.com/meteocima/cmder"
-	"github.com/meteocima/wrfita/errors"
-	"github.com/meteocima/wrfita/folders"
-	"github.com/meteocima/wrfita/log"
+	"github.com/meteocima/ensemble-runner/cmder"
+	"github.com/meteocima/ensemble-runner/errors"
+	"github.com/meteocima/ensemble-runner/folders"
+	"github.com/meteocima/ensemble-runner/log"
 )
 
 func MkdirAll(dir string, mod fs.FileMode) {

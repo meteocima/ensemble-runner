@@ -6,11 +6,11 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/meteocima/wrfita/conf"
-	"github.com/meteocima/wrfita/errors"
-	"github.com/meteocima/wrfita/folders"
-	"github.com/meteocima/wrfita/log"
-	"github.com/meteocima/wrfita/server"
+	"github.com/meteocima/ensemble-runner/conf"
+	"github.com/meteocima/ensemble-runner/errors"
+	"github.com/meteocima/ensemble-runner/folders"
+	"github.com/meteocima/ensemble-runner/log"
+	"github.com/meteocima/ensemble-runner/server"
 )
 
 type Simulation struct {
