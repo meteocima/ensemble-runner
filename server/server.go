@@ -146,12 +146,12 @@ func tryExec(cmd, cwd, collectStdErr string) error {
 func RenderTemplate(targetDir, name string, startDate time.Time, durationHours int) {
 	defer errors.OnFailuresWrap("cannot render template directory `%s` to `%s`: %w", name, targetDir)
 	Exec(fmt.Sprintf(`
-		export START_DATE=%s 
-		export END_DATE=%s
-		export FORECAST_DURATION=%d
-		eval $(prepvars)
-    	rm -rf %s
-    	dirprep --strict %s/%s %s`,
+export START_DATE=%s 
+export END_DATE=%s
+export FORECAST_DURATION=%d
+eval $(prepvars)
+rm -rf %s
+dirprep --strict %s/%s %s`,
 		startDate.Format("2006-01-02-15"),
 		startDate.Add(time.Duration(durationHours)*time.Hour).Format("2006-01-02-15"),
 		durationHours,
