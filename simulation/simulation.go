@@ -141,7 +141,7 @@ func (s *Simulation) Run() {
 
 func (s Simulation) RunWPS(startTime time.Time, duration int) string {
 
-	remoteGfsPath := startTime.Format("/data/unsafe/gfs/2006/01/02/1504/")
+	remoteGfsPath := filepath.Join(conf.Values.GfsDir, startTime.Format("2006/01/02/1504"))
 
 	path := folders.WPSProcWorkdir(s.Workdir)
 	wpsRelDir := errors.CheckResult(filepath.Rel(folders.Rootdir, path))

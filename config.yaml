@@ -10,6 +10,3 @@ ObDataDir: ./obs
 GeogDataDir: /data/unsafe/geog
 GfsDir: /data/unsafe/gfs
 BeDir: ./be
-TemplatesDir: ./templates
-Workdir: ./workdir
-Bindir: ./bin

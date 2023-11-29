@@ -11,20 +11,16 @@ import (
 )
 
 var Values = struct {
-	GeogridProcCount int               `yaml:"GeogridProc"`
-	MetgridProcCount int               `yaml:"MetgridProc"`
-	WrfProcCount     int               `yaml:"WrfProc"`
-	WrfdaProcCount   int               `yaml:"WrfdaProc"`
-	RealProcCount    int               `yaml:"RealProc"`
-	MpiOptions       string            `yaml:"MpiOptions"`
-	ObDataDir        string            `yaml:"ObDataDir"`
-	GeogDataDir      string            `yaml:"GeogDataDir"`
-	GfsDir           string            `yaml:"GfsDir"`
-	BeDir            string            `yaml:"BeDir"`
-	TemplatesDir     string            `yaml:"TemplatesDir"`
-	Workdir          string            `yaml:"Workdir"`
-	Bindir           string            `yaml:"Bindir"`
-	PostprocRules    map[string]string `yaml:"PostprocRules"`
+	GeogridProcCount int    `yaml:"GeogridProc"`
+	MetgridProcCount int    `yaml:"MetgridProc"`
+	WrfProcCount     int    `yaml:"WrfProc"`
+	WrfdaProcCount   int    `yaml:"WrfdaProc"`
+	RealProcCount    int    `yaml:"RealProc"`
+	MpiOptions       string `yaml:"MpiOptions"`
+	ObDataDir        string `yaml:"ObDataDir"`
+	GeogDataDir      string `yaml:"GeogDataDir"`
+	GfsDir           string `yaml:"GfsDir"`
+	BeDir            string `yaml:"BeDir"`
 }{}
 
 func Initialize(verbose bool) {
@@ -42,9 +38,6 @@ func Initialize(verbose bool) {
 		&Values.GeogDataDir,
 		&Values.GfsDir,
 		&Values.BeDir,
-		&Values.TemplatesDir,
-		&Values.Workdir,
-		&Values.Bindir,
 	} {
 		if !filepath.IsAbs(*dir) {
 			*dir = errors.CheckResult(filepath.Abs(*dir))
@@ -72,10 +65,6 @@ func Initialize(verbose bool) {
 		"GeogDataDir":      Values.GeogDataDir,
 		"GfsDir":           Values.GfsDir,
 		"BeDir":            Values.BeDir,
-		"TemplatesDir":     Values.TemplatesDir,
-		"Workdir":          Values.Workdir,
-		"Bindir":           Values.Bindir,
-		"PostprocRules":    Values.PostprocRules,
 	} {
 		log.Info("  -- %s: %v", name, value)
 	}
