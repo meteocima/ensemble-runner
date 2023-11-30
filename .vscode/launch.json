@@ -16,7 +16,7 @@
                 "WRFDA_DIR": "/home/parroit/repos/cima/ensemble-runner/fixtures/testrun/WRFDAPrg",
                 "START_FORECAST": "2020-12-25-00",
                 "DURATION_HOURS": "6",
-                "WRFITA_ROOTDIR": "/home/parroit/repos/cima/ensemble-runner/build",
+                "ROOTDIR": "/home/parroit/repos/cima/ensemble-runner/build",
                 "PATH": "/home/parroit/repos/cima/ensemble-runner/fixtures/testbin:/home/parroit/repos/cima/ensemble-runner/build/bin:${env:PATH}"
             },
             

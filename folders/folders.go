@@ -49,7 +49,7 @@ func Initialize() {
 	WRF = envVar("WRF_DIR")
 	WPS = envVar("WPS_DIR")
 	WRFDA = envVar("WRFDA_DIR")
-	Rootdir = envVar("WRFITA_ROOTDIR")
+	Rootdir = envVar("ROOTDIR")
 	Rootdir = os.ExpandEnv(Rootdir)
 	TemplatesDir = filepath.Join(Rootdir, "templates")
 
@@ -68,7 +68,7 @@ func Initialize() {
 	PrintVer("WRF_DIR")
 	PrintVer("WPS_DIR")
 	PrintVer("WRFDA_DIR")
-	log.Info("WRFITA_ROOTDIR=%s", Rootdir)
+	log.Info("ROOTDIR=%s", Rootdir)
 
 	if info, err := os.Stat(TemplatesDir); err != nil {
 		log.Error("Invalid root directory: `templates` directory not accessible:\n Path: %s\n Error: %s\n", TemplatesDir, err)
