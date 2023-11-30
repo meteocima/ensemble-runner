@@ -32,105 +32,87 @@ func (s *Simulation) Run() {
 		panic(err)
 	})
 
-	s.CreateWpsDir(s.Start, s.Duration)
-
 	// WPS: create directory wps and run geogrid, ungrib, metgrid
-
+	s.CreateWpsDir(s.Start, s.Duration)
 	s.RunGeogrid()
 	s.RunLinkGrib(s.Start.Add(-6 * time.Hour))
 	s.RunUngrib()
 	s.RunAvgtsfc()
 	s.RunMetgrid()
 
+	wpsdir := folders.WPSProcWorkdir(s.Workdir)
+	wrf18dir := folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour))
+	wrf21dir := folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour))
+	wrf00dir := folders.WrfProcWorkdir(s.Workdir, s.Start)
+	da18dir := []string{
+		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour), 1),
+		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour), 2),
+		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour), 3),
+	}
+	da21dir := []string{
+		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour), 1),
+		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour), 2),
+		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour), 3),
+	}
+	da00dir := []string{
+		folders.DAProcWorkdir(s.Workdir, s.Start, 1),
+		folders.DAProcWorkdir(s.Workdir, s.Start, 2),
+		folders.DAProcWorkdir(s.Workdir, s.Start, 3),
+	}
+
 	// create directory wrf18 and run real
 	s.CreateWrfStepDir(s.Start.Add(-6*time.Hour), 3*time.Hour)
-	server.CopyFile(
-		filepath.Join(folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour)), "namelist.input"),
-		filepath.Join(folders.WPSProcWorkdir(s.Workdir), "namelist.input"),
-	)
+	server.CopyFile(filepath.Join(wrf18dir, "namelist.input"), filepath.Join(wpsdir, "namelist.input"))
 	s.RunReal(s.Start.Add(-6 * time.Hour))
 
 	// assimilate D-6
 	s.CreateDaDir(s.Start.Add(-6*time.Hour), 3)
-	server.CopyFile(
-		filepath.Join(folders.WPSProcWorkdir(s.Workdir), "wrfinput_d03"),
-		filepath.Join(folders.DAProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour), 3), "fg"),
-	)
+	server.CopyFile(filepath.Join(wpsdir, "wrfinput_d03"), filepath.Join(da18dir[2], "fg"))
 	s.RunDa(s.Start.Add(-6 * time.Hour))
 
 	// run WRF from D-6 to D-3
 	for _, file := range []string{"wrfbdy_d01", "wrfinput_d01", "wrfinput_d02"} {
-		server.CopyFile(
-			filepath.Join(folders.WPSProcWorkdir(s.Workdir), file),
-			filepath.Join(folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour)), file),
-		)
+		server.CopyFile(filepath.Join(wpsdir, file), filepath.Join(wrf18dir, file))
 	}
-	server.CopyFile(
-		filepath.Join(folders.DAProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour), 3), "wrfvar_output"),
-		filepath.Join(folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour)), "wrfinput_d03"),
-	)
+	server.CopyFile(filepath.Join(da18dir[2], "wrfvar_output"), filepath.Join(wrf18dir, "wrfinput_d03"))
 
 	s.RunWrf(s.Start.Add(-6 * time.Hour))
 
 	// assimilate D-3
 	s.CreateDaDir(s.Start.Add(-3*time.Hour), 3)
-	server.CopyFile(
-		filepath.Join(folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour)), "wrfvar_input_d03"),
-		filepath.Join(folders.DAProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour), 3), "fg"),
-	)
+	server.CopyFile(filepath.Join(wrf18dir, "wrfvar_input_d03"), filepath.Join(da21dir[2], "fg"))
 	s.RunDa(s.Start.Add(-3 * time.Hour))
 
 	// run WRF from D-3 to D
 	s.CreateWrfStepDir(s.Start.Add(-3*time.Hour), 3*time.Hour)
-	server.CopyFile(
-		filepath.Join(folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour)), "namelist.input"),
-		filepath.Join(folders.WPSProcWorkdir(s.Workdir), "namelist.input"),
-	)
+	server.CopyFile(filepath.Join(wrf21dir, "namelist.input"), filepath.Join(folders.WPSProcWorkdir(s.Workdir), "namelist.input"))
 	s.RunReal(s.Start.Add(-3 * time.Hour))
 
 	for _, file := range []string{"wrfbdy_d01", "wrfinput_d01", "wrfinput_d02"} {
-		server.CopyFile(
-			filepath.Join(folders.WPSProcWorkdir(s.Workdir), file),
-			filepath.Join(folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour)), file),
-		)
+		server.CopyFile(filepath.Join(wpsdir, file), filepath.Join(wrf21dir, file))
 	}
 
-	server.CopyFile(
-		filepath.Join(folders.DAProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour), 3), "wrfvar_output"),
-		filepath.Join(folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour)), "wrfinput_d03"),
-	)
+	server.CopyFile(filepath.Join(da21dir[2], "wrfvar_output"), filepath.Join(wrf21dir, "wrfinput_d03"))
 	s.RunWrf(s.Start.Add(-3 * time.Hour))
 
 	// assimilate D
 	s.CreateDaDir(s.Start, 3)
-	server.CopyFile(
-		filepath.Join(folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour)), "wrfvar_input_d03"),
-		filepath.Join(folders.DAProcWorkdir(s.Workdir, s.Start, 3), "fg"),
-	)
+	server.CopyFile(filepath.Join(wrf21dir, "wrfvar_input_d03"), filepath.Join(da00dir[2], "fg"))
 	s.RunDa(s.Start)
 
 	// run WRF from D for the duration of the forecast
 	s.CreateWrfForecastDir(s.Start, s.Duration)
 
 	// run REAL
-	server.CopyFile(
-		filepath.Join(folders.WrfProcWorkdir(s.Workdir, s.Start), "namelist.input"),
-		filepath.Join(folders.WPSProcWorkdir(s.Workdir), "namelist.input"),
-	)
+	server.CopyFile(filepath.Join(wrf00dir, "namelist.input"), filepath.Join(wpsdir, "namelist.input"))
 
 	s.RunReal(s.Start)
 
 	for _, file := range []string{"wrfbdy_d01", "wrfinput_d01", "wrfinput_d02"} {
-		server.CopyFile(
-			filepath.Join(folders.WPSProcWorkdir(s.Workdir), file),
-			filepath.Join(folders.WrfProcWorkdir(s.Workdir, s.Start), file),
-		)
+		server.CopyFile(filepath.Join(wpsdir, file), filepath.Join(wrf00dir, file))
 	}
 
-	server.CopyFile(
-		filepath.Join(folders.DAProcWorkdir(s.Workdir, s.Start, 3), "wrfvar_output"),
-		filepath.Join(folders.WrfProcWorkdir(s.Workdir, s.Start), "wrfinput_d03"),
-	)
+	server.CopyFile(filepath.Join(da00dir[2], "wrfvar_output"), filepath.Join(wrf00dir, "wrfinput_d03"))
 	s.RunWrf(s.Start)
 	log.Info("Simulation completed successfully.")
 }
