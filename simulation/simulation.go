@@ -34,7 +34,7 @@ func (s *Simulation) Run() {
 
 	s.CreateWpsDir(s.Start, s.Duration)
 
-	// WPS: prepare folder and run geogrid, ungrib, metgrid
+	// WPS: create directory wps and run geogrid, ungrib, metgrid
 
 	s.RunGeogrid()
 	s.RunLinkGrib(s.Start.Add(-6 * time.Hour))
@@ -42,7 +42,7 @@ func (s *Simulation) Run() {
 	s.RunAvgtsfc()
 	s.RunMetgrid()
 
-	// run WRF from D-6 to D-3
+	// create directory wrf18 and run real
 	s.CreateWrfStepDir(s.Start.Add(-6*time.Hour), 3*time.Hour)
 	server.CopyFile(
 		filepath.Join(folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour)), "namelist.input"),
@@ -50,17 +50,34 @@ func (s *Simulation) Run() {
 	)
 	s.RunReal(s.Start.Add(-6 * time.Hour))
 
-	for _, file := range []string{"wrfbdy_d01", "wrfinput_d01", "wrfinput_d02", "wrfinput_d03"} {
+	// assimilate D-6
+	s.CreateDaDir(s.Start.Add(-6*time.Hour), 3)
+	server.CopyFile(
+		filepath.Join(folders.WPSProcWorkdir(s.Workdir), "wrfinput_d03"),
+		filepath.Join(folders.DAProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour), 3), "fg"),
+	)
+	s.RunDa(s.Start.Add(-6 * time.Hour))
+
+	// run WRF from D-6 to D-3
+	for _, file := range []string{"wrfbdy_d01", "wrfinput_d01", "wrfinput_d02"} {
 		server.CopyFile(
 			filepath.Join(folders.WPSProcWorkdir(s.Workdir), file),
 			filepath.Join(folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour)), file),
 		)
 	}
+	server.CopyFile(
+		filepath.Join(folders.DAProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour), 3), "wrfvar_output"),
+		filepath.Join(folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour)), "wrfinput_d03"),
+	)
 
 	s.RunWrf(s.Start.Add(-6 * time.Hour))
 
 	// assimilate D-3
 	s.CreateDaDir(s.Start.Add(-3*time.Hour), 3)
+	server.CopyFile(
+		filepath.Join(folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour)), "wrfvar_input_d03"),
+		filepath.Join(folders.DAProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour), 3), "fg"),
+	)
 	s.RunDa(s.Start.Add(-3 * time.Hour))
 
 	// run WRF from D-3 to D
@@ -86,6 +103,10 @@ func (s *Simulation) Run() {
 
 	// assimilate D
 	s.CreateDaDir(s.Start, 3)
+	server.CopyFile(
+		filepath.Join(folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour)), "wrfvar_input_d03"),
+		filepath.Join(folders.DAProcWorkdir(s.Workdir, s.Start, 3), "fg"),
+	)
 	s.RunDa(s.Start)
 
 	// run WRF from D for the duration of the forecast
@@ -167,10 +188,7 @@ func (s Simulation) RunReal(startTime time.Time) {
 func (s Simulation) RunDa(startTime time.Time) {
 
 	pathDA := folders.DAProcWorkdir(s.Workdir, startTime, 3)
-	inputPath := folders.WrfProcWorkdir(s.Workdir, startTime.Add(-3*time.Hour))
-	src := filepath.Join(inputPath, "wrfvar_input_d03")
-	dest := filepath.Join(pathDA, "fg")
-	server.CopyFile(src, dest)
+
 	daRelDir := errors.CheckResult(filepath.Rel(folders.Rootdir, pathDA))
 	log.Info("Running da_wrfvar for %02d:00\t\tDIR: %s LOGS: %s", startTime.Hour(), daRelDir, "da_wrfvar.detail.log rsl.out.* rsl.error.*")
 
