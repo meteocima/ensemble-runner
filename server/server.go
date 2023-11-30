@@ -25,10 +25,10 @@ func Rmdir(dir string) {
 	errors.Check(os.RemoveAll(dir))
 }
 
-func CopyFile(src, dst string) {
-	srcRel := errors.CheckResult(filepath.Rel(folders.Rootdir, src))
-	dstRel := errors.CheckResult(filepath.Rel(folders.Rootdir, dst))
-	log.Debug(" - Copying file %s to %s", srcRel, dstRel)
+func CopyFile(workdir, src, dst string) {
+	srcRel := errors.CheckResult(filepath.Rel(workdir, src))
+	dstRel := errors.CheckResult(filepath.Rel(workdir, dst))
+	log.Debug(" - Copying file $WORKDIR/%s to $WORKDIR/%s", srcRel, dstRel)
 	bytesRead := errors.CheckResult(os.ReadFile(src))
 	errors.Check(os.WriteFile(dst, bytesRead, 0664))
 }

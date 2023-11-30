@@ -1,11 +1,11 @@
 # CIMA Ensemble Runner
 
 * confrontare i template namelist attuali con quelli di LEXIS 
-* aggiornare il template wrf00 per includere proprietá per ensemble. usare un nuovo template dir, perché quello attuale va usato per la run di controllo
+* aggiornare il template wrf00 per includere proprietá nalla namelist per ensemble. usare un nuovo template dir, perché quello attuale va usato per la run di controllo
 * aggiornare script per eseguire tutti gli ensemble member
 * modificare percorsi da cui leggere le obs
-* aggiungere assimilazione su tutti i domini
-* aggiungere assimilazione nel cicli delle 18
+OK * aggiungere assimilazione su tutti i domini
+OK * aggiungere assimilazione nel cicli delle 18
 * fare avgvar solo se >= 24 ore
 * testare malfunzionamenti
 * moltiplicare il post process su tutti gli ensemble member
