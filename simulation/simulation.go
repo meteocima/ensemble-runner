@@ -22,6 +22,29 @@ type Simulation struct {
 var ShortDtFormat = "2006-01-02-15"
 
 func (s *Simulation) Run() {
+	// directory for the various steps of the simulation:
+	wpsdir := folders.WPSProcWorkdir(s.Workdir)
+	wrf18dir := folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour))
+	wrf21dir := folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour))
+	wrf00dir := folders.WrfProcWorkdir(s.Workdir, s.Start)
+
+	// da dirs have one dir for every domain
+	da18dir := []string{
+		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour), 1),
+		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour), 2),
+		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour), 3),
+	}
+	da21dir := []string{
+		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour), 1),
+		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour), 2),
+		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour), 3),
+	}
+	da00dir := []string{
+		folders.DAProcWorkdir(s.Workdir, s.Start, 1),
+		folders.DAProcWorkdir(s.Workdir, s.Start, 2),
+		folders.DAProcWorkdir(s.Workdir, s.Start, 3),
+	}
+
 	log.Info("Starting simulation from %s for %.0f hours", s.Start.Format(ShortDtFormat), s.Duration.Hours())
 
 	if server.DirExists(s.Workdir) {
@@ -40,37 +63,19 @@ func (s *Simulation) Run() {
 	s.RunAvgtsfc()
 	s.RunMetgrid()
 
-	wpsdir := folders.WPSProcWorkdir(s.Workdir)
-	wrf18dir := folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour))
-	wrf21dir := folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour))
-	wrf00dir := folders.WrfProcWorkdir(s.Workdir, s.Start)
-	da18dir := []string{
-		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour), 1),
-		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour), 2),
-		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour), 3),
-	}
-	da21dir := []string{
-		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour), 1),
-		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour), 2),
-		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour), 3),
-	}
-	da00dir := []string{
-		folders.DAProcWorkdir(s.Workdir, s.Start, 1),
-		folders.DAProcWorkdir(s.Workdir, s.Start, 2),
-		folders.DAProcWorkdir(s.Workdir, s.Start, 3),
-	}
-
-	// create directory wrf18 and run real
+	// create directory wrf18 and run real with its namelist
 	s.CreateWrfStepDir(s.Start.Add(-6*time.Hour), 3*time.Hour)
 	server.CopyFile(filepath.Join(wrf18dir, "namelist.input"), filepath.Join(wpsdir, "namelist.input"))
 	s.RunReal(s.Start.Add(-6 * time.Hour))
 
-	// assimilate D-6
+	// assimilate D-6 (first cycle) for all domains
 	s.CreateDaDir(s.Start.Add(-6*time.Hour), 3)
+	// input condition are copied from wps
 	server.CopyFile(filepath.Join(wpsdir, "wrfinput_d03"), filepath.Join(da18dir[2], "fg"))
 	s.RunDa(s.Start.Add(-6 * time.Hour))
 
-	// run WRF from D-6 to D-3
+	// run WRF from D-6 to D-3. input condition are copied from da dirs of firstg cycle.
+	// boundary condition are copied from wps
 	for _, file := range []string{"wrfbdy_d01", "wrfinput_d01", "wrfinput_d02"} {
 		server.CopyFile(filepath.Join(wpsdir, file), filepath.Join(wrf18dir, file))
 	}
@@ -78,16 +83,19 @@ func (s *Simulation) Run() {
 
 	s.RunWrf(s.Start.Add(-6 * time.Hour))
 
-	// assimilate D-3
+	// assimilate D-3 (second cycle) for all domains
 	s.CreateDaDir(s.Start.Add(-3*time.Hour), 3)
+	// input condition are copied from previous cycle wrf
 	server.CopyFile(filepath.Join(wrf18dir, "wrfvar_input_d03"), filepath.Join(da21dir[2], "fg"))
 	s.RunDa(s.Start.Add(-3 * time.Hour))
 
-	// run WRF from D-3 to D
+	// create directory wrf21 and run real with its namelist
 	s.CreateWrfStepDir(s.Start.Add(-3*time.Hour), 3*time.Hour)
 	server.CopyFile(filepath.Join(wrf21dir, "namelist.input"), filepath.Join(folders.WPSProcWorkdir(s.Workdir), "namelist.input"))
 	s.RunReal(s.Start.Add(-3 * time.Hour))
 
+	// run WRF from D-3 to D. input conditions are copied from da dirs of second cycle.
+	// boundary condition are copied from wps
 	for _, file := range []string{"wrfbdy_d01", "wrfinput_d01", "wrfinput_d02"} {
 		server.CopyFile(filepath.Join(wpsdir, file), filepath.Join(wrf21dir, file))
 	}
@@ -95,19 +103,19 @@ func (s *Simulation) Run() {
 	server.CopyFile(filepath.Join(da21dir[2], "wrfvar_output"), filepath.Join(wrf21dir, "wrfinput_d03"))
 	s.RunWrf(s.Start.Add(-3 * time.Hour))
 
-	// assimilate D
+	// assimilate D (third cycle) for all domains
 	s.CreateDaDir(s.Start, 3)
+	// input condition are copied from previous cycle wrf
 	server.CopyFile(filepath.Join(wrf21dir, "wrfvar_input_d03"), filepath.Join(da00dir[2], "fg"))
 	s.RunDa(s.Start)
 
-	// run WRF from D for the duration of the forecast
+	// create directory wrf21 and run real with its namelist
 	s.CreateWrfForecastDir(s.Start, s.Duration)
-
-	// run REAL
 	server.CopyFile(filepath.Join(wrf00dir, "namelist.input"), filepath.Join(wpsdir, "namelist.input"))
-
 	s.RunReal(s.Start)
 
+	// run WRF from D for the duration of the forecast. input conditions are copied from da dirs of second cycle.
+	// boundary condition are copied from wps
 	for _, file := range []string{"wrfbdy_d01", "wrfinput_d01", "wrfinput_d02"} {
 		server.CopyFile(filepath.Join(wpsdir, file), filepath.Join(wrf00dir, file))
 	}
