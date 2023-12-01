@@ -21,6 +21,8 @@ var Values = struct {
 	GeogDataDir      string `yaml:"GeogDataDir"`
 	GfsDir           string `yaml:"GfsDir"`
 	BeDir            string `yaml:"BeDir"`
+	RunWPS           bool   `yaml:"RunWPS"`
+	EnsembleMembers  int    `yaml:"EnsembleMembers"`
 }{}
 
 func Initialize() {

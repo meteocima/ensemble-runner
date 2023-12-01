@@ -10,3 +10,5 @@ ObDataDir: ./obs
 GeogDataDir: /data/unsafe/geog
 GfsDir: /data/unsafe/gfs
 BeDir: ./be
+RunWPS: true
+EnsembleMembers: 10
