@@ -11,18 +11,19 @@ import (
 )
 
 var Values = struct {
-	GeogridProcCount int    `yaml:"GeogridProc"`
-	MetgridProcCount int    `yaml:"MetgridProc"`
-	WrfProcCount     int    `yaml:"WrfProc"`
-	WrfdaProcCount   int    `yaml:"WrfdaProc"`
-	RealProcCount    int    `yaml:"RealProc"`
-	MpiOptions       string `yaml:"MpiOptions"`
-	ObDataDir        string `yaml:"ObDataDir"`
-	GeogDataDir      string `yaml:"GeogDataDir"`
-	GfsDir           string `yaml:"GfsDir"`
-	BeDir            string `yaml:"BeDir"`
-	RunWPS           bool   `yaml:"RunWPS"`
-	EnsembleMembers  int    `yaml:"EnsembleMembers"`
+	GeogridProcCount          int    `yaml:"GeogridProc"`
+	MetgridProcCount          int    `yaml:"MetgridProc"`
+	WrfProcCount              int    `yaml:"WrfProc"`
+	WrfdaProcCount            int    `yaml:"WrfdaProc"`
+	RealProcCount             int    `yaml:"RealProc"`
+	MpiOptions                string `yaml:"MpiOptions"`
+	ObDataDir                 string `yaml:"ObDataDir"`
+	GeogDataDir               string `yaml:"GeogDataDir"`
+	GfsDir                    string `yaml:"GfsDir"`
+	BeDir                     string `yaml:"BeDir"`
+	RunWPS                    bool   `yaml:"RunWPS"`
+	EnsembleMembers           int    `yaml:"EnsembleMembers"`
+	AssimilateOnlyInnerDomain int    `yaml:"AssimilateOnlyInnerDomain"`
 }{}
 
 func Initialize() {

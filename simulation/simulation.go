@@ -33,16 +33,19 @@ func (s *Simulation) Run() {
 
 	// da dirs have one dir for every domain
 	da18dir := []string{
+		"",
 		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour), 1),
 		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour), 2),
 		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour), 3),
 	}
 	da21dir := []string{
+		"",
 		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour), 1),
 		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour), 2),
 		folders.DAProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour), 3),
 	}
 	da00dir := []string{
+		"",
 		folders.DAProcWorkdir(s.Workdir, s.Start, 1),
 		folders.DAProcWorkdir(s.Workdir, s.Start, 2),
 		folders.DAProcWorkdir(s.Workdir, s.Start, 3),
@@ -61,13 +64,13 @@ func (s *Simulation) Run() {
 	})
 
 	// create all directories for the various wrf cycles.
-	s.CreateWrfStepDir(s.Start.Add(-6*time.Hour), 3*time.Hour)
-	s.CreateWrfStepDir(s.Start.Add(-3*time.Hour), 3*time.Hour)
+	s.CreateWrfStepDir(s.Start.Add(-6 * time.Hour))
+	s.CreateWrfStepDir(s.Start.Add(-3 * time.Hour))
 	s.CreateWrfForecastDir(s.Start, s.Duration)
 	for domain := 1; domain <= 3; domain++ {
-		s.CreateDaDir(s.Start.Add(-6*time.Hour), 3, domain)
-		s.CreateDaDir(s.Start.Add(-3*time.Hour), 3, domain)
-		s.CreateDaDir(s.Start, 3, domain)
+		s.CreateDaDir(s.Start.Add(-6*time.Hour), domain)
+		s.CreateDaDir(s.Start.Add(-3*time.Hour), domain)
+		s.CreateDaDir(s.Start, domain)
 	}
 
 	if conf.Values.RunWPS {
@@ -99,49 +102,48 @@ func (s *Simulation) Run() {
 	}
 
 	// assimilate D-6 (first cycle) for all domains
-	server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da01"), join(da18dir[0], "wrfbdy_d01"))
-
-	for domain := 0; domain < 3; domain++ {
+	server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da01"), join(da18dir[1], "wrfbdy_d01"))
+	for domain := 1; domain <= 3; domain++ {
 		// input condition are copied from wps
-		server.CopyFile(s.Workdir, join(wpsOutputsDir, fmt.Sprintf("wrfinput_d%02d", domain+1)), join(da18dir[domain], "fg"))
-		s.RunDa(s.Start.Add(-6*time.Hour), domain+1)
+		server.CopyFile(s.Workdir, join(wpsOutputsDir, fmt.Sprintf("wrfinput_d%02d", domain)), join(da18dir[domain], "fg"))
+		s.RunDa(s.Start.Add(-6*time.Hour), domain)
 	}
 
 	// run WRF from D-6 to D-3. input and boundary conditions are copied from da dirs of first cycle.
-	server.CopyFile(s.Workdir, join(da18dir[0], "wrfbdy_d01"), join(wrf18dir, "wrfbdy_d01"))
-	for domain := 0; domain < 3; domain++ {
-		server.CopyFile(s.Workdir, join(da18dir[domain], "wrfvar_output"), join(wrf18dir, fmt.Sprintf("wrfinput_d%02d", domain+1)))
+	server.CopyFile(s.Workdir, join(da18dir[1], "wrfbdy_d01"), join(wrf18dir, "wrfbdy_d01"))
+	for domain := 1; domain <= 3; domain++ {
+		server.CopyFile(s.Workdir, join(da18dir[domain], "wrfvar_output"), join(wrf18dir, fmt.Sprintf("wrfinput_d%02d", domain)))
 	}
 	s.RunWrf(s.Start.Add(-6 * time.Hour))
 
 	// assimilate D-3 (second cycle) for all domains
-	server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da02"), join(da21dir[0], "wrfbdy_d01"))
-	for domain := 0; domain < 3; domain++ {
+	server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da02"), join(da21dir[1], "wrfbdy_d01"))
+	for domain := 1; domain <= 3; domain++ {
 		// input condition are copied from previous cycle wrf
-		server.CopyFile(s.Workdir, join(wrf18dir, fmt.Sprintf("wrfvar_input_d%02d", domain+1)), join(da21dir[domain], "fg"))
-		s.RunDa(s.Start.Add(-3*time.Hour), domain+1)
+		server.CopyFile(s.Workdir, join(wrf18dir, fmt.Sprintf("wrfvar_input_d%02d", domain)), join(da21dir[domain], "fg"))
+		s.RunDa(s.Start.Add(-3*time.Hour), domain)
 	}
 
 	// run WRF from D-3 to D. input and boundary conditions are copied from da dirs of second cycle.
 	// boundary condition are copied from wps
-	server.CopyFile(s.Workdir, join(da21dir[0], "wrfbdy_d01"), join(wrf21dir, "wrfbdy_d01"))
-	for domain := 0; domain < 3; domain++ {
-		server.CopyFile(s.Workdir, join(da21dir[domain], "wrfvar_output"), join(wrf21dir, fmt.Sprintf("wrfinput_d%02d", domain+1)))
+	server.CopyFile(s.Workdir, join(da21dir[1], "wrfbdy_d01"), join(wrf21dir, "wrfbdy_d01"))
+	for domain := 1; domain <= 3; domain++ {
+		server.CopyFile(s.Workdir, join(da21dir[domain], "wrfvar_output"), join(wrf21dir, fmt.Sprintf("wrfinput_d%02d", domain)))
 	}
 	s.RunWrf(s.Start.Add(-3 * time.Hour))
 
 	// assimilate D (third cycle) for all domains
-	server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da03"), join(da00dir[0], "wrfbdy_d01"))
-	for domain := 0; domain < 3; domain++ {
+	server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da03"), join(da00dir[1], "wrfbdy_d01"))
+	for domain := 1; domain <= 3; domain++ {
 		// input condition are copied from previous cycle wrf
-		server.CopyFile(s.Workdir, join(wrf21dir, fmt.Sprintf("wrfvar_input_d%02d", domain+1)), join(da00dir[domain], "fg"))
-		s.RunDa(s.Start, domain+1)
+		server.CopyFile(s.Workdir, join(wrf21dir, fmt.Sprintf("wrfvar_input_d%02d", domain)), join(da00dir[domain], "fg"))
+		s.RunDa(s.Start, domain)
 	}
 
 	// run WRF from D for the duration of the forecast. input and boundary conditions are copied from da dirs of third cycle.
-	server.CopyFile(s.Workdir, join(da00dir[0], "wrfbdy_d01"), join(wrf00dir, "wrfbdy_d01"))
-	for domain := 0; domain < 3; domain++ {
-		server.CopyFile(s.Workdir, join(da00dir[domain], "wrfvar_output"), join(wrf00dir, fmt.Sprintf("wrfinput_d%02d", domain+1)))
+	server.CopyFile(s.Workdir, join(da00dir[1], "wrfbdy_d01"), join(wrf00dir, "wrfbdy_d01"))
+	for domain := 1; domain <= 3; domain++ {
+		server.CopyFile(s.Workdir, join(da00dir[domain], "wrfvar_output"), join(wrf00dir, fmt.Sprintf("wrfinput_d%02d", domain)))
 	}
 	s.RunWrf(s.Start)
 	log.Info("Simulation completed successfully.")
@@ -241,10 +243,10 @@ func (s Simulation) CreateWrfForecastDir(start time.Time, duration time.Duration
 	server.RenderTemplate(folders.WrfProcWorkdir(s.Workdir, start), "wrf-forecast", start, int(duration.Hours()))
 }
 
-func (s Simulation) CreateWrfStepDir(start time.Time, duration time.Duration) {
+func (s Simulation) CreateWrfStepDir(start time.Time) {
 	server.RenderTemplate(folders.WrfProcWorkdir(s.Workdir, start), "wrf-step", start, 3)
 }
 
-func (s Simulation) CreateDaDir(start time.Time, duration time.Duration, domain int) {
+func (s Simulation) CreateDaDir(start time.Time, domain int) {
 	server.RenderTemplate(folders.DAProcWorkdir(s.Workdir, start, domain), fmt.Sprintf("wrfda_%02d", domain), start, 3)
 }

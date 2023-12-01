@@ -16,3 +16,5 @@ OK * nei log, indicare le dir relative a workdir/DATA. indicare all'inizio del l
 OK * rename WRFITA_ROOTDIR to ROOTDIR
 OK * creare $WORKDIR come workdir/YYYY-MM-DD-HH ed usare nei logs
 * rendere possibile saltare la parte WPS
+* assicurarsi di linkare da obs anche le wunder
+* implementare opzione AssimilateOnlyInnerDomain
