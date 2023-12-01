@@ -1,7 +1,7 @@
 &control_param
  da_file            = './wrfvar_output'
  wrf_bdy_file       = './wrfbdy_d01'
- wrf_input          = '../wps/wrfinput_d01'
+ wrf_input          = './wrfinput_d01'
  domain_id          = 01
  debug              = .true.
  update_lateral_bdy = .true.

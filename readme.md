@@ -14,4 +14,5 @@ OK * nei log, indicare le dir relative a workdir/DATA. indicare all'inizio del l
 * inserire output nei log che visualizzi il progresso nella creazione dei files AUX?
 * rimuovere creazione wrfout, lasciare solo AUX dom. 3
 OK * rename WRFITA_ROOTDIR to ROOTDIR
-* creare $WORKDIR come workdir/YYYY-MM-DD-HH ed usare nei logs
+OK * creare $WORKDIR come workdir/YYYY-MM-DD-HH ed usare nei logs
+* rendere possibile saltare la parte WPS
