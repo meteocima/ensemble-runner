@@ -1,11 +1,11 @@
 # CIMA Ensemble Runner
 
-OK * fare avgvar solo se >= 24 ore
-* modificare percorsi da cui leggere le obs
-* rendere possibile saltare la parte WPS
+!OK * fare avgvar solo se >= 24 ore
+!OK * modificare percorsi da cui leggere le obs
+!OK * rendere possibile saltare la parte WPS
 * assicurarsi di linkare da obs anche le wunder
 * implementare opzione AssimilateOnlyInnerDomain
-* 
+
 * confrontare i template namelist attuali con quelli di LEXIS 
 * aggiornare il template wrf00 per includere proprietá nalla namelist per ensemble. usare un nuovo template dir, perché quello attuale va usato per la run di controllo
 * aggiornare script per eseguire tutti gli ensemble member
