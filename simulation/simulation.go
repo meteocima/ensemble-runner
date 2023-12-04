@@ -79,7 +79,9 @@ func (s *Simulation) Run() {
 		s.RunGeogrid()
 		s.RunLinkGrib(s.Start.Add(-6 * time.Hour))
 		s.RunUngrib()
-		s.RunAvgtsfc()
+		if s.Duration+6*time.Hour > 24*time.Hour {
+			s.RunAvgtsfc()
+		}
 		s.RunMetgrid()
 
 		server.MkdirAll(wpsOutputsDir, 0775)
