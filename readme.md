@@ -5,8 +5,9 @@
 !OK * rendere possibile saltare la parte WPS
 !OK * assicurarsi di linkare da obs anche le wunder
 * implementare opzione AssimilateOnlyInnerDomain
+* implementare opzione AssimilateFirstCycle
 
-* confrontare i template namelist attuali con quelli di LEXIS 
+OK * confrontare i template namelist attuali con quelli di LEXIS 
 * aggiornare il template wrf00 per includere proprietá nalla namelist per ensemble. usare un nuovo template dir, perché quello attuale va usato per la run di controllo
 * aggiornare script per eseguire tutti gli ensemble member
 * testare malfunzionamenti
