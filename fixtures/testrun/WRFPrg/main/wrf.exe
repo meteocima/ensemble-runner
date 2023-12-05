@@ -36,3 +36,5 @@ printf "***********************************\n\n" >> rsl.out.0000
 echo wrfvar_input_d01 from $DIR > wrfvar_input_d01
 echo wrfvar_input_d02 from $DIR > wrfvar_input_d02
 echo wrfvar_input_d03 from $DIR > wrfvar_input_d03
+
+cat /home/parroit/repos/cima/ensemble-runner/wrfprocs/fixtures/rsl.out.wrfita-filse-optim >rsl.out.0000

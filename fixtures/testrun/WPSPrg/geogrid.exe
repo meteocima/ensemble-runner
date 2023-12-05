@@ -1,3 +1,5 @@
 #!/bin/bash
 
 echo THIS IS A FAKE GEOGRID USED FOR TESTS > geogrid.log.0000
+
+cat /home/parroit/repos/cima/ensemble-runner/wrfprocs/fixtures/geogrid.log > geogrid.log.0000

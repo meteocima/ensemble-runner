@@ -80,6 +80,7 @@ func (p *UngribParser) Read() bool {
 	for {
 		if !p.scanner.Scan() {
 			p.Err = p.scanner.Err()
+
 			return false
 		}
 

@@ -15,7 +15,7 @@ func main() {
 	log.Info("WRF runner starting. Checking configuration...")
 
 	defer errors.OnFailuresDo(func(err errors.RunTimeError) {
-		fmt.Fprintf(os.Stderr, "wrfda ita failed: %s\n", err)
+		fmt.Fprintf(os.Stderr, "simulation failed: %s\n", err)
 		os.Exit(1)
 	})
 
