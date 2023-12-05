@@ -8,6 +8,7 @@
 
 * implementare opzione AssimilateOnlyInnerDomain
 * implementare opzione AssimilateFirstCycle
+* aggiungere verifica successo dei vari processi
 * aggiornare script per eseguire tutti gli ensemble member
 * testare malfunzionamenti
 * moltiplicare il post process su tutti gli ensemble member

@@ -1,0 +1,363 @@
+ Ntasks in X            1 , ntasks in Y            1
+Domain # 1: dx = 30000.000 m
+Domain # 2: dx = 10000.000 m
+REAL_EM V4.4.1 PREPROCESSOR
+git commit f34b11dbb89c002c5c0dca1195aab35daeed7349
+ *************************************
+ Parent domain
+ ids,ide,jds,jde            1          74           1          61
+ ims,ime,jms,jme           -4          79          -4          66
+ ips,ipe,jps,jpe            1          74           1          61
+ *************************************
+DYNAMICS OPTION: Eulerian Mass Coordinate
+ alloc_space_field: domain            1 ,             207460012  bytes allocated
+Time period #   1 to process = 2020-01-09_12:00:00.
+Time period #   2 to process = 2020-01-09_18:00:00.
+Time period #   3 to process = 2020-01-10_00:00:00.
+Time period #   4 to process = 2020-01-10_06:00:00.
+Time period #   5 to process = 2020-01-10_12:00:00.
+Total analysis times to input =    5.
+  
+ -----------------------------------------------------------------------------
+  
+ Domain  1: Current date being processed: 2020-01-09_12:00:00.0000, which is loop #   1 out of    5
+ configflags%julyr, %julday, %gmt:        2020           9   12.0000000    
+ Yes, this special data is acceptable to use: OUTPUT FROM METGRID V4.4
+ Input data is acceptable to use: met_em.d01.2020-01-09_12:00:00.nc
+ metgrid input_wrf.F first_date_input = 2020-01-09_12:00:00
+ metgrid input_wrf.F first_date_nml = 2020-01-09_12:00:00
+Timing for input          1 s.
+         flag_soil_layers read from met_em file is  1
+Max map factor in domain 1 =  1.03. Scale the dt in the model accordingly.
+Using sfcprs3 to compute psfc
+ using new automatic levels program
+           1   50.0000000       50.0000000      0.993814707    
+           2   64.0000000       114.000000      0.985950649       1.27999997    
+           3   81.5615997       195.561600      0.976014256       1.27440000    
+           4   103.369164       298.930756      0.963557541       1.26737535    
+           5   130.105835       429.036591      0.948093116       1.25865233    
+           6   162.366577       591.403198      0.929123759       1.24795771    
+           7   200.531372       791.934570      0.906191230       1.23505330    
+           8   244.605652       1036.54028      0.878942370       1.21978748    
+           9   294.054565       1330.59485      0.847207963       1.20215774    
+          10   347.683685       1678.27856      0.811077714       1.18237817    
+          11   403.635223       2081.91382      0.770949006       1.16092658    
+          12   459.557220       2541.47095      0.727525413       1.13854587    
+          13   512.947266       3054.41821      0.681755364       1.11617708    
+          14   564.242004       3618.66016      0.634503603       1.10000002    
+          15   620.666199       4239.32617      0.586030483       1.10000002    
+   25416.3906       4239.32617              49          15
+          16   622.854858       4862.18115      0.540823698    
+          17   622.854858       5485.03613      0.498816907    
+          18   622.854858       6107.89111      0.459783465    
+          19   622.854858       6730.74609      0.423512906    
+          20   622.854858       7353.60107      0.389809757    
+          21   622.854858       7976.45605      0.358492196    
+          22   622.854858       8599.31055      0.329391450    
+          23   622.854858       9222.16504      0.302350521    
+          24   622.854858       9845.01953      0.277223676    
+          25   622.854858       10467.8740      0.253875375    
+          26   622.854858       11090.7285      0.232179746    
+          27   622.854858       11713.5830      0.212019816    
+          28   622.854858       12336.4375      0.193286911    
+          29   622.854858       12959.2920      0.175879955    
+          30   622.854858       13582.1465      0.159705117    
+          31   622.854858       14205.0010      0.144675180    
+          32   622.854858       14827.8555      0.130709127    
+          33   622.854858       15450.7100      0.117731638    
+          34   622.854858       16073.5645      0.105672739    
+          35   622.854858       16696.4199       9.44674164E-02
+          36   622.854858       17319.2754       8.40552300E-02
+          37   622.854858       17942.1309       7.43800178E-02
+          38   622.854858       18564.9863       6.53896779E-02
+          39   622.854858       19187.8418       5.70357405E-02
+          40   622.854858       19810.6973       4.92730998E-02
+          41   622.854858       20433.5527       4.20599207E-02
+          42   622.854858       21056.4082       3.53573188E-02
+          43   622.854858       21679.2637       2.91291475E-02
+          44   622.854858       22302.1191       2.33418439E-02
+          45   622.854858       22924.9746       1.79641545E-02
+          46   622.854858       23547.8301       1.29671562E-02
+          47   622.854858       24170.6855       8.32382310E-03
+          48   622.854858       24793.5410       4.00919514E-03
+          49   622.854858       25416.3965      -3.59786192E-08
+    1.0000    0.9938    0.9860    0.9760    0.9636    0.9481    0.9291    0.9062    0.8789    0.8472
+    0.8111    0.7709    0.7275    0.6818    0.6345    0.5860    0.5408    0.4988    0.4598    0.4235
+    0.3898    0.3585    0.3294    0.3024    0.2772    0.2539    0.2322    0.2120    0.1933    0.1759
+    0.1597    0.1447    0.1307    0.1177    0.1057    0.0945    0.0841    0.0744    0.0654    0.0570
+    0.0493    0.0421    0.0354    0.0291    0.0233    0.0180    0.0130    0.0083    0.0040    0.0000
+Full level index =    1     Height =     0.0 m
+Full level index =    2     Height =    50.0 m      Thickness =   50.0 m
+Full level index =    3     Height =   113.9 m      Thickness =   63.9 m
+Full level index =    4     Height =   195.2 m      Thickness =   81.3 m
+Full level index =    5     Height =   298.0 m      Thickness =  102.8 m
+Full level index =    6     Height =   427.2 m      Thickness =  129.1 m
+Full level index =    7     Height =   587.8 m      Thickness =  160.7 m
+Full level index =    8     Height =   785.5 m      Thickness =  197.7 m
+Full level index =    9     Height =  1025.6 m      Thickness =  240.0 m
+Full level index =   10     Height =  1312.6 m      Thickness =  287.0 m
+Full level index =   11     Height =  1649.6 m      Thickness =  337.0 m
+Full level index =   12     Height =  2037.7 m      Thickness =  388.2 m
+Full level index =   13     Height =  2475.6 m      Thickness =  437.9 m
+Full level index =   14     Height =  2959.3 m      Thickness =  483.7 m
+Full level index =   15     Height =  3485.1 m      Thickness =  525.8 m
+Full level index =   16     Height =  4056.1 m      Thickness =  570.9 m
+Full level index =   17     Height =  4621.1 m      Thickness =  565.1 m
+Full level index =   18     Height =  5178.3 m      Thickness =  557.2 m
+Full level index =   19     Height =  5727.6 m      Thickness =  549.3 m
+Full level index =   20     Height =  6269.1 m      Thickness =  541.4 m
+Full level index =   21     Height =  6802.6 m      Thickness =  533.6 m
+Full level index =   22     Height =  7328.3 m      Thickness =  525.7 m
+Full level index =   23     Height =  7846.1 m      Thickness =  517.8 m
+Full level index =   24     Height =  8356.0 m      Thickness =  509.9 m
+Full level index =   25     Height =  8858.0 m      Thickness =  502.0 m
+Full level index =   26     Height =  9352.2 m      Thickness =  494.1 m
+Full level index =   27     Height =  9838.5 m      Thickness =  486.3 m
+Full level index =   28     Height = 10316.8 m      Thickness =  478.4 m
+Full level index =   29     Height = 10787.4 m      Thickness =  470.5 m
+Full level index =   30     Height = 11250.0 m      Thickness =  462.6 m
+Full level index =   31     Height = 11704.7 m      Thickness =  454.7 m
+Full level index =   32     Height = 12151.6 m      Thickness =  446.9 m
+Full level index =   33     Height = 12590.6 m      Thickness =  439.0 m
+Full level index =   34     Height = 13021.7 m      Thickness =  431.1 m
+Full level index =   35     Height = 13451.1 m      Thickness =  429.4 m
+Full level index =   36     Height = 13880.4 m      Thickness =  429.4 m
+Full level index =   37     Height = 14309.8 m      Thickness =  429.4 m
+Full level index =   38     Height = 14739.1 m      Thickness =  429.4 m
+Full level index =   39     Height = 15168.5 m      Thickness =  429.4 m
+Full level index =   40     Height = 15597.9 m      Thickness =  429.4 m
+Full level index =   41     Height = 16027.2 m      Thickness =  429.4 m
+Full level index =   42     Height = 16456.6 m      Thickness =  429.4 m
+Full level index =   43     Height = 16886.0 m      Thickness =  429.4 m
+Full level index =   44     Height = 17315.3 m      Thickness =  429.4 m
+Full level index =   45     Height = 17744.7 m      Thickness =  429.4 m
+Full level index =   46     Height = 18174.0 m      Thickness =  429.4 m
+Full level index =   47     Height = 18603.4 m      Thickness =  429.4 m
+Full level index =   48     Height = 19032.8 m      Thickness =  429.4 m
+Full level index =   49     Height = 19462.1 m      Thickness =  429.4 m
+Full level index =   50     Height = 19891.5 m      Thickness =  429.4 m
+No average surface temperature for use with inland lakes
+ Assume Noah LSM input
+forcing artificial silty clay loam at   26 points, out of   4380
+Timing for processing          1 s.
+Timing for output          1 s.
+Timing for loop #    1 =          2 s.
+  
+ -----------------------------------------------------------------------------
+  
+ Domain  1: Current date being processed: 2020-01-09_18:00:00.0000, which is loop #   2 out of    5
+ configflags%julyr, %julday, %gmt:        2020           9   18.0000000    
+ Yes, this special data is acceptable to use: OUTPUT FROM METGRID V4.4
+ Input data is acceptable to use: met_em.d01.2020-01-09_18:00:00.nc
+ metgrid input_wrf.F first_date_input = 2020-01-09_18:00:00
+ metgrid input_wrf.F first_date_nml = 2020-01-09_12:00:00
+Timing for input          0 s.
+         flag_soil_layers read from met_em file is  1
+Using sfcprs3 to compute psfc
+No average surface temperature for use with inland lakes
+ Assume Noah LSM input
+forcing artificial silty clay loam at    6 points, out of   4380
+Timing for processing          0 s.
+ LBC valid between these times 2020-01-09_12:00:00 and 2020-01-09_18:00:00
+Timing for output          0 s.
+Timing for loop #    2 =          1 s.
+  
+ -----------------------------------------------------------------------------
+  
+ Domain  1: Current date being processed: 2020-01-10_00:00:00.0000, which is loop #   3 out of    5
+ configflags%julyr, %julday, %gmt:        2020          10   0.00000000    
+ Yes, this special data is acceptable to use: OUTPUT FROM METGRID V4.4
+ Input data is acceptable to use: met_em.d01.2020-01-10_00:00:00.nc
+ metgrid input_wrf.F first_date_input = 2020-01-10_00:00:00
+ metgrid input_wrf.F first_date_nml = 2020-01-09_12:00:00
+Timing for input          0 s.
+         flag_soil_layers read from met_em file is  1
+Using sfcprs3 to compute psfc
+No average surface temperature for use with inland lakes
+ Assume Noah LSM input
+forcing artificial silty clay loam at    6 points, out of   4380
+Timing for processing          0 s.
+ LBC valid between these times 2020-01-09_18:00:00 and 2020-01-10_00:00:00
+Timing for output          0 s.
+Timing for loop #    3 =          1 s.
+  
+ -----------------------------------------------------------------------------
+  
+ Domain  1: Current date being processed: 2020-01-10_06:00:00.0000, which is loop #   4 out of    5
+ configflags%julyr, %julday, %gmt:        2020          10   6.00000000    
+ Yes, this special data is acceptable to use: OUTPUT FROM METGRID V4.4
+ Input data is acceptable to use: met_em.d01.2020-01-10_06:00:00.nc
+ metgrid input_wrf.F first_date_input = 2020-01-10_06:00:00
+ metgrid input_wrf.F first_date_nml = 2020-01-09_12:00:00
+Timing for input          0 s.
+         flag_soil_layers read from met_em file is  1
+Using sfcprs3 to compute psfc
+No average surface temperature for use with inland lakes
+ Assume Noah LSM input
+forcing artificial silty clay loam at    6 points, out of   4380
+Timing for processing          0 s.
+ LBC valid between these times 2020-01-10_00:00:00 and 2020-01-10_06:00:00
+Timing for output          0 s.
+Timing for loop #    4 =          1 s.
+  
+ -----------------------------------------------------------------------------
+  
+ Domain  1: Current date being processed: 2020-01-10_12:00:00.0000, which is loop #   5 out of    5
+ configflags%julyr, %julday, %gmt:        2020          10   12.0000000    
+ Yes, this special data is acceptable to use: OUTPUT FROM METGRID V4.4
+ Input data is acceptable to use: met_em.d01.2020-01-10_12:00:00.nc
+ metgrid input_wrf.F first_date_input = 2020-01-10_12:00:00
+ metgrid input_wrf.F first_date_nml = 2020-01-09_12:00:00
+Timing for input          6 s.
+         flag_soil_layers read from met_em file is  1
+Using sfcprs3 to compute psfc
+No average surface temperature for use with inland lakes
+ Assume Noah LSM input
+forcing artificial silty clay loam at    6 points, out of   4380
+Timing for processing          0 s.
+ LBC valid between these times 2020-01-10_06:00:00 and 2020-01-10_12:00:00
+Timing for output          0 s.
+Timing for loop #    5 =          7 s.
+ *************************************
+ Nesting domain
+ ids,ide,jds,jde            1         112           1          97
+ ims,ime,jms,jme           -4         117          -4         102
+ ips,ipe,jps,jpe            1         112           1          97
+ INTERMEDIATE domain
+ ids,ide,jds,jde           29          71          15          52
+ ims,ime,jms,jme           24          76          10          57
+ ips,ipe,jps,jpe           27          73          13          54
+ *************************************
+ alloc_space_field: domain            2 ,              20280768  bytes allocated
+ alloc_space_field: domain            2 ,             442961372  bytes allocated
+Time period #   1 to process = 2020-01-09_12:00:00.
+Time period #   2 to process = 2020-01-09_18:00:00.
+Time period #   3 to process = 2020-01-10_00:00:00.
+Time period #   4 to process = 2020-01-10_06:00:00.
+Time period #   5 to process = 2020-01-10_12:00:00.
+Total analysis times to input =    5.
+  
+ -----------------------------------------------------------------------------
+  
+ Domain  2: Current date being processed: 2020-01-09_12:00:00.0000, which is loop #   1 out of    5
+ configflags%julyr, %julday, %gmt:        2020           9   12.0000000    
+ Yes, this special data is acceptable to use: OUTPUT FROM METGRID V4.4
+ Input data is acceptable to use: met_em.d02.2020-01-09_12:00:00.nc
+ metgrid input_wrf.F first_date_input = 2020-01-09_12:00:00
+ metgrid input_wrf.F first_date_nml = 2020-01-09_12:00:00
+Timing for input          1 s.
+         flag_soil_layers read from met_em file is  1
+Using sfcprs3 to compute psfc
+ using new automatic levels program
+           1   50.0000000       50.0000000      0.993814707    
+           2   64.0000000       114.000000      0.985950649       1.27999997    
+           3   81.5615997       195.561600      0.976014256       1.27440000    
+           4   103.369164       298.930756      0.963557541       1.26737535    
+           5   130.105835       429.036591      0.948093116       1.25865233    
+           6   162.366577       591.403198      0.929123759       1.24795771    
+           7   200.531372       791.934570      0.906191230       1.23505330    
+           8   244.605652       1036.54028      0.878942370       1.21978748    
+           9   294.054565       1330.59485      0.847207963       1.20215774    
+          10   347.683685       1678.27856      0.811077714       1.18237817    
+          11   403.635223       2081.91382      0.770949006       1.16092658    
+          12   459.557220       2541.47095      0.727525413       1.13854587    
+          13   512.947266       3054.41821      0.681755364       1.11617708    
+          14   564.242004       3618.66016      0.634503603       1.10000002    
+          15   620.666199       4239.32617      0.586030483       1.10000002    
+   25416.3906       4239.32617              49          15
+          16   622.854858       4862.18115      0.540823698    
+          17   622.854858       5485.03613      0.498816907    
+          18   622.854858       6107.89111      0.459783465    
+          19   622.854858       6730.74609      0.423512906    
+          20   622.854858       7353.60107      0.389809757    
+          21   622.854858       7976.45605      0.358492196    
+          22   622.854858       8599.31055      0.329391450    
+          23   622.854858       9222.16504      0.302350521    
+          24   622.854858       9845.01953      0.277223676    
+          25   622.854858       10467.8740      0.253875375    
+          26   622.854858       11090.7285      0.232179746    
+          27   622.854858       11713.5830      0.212019816    
+          28   622.854858       12336.4375      0.193286911    
+          29   622.854858       12959.2920      0.175879955    
+          30   622.854858       13582.1465      0.159705117    
+          31   622.854858       14205.0010      0.144675180    
+          32   622.854858       14827.8555      0.130709127    
+          33   622.854858       15450.7100      0.117731638    
+          34   622.854858       16073.5645      0.105672739    
+          35   622.854858       16696.4199       9.44674164E-02
+          36   622.854858       17319.2754       8.40552300E-02
+          37   622.854858       17942.1309       7.43800178E-02
+          38   622.854858       18564.9863       6.53896779E-02
+          39   622.854858       19187.8418       5.70357405E-02
+          40   622.854858       19810.6973       4.92730998E-02
+          41   622.854858       20433.5527       4.20599207E-02
+          42   622.854858       21056.4082       3.53573188E-02
+          43   622.854858       21679.2637       2.91291475E-02
+          44   622.854858       22302.1191       2.33418439E-02
+          45   622.854858       22924.9746       1.79641545E-02
+          46   622.854858       23547.8301       1.29671562E-02
+          47   622.854858       24170.6855       8.32382310E-03
+          48   622.854858       24793.5410       4.00919514E-03
+          49   622.854858       25416.3965      -3.59786192E-08
+    1.0000    0.9938    0.9860    0.9760    0.9636    0.9481    0.9291    0.9062    0.8789    0.8472
+    0.8111    0.7709    0.7275    0.6818    0.6345    0.5860    0.5408    0.4988    0.4598    0.4235
+    0.3898    0.3585    0.3294    0.3024    0.2772    0.2539    0.2322    0.2120    0.1933    0.1759
+    0.1597    0.1447    0.1307    0.1177    0.1057    0.0945    0.0841    0.0744    0.0654    0.0570
+    0.0493    0.0421    0.0354    0.0291    0.0233    0.0180    0.0130    0.0083    0.0040    0.0000
+Full level index =    1     Height =     0.0 m
+Full level index =    2     Height =    50.0 m      Thickness =   50.0 m
+Full level index =    3     Height =   113.9 m      Thickness =   63.9 m
+Full level index =    4     Height =   195.2 m      Thickness =   81.3 m
+Full level index =    5     Height =   298.0 m      Thickness =  102.8 m
+Full level index =    6     Height =   427.2 m      Thickness =  129.1 m
+Full level index =    7     Height =   587.8 m      Thickness =  160.7 m
+Full level index =    8     Height =   785.5 m      Thickness =  197.7 m
+Full level index =    9     Height =  1025.6 m      Thickness =  240.0 m
+Full level index =   10     Height =  1312.6 m      Thickness =  287.0 m
+Full level index =   11     Height =  1649.6 m      Thickness =  337.0 m
+Full level index =   12     Height =  2037.7 m      Thickness =  388.2 m
+Full level index =   13     Height =  2475.6 m      Thickness =  437.9 m
+Full level index =   14     Height =  2959.3 m      Thickness =  483.7 m
+Full level index =   15     Height =  3485.1 m      Thickness =  525.8 m
+Full level index =   16     Height =  4056.1 m      Thickness =  570.9 m
+Full level index =   17     Height =  4621.1 m      Thickness =  565.1 m
+Full level index =   18     Height =  5178.3 m      Thickness =  557.2 m
+Full level index =   19     Height =  5727.6 m      Thickness =  549.3 m
+Full level index =   20     Height =  6269.1 m      Thickness =  541.4 m
+Full level index =   21     Height =  6802.6 m      Thickness =  533.6 m
+Full level index =   22     Height =  7328.3 m      Thickness =  525.7 m
+Full level index =   23     Height =  7846.1 m      Thickness =  517.8 m
+Full level index =   24     Height =  8356.0 m      Thickness =  509.9 m
+Full level index =   25     Height =  8858.0 m      Thickness =  502.0 m
+Full level index =   26     Height =  9352.2 m      Thickness =  494.1 m
+Full level index =   27     Height =  9838.5 m      Thickness =  486.3 m
+Full level index =   28     Height = 10316.8 m      Thickness =  478.4 m
+Full level index =   29     Height = 10787.4 m      Thickness =  470.5 m
+Full level index =   30     Height = 11250.0 m      Thickness =  462.6 m
+Full level index =   31     Height = 11704.7 m      Thickness =  454.7 m
+Full level index =   32     Height = 12151.6 m      Thickness =  446.9 m
+Full level index =   33     Height = 12590.6 m      Thickness =  439.0 m
+Full level index =   34     Height = 13021.7 m      Thickness =  431.1 m
+Full level index =   35     Height = 13451.1 m      Thickness =  429.4 m
+Full level index =   36     Height = 13880.4 m      Thickness =  429.4 m
+Full level index =   37     Height = 14309.8 m      Thickness =  429.4 m
+Full level index =   38     Height = 14739.1 m      Thickness =  429.4 m
+Full level index =   39     Height = 15168.5 m      Thickness =  429.4 m
+Full level index =   40     Height = 15597.9 m      Thickness =  429.4 m
+Full level index =   41     Height = 16027.2 m      Thickness =  429.4 m
+Full level index =   42     Height = 16456.6 m      Thickness =  429.4 m
+Full level index =   43     Height = 16886.0 m      Thickness =  429.4 m
+Full level index =   44     Height = 17315.3 m      Thickness =  429.4 m
+Full level index =   45     Height = 17744.7 m      Thickness =  429.4 m
+Full level index =   46     Height = 18174.0 m      Thickness =  429.4 m
+Full level index =   47     Height = 18603.4 m      Thickness =  429.4 m
+Full level index =   48     Height = 19032.8 m      Thickness =  429.4 m
+Full level index =   49     Height = 19462.1 m      Thickness =  429.4 m
+Full level index =   50     Height = 19891.5 m      Thickness =  429.4 m
+No average surface temperature for use with inland lakes
+ Assume Noah LSM input
+forcing artificial silty clay loam at   53 points, out of  10656
+Timing for processing          1 s.
+Timing for output          2 s.
+Timing for loop #    1 =          3 s.
+real_em: SUCCESS COMPLETE REAL_EM INIT

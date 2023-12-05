@@ -1,0 +1,5 @@
+Timing for main (dt=  9.00): time 2022-12-06_02:00:00 on domain   3:    0.19767 elapsed seconds
+
+Timing for Writing auxhist23_d03_2022-12-06_01:00:00 for domain        3:    0.66925 elapsed seconds
+Timing for processing wrfinput file (stream 0) for domain        3:    2.18410 elapsed seconds
+Timing for processing lateral boundary for domain        1:    0.25609 elapsed seconds

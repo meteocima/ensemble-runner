@@ -1,0 +1,510 @@
+2022-12-19 12:00:36.422 ---  *** Starting program geogrid.exe ***
+2022-12-19 12:00:36.422 --- Using the following namelist variables:
+2022-12-19 12:00:36.422 --- &SHARE
+2022-12-19 12:00:36.422 ---   WRF_CORE         = ARW
+2022-12-19 12:00:36.422 ---   MAX_DOM          = 2
+2022-12-19 12:00:36.422 ---   START_YEAR       = 0
+2022-12-19 12:00:36.422 ---                    = 0
+2022-12-19 12:00:36.422 ---   START_MONTH      = 0
+2022-12-19 12:00:36.422 ---                    = 0
+2022-12-19 12:00:36.422 ---   START_DAY        = 0
+2022-12-19 12:00:36.422 ---                    = 0
+2022-12-19 12:00:36.422 ---   START_HOUR       = 0
+2022-12-19 12:00:36.422 ---                    = 0
+2022-12-19 12:00:36.422 ---   START_MINUTE     = 0
+2022-12-19 12:00:36.422 ---                    = 0
+2022-12-19 12:00:36.422 ---   START_SECOND     = 0
+2022-12-19 12:00:36.422 ---                    = 0
+2022-12-19 12:00:36.422 ---   END_YEAR         = 0
+2022-12-19 12:00:36.422 ---                    = 0
+2022-12-19 12:00:36.422 ---   END_MONTH        = 0
+2022-12-19 12:00:36.422 ---                    = 0
+2022-12-19 12:00:36.422 ---   END_DAY          = 0
+2022-12-19 12:00:36.423 ---                    = 0
+2022-12-19 12:00:36.423 ---   END_HOUR         = 0
+2022-12-19 12:00:36.423 ---                    = 0
+2022-12-19 12:00:36.423 ---   END_MINUTE       = 0
+2022-12-19 12:00:36.423 ---                    = 0
+2022-12-19 12:00:36.423 ---   END_SECOND       = 0
+2022-12-19 12:00:36.423 ---                    = 0
+2022-12-19 12:00:36.423 ---   START_DATE       = 2020-01-09_12:00:00
+2022-12-19 12:00:36.423 ---                    = 2020-01-09_12:00:00
+2022-12-19 12:00:36.423 ---   END_DATE         = 2020-01-10_12:00:00
+2022-12-19 12:00:36.423 ---                    = 2020-01-10_12:00:00
+2022-12-19 12:00:36.423 ---   INTERVAL_SECONDS = 21600
+2022-12-19 12:00:36.423 ---   IO_FORM_GEOGRID  = 2
+2022-12-19 12:00:36.423 ---   OPT_OUTPUT_FROM_GEOGRID_PATH = .
+2022-12-19 12:00:36.423 ---   SUBGRID_RATIO_X  = 1
+2022-12-19 12:00:36.423 ---                    = 1
+2022-12-19 12:00:36.423 ---   SUBGRID_RATIO_Y  = 1
+2022-12-19 12:00:36.423 ---                    = 1
+2022-12-19 12:00:36.423 ---   DEBUG_LEVEL      = 0
+2022-12-19 12:00:36.423 ---   ACTIVE_GRID      = .TRUE.
+2022-12-19 12:00:36.423 ---                    = .TRUE.
+2022-12-19 12:00:36.423 ---   NOCOLONS         = .FALSE.
+2022-12-19 12:00:36.423 --- /
+2022-12-19 12:00:36.423 --- &GEOGRID
+2022-12-19 12:00:36.423 ---   PARENT_ID         = 1
+2022-12-19 12:00:36.423 ---                     = 1
+2022-12-19 12:00:36.423 ---   PARENT_GRID_RATIO = 1
+2022-12-19 12:00:36.423 ---                     = 3
+2022-12-19 12:00:36.423 ---   I_PARENT_START    = 1
+2022-12-19 12:00:36.423 ---                     = 31
+2022-12-19 12:00:36.423 ---   J_PARENT_START    = 1
+2022-12-19 12:00:36.423 ---                     = 17
+2022-12-19 12:00:36.423 ---   S_WE              = 1
+2022-12-19 12:00:36.423 ---                     = 1
+2022-12-19 12:00:36.423 ---   E_WE              = 74
+2022-12-19 12:00:36.423 ---                     = 112
+2022-12-19 12:00:36.423 ---   S_SN              = 1
+2022-12-19 12:00:36.423 ---                     = 1
+2022-12-19 12:00:36.423 ---   E_SN              = 61
+2022-12-19 12:00:36.423 ---                     = 97
+2022-12-19 12:00:36.423 ---   GEOG_DATA_RES     = default
+2022-12-19 12:00:36.423 ---                     = default
+2022-12-19 12:00:36.423 ---   DX                = 30000.000000
+2022-12-19 12:00:36.423 ---   DY                = 30000.000000
+2022-12-19 12:00:36.423 ---   MAP_PROJ          = lambert
+2022-12-19 12:00:36.423 ---   POLE_LAT          = 90.000000
+2022-12-19 12:00:36.424 ---   POLE_LON          = 0.000000
+2022-12-19 12:00:36.424 ---   REF_LAT           = 34.830002
+2022-12-19 12:00:36.424 ---   REF_LON           = -81.029999
+2022-12-19 12:00:36.424 ---   REF_X             = 100000002004087734272.000000
+2022-12-19 12:00:36.424 ---   REF_Y             = 100000002004087734272.000000
+2022-12-19 12:00:36.424 ---   TRUELAT1          = 30.000000
+2022-12-19 12:00:36.424 ---   TRUELAT2          = 60.000000
+2022-12-19 12:00:36.424 ---   STAND_LON         = -98.000000
+2022-12-19 12:00:36.424 ---   GEOG_DATA_PATH    = ../../ENV/GEOG
+2022-12-19 12:00:36.424 ---   OPT_GEOGRID_TBL_PATH = ../../ENV/WPS/geogrid
+2022-12-19 12:00:36.424 --- /
+2022-12-19 12:00:36.436 --- Processing domain 1 of 2
+2022-12-19 12:00:36.436 --- INFORM: Using default interpolator sequence for HGT_M.
+2022-12-19 12:00:36.436 --- INFORM: Using default data source for HGT_M.
+2022-12-19 12:00:36.436 --- INFORM: Using default interpolator sequence for LANDUSEF.
+2022-12-19 12:00:36.436 --- INFORM: Using default data source for LANDUSEF.
+2022-12-19 12:00:36.436 --- INFORM: Using default interpolator sequence for SOILTEMP.
+2022-12-19 12:00:36.436 --- INFORM: Using default data source for SOILTEMP.
+2022-12-19 12:00:36.436 --- INFORM: Using default interpolator sequence for SOILCTOP.
+2022-12-19 12:00:36.436 --- INFORM: Using default data source for SOILCTOP.
+2022-12-19 12:00:36.436 --- INFORM: Using default interpolator sequence for SOILCBOT.
+2022-12-19 12:00:36.436 --- INFORM: Using default data source for SOILCBOT.
+2022-12-19 12:00:36.437 --- INFORM: Using default interpolator sequence for ALBEDO12M.
+2022-12-19 12:00:36.437 --- INFORM: Using default data source for ALBEDO12M.
+2022-12-19 12:00:36.437 --- INFORM: Using default interpolator sequence for GREENFRAC.
+2022-12-19 12:00:36.437 --- INFORM: Using default data source for GREENFRAC.
+2022-12-19 12:00:36.437 --- INFORM: Using default interpolator sequence for LAI12M.
+2022-12-19 12:00:36.437 --- INFORM: Using default data source for LAI12M.
+2022-12-19 12:00:36.437 --- INFORM: Using default interpolator sequence for SNOALB.
+2022-12-19 12:00:36.437 --- INFORM: Using default data source for SNOALB.
+2022-12-19 12:00:36.437 --- INFORM: Using default interpolator sequence for CON.
+2022-12-19 12:00:36.437 --- INFORM: Using default data source for CON.
+2022-12-19 12:00:36.437 --- INFORM: Using default interpolator sequence for VAR.
+2022-12-19 12:00:36.437 --- INFORM: Using default data source for VAR.
+2022-12-19 12:00:36.438 --- INFORM: Using default interpolator sequence for OA1.
+2022-12-19 12:00:36.438 --- INFORM: Using default data source for OA1.
+2022-12-19 12:00:36.438 --- INFORM: Using default interpolator sequence for OA2.
+2022-12-19 12:00:36.438 --- INFORM: Using default data source for OA2.
+2022-12-19 12:00:36.438 --- INFORM: Using default interpolator sequence for OA3.
+2022-12-19 12:00:36.438 --- INFORM: Using default data source for OA3.
+2022-12-19 12:00:36.438 --- INFORM: Using default interpolator sequence for OA4.
+2022-12-19 12:00:36.438 --- INFORM: Using default data source for OA4.
+2022-12-19 12:00:36.438 --- INFORM: Using default interpolator sequence for OL1.
+2022-12-19 12:00:36.438 --- INFORM: Using default data source for OL1.
+2022-12-19 12:00:36.438 --- INFORM: Using default interpolator sequence for OL2.
+2022-12-19 12:00:36.438 --- INFORM: Using default data source for OL2.
+2022-12-19 12:00:36.439 --- INFORM: Using default interpolator sequence for OL3.
+2022-12-19 12:00:36.439 --- INFORM: Using default data source for OL3.
+2022-12-19 12:00:36.439 --- INFORM: Using default interpolator sequence for OL4.
+2022-12-19 12:00:36.439 --- INFORM: Using default data source for OL4.
+2022-12-19 12:00:36.439 --- INFORM: Using default interpolator sequence for VAR_SSO.
+2022-12-19 12:00:36.439 --- INFORM: Using default data source for VAR_SSO.
+2022-12-19 12:00:36.439 --- INFORM: Using default interpolator sequence for LAKE_DEPTH.
+2022-12-19 12:00:36.439 --- INFORM: Using default data source for LAKE_DEPTH.
+2022-12-19 12:00:36.440 --- INFORM: Could not read 'index' file ../../ENV/GEOG/lake_depth/index for field LAKE_DEPTH
+2022-12-19 12:00:36.440 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.440 --- INFORM: Using default interpolator sequence for URB_PARAM.
+2022-12-19 12:00:36.440 --- INFORM: Using default data source for URB_PARAM.
+2022-12-19 12:00:36.440 --- INFORM: Could not read 'index' file ../../ENV/GEOG/NUDAPT44_1km/index for field URB_PARAM
+2022-12-19 12:00:36.440 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.440 --- INFORM: Using default interpolator sequence for FRC_URB2D.
+2022-12-19 12:00:36.440 --- INFORM: Using default data source for FRC_URB2D.
+2022-12-19 12:00:36.440 --- INFORM: Could not read 'index' file ../../ENV/GEOG/urbfrac_nlcd2011/index for field FRC_URB2D
+2022-12-19 12:00:36.440 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.440 --- INFORM: Using default interpolator sequence for IMPERV.
+2022-12-19 12:00:36.440 --- INFORM: Using default data source for IMPERV.
+2022-12-19 12:00:36.440 --- INFORM: Could not read 'index' file ../../ENV/GEOG/nlcd2011_imp_ll_9s/index for field IMPERV
+2022-12-19 12:00:36.440 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.440 --- INFORM: Using default interpolator sequence for CANFRA.
+2022-12-19 12:00:36.440 --- INFORM: Using default data source for CANFRA.
+2022-12-19 12:00:36.440 --- INFORM: Could not read 'index' file ../../ENV/GEOG/nlcd2011_can_ll_9s/index for field CANFRA
+2022-12-19 12:00:36.440 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.440 --- INFORM: Using default interpolator sequence for EROD.
+2022-12-19 12:00:36.440 --- INFORM: Using default data source for EROD.
+2022-12-19 12:00:36.440 --- INFORM: Could not read 'index' file ../../ENV/GEOG/erod/index for field EROD
+2022-12-19 12:00:36.440 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.440 --- INFORM: Using default interpolator sequence for CLAYFRAC.
+2022-12-19 12:00:36.440 --- INFORM: Using default data source for CLAYFRAC.
+2022-12-19 12:00:36.440 --- INFORM: Could not read 'index' file ../../ENV/GEOG/clayfrac_5m/index for field CLAYFRAC
+2022-12-19 12:00:36.440 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.440 --- INFORM: Using default interpolator sequence for SANDFRAC.
+2022-12-19 12:00:36.440 --- INFORM: Using default data source for SANDFRAC.
+2022-12-19 12:00:36.440 --- INFORM: Could not read 'index' file ../../ENV/GEOG/sandfrac_5m/index for field SANDFRAC
+2022-12-19 12:00:36.440 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.440 --- INFORM: Using default interpolator sequence for IRRIGATION.
+2022-12-19 12:00:36.440 --- INFORM: Using default data source for IRRIGATION.
+2022-12-19 12:00:36.441 --- INFORM: Could not read 'index' file ../../ENV/GEOG/irrigation/fao/index for field IRRIGATION
+2022-12-19 12:00:36.441 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.441 --- INFORM: Using default interpolator sequence for CONLS.
+2022-12-19 12:00:36.441 --- INFORM: Using default data source for CONLS.
+2022-12-19 12:00:36.441 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/conls/index for field CONLS
+2022-12-19 12:00:36.441 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.441 --- INFORM: Using default interpolator sequence for VARLS.
+2022-12-19 12:00:36.441 --- INFORM: Using default data source for VARLS.
+2022-12-19 12:00:36.441 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/varls/index for field VARLS
+2022-12-19 12:00:36.441 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.441 --- INFORM: Using default interpolator sequence for OA1LS.
+2022-12-19 12:00:36.441 --- INFORM: Using default data source for OA1LS.
+2022-12-19 12:00:36.441 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/oa1ls/index for field OA1LS
+2022-12-19 12:00:36.441 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.441 --- INFORM: Using default interpolator sequence for OA2LS.
+2022-12-19 12:00:36.441 --- INFORM: Using default data source for OA2LS.
+2022-12-19 12:00:36.441 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/oa2ls/index for field OA2LS
+2022-12-19 12:00:36.441 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.441 --- INFORM: Using default interpolator sequence for OA3LS.
+2022-12-19 12:00:36.441 --- INFORM: Using default data source for OA3LS.
+2022-12-19 12:00:36.441 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/oa3ls/index for field OA3LS
+2022-12-19 12:00:36.441 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.441 --- INFORM: Using default interpolator sequence for OA4LS.
+2022-12-19 12:00:36.441 --- INFORM: Using default data source for OA4LS.
+2022-12-19 12:00:36.441 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/oa4ls/index for field OA4LS
+2022-12-19 12:00:36.441 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.441 --- INFORM: Using default interpolator sequence for OL1LS.
+2022-12-19 12:00:36.441 --- INFORM: Using default data source for OL1LS.
+2022-12-19 12:00:36.441 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/ol1ls/index for field OL1LS
+2022-12-19 12:00:36.441 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.441 --- INFORM: Using default interpolator sequence for OL2LS.
+2022-12-19 12:00:36.441 --- INFORM: Using default data source for OL2LS.
+2022-12-19 12:00:36.441 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/ol2ls/index for field OL2LS
+2022-12-19 12:00:36.441 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.441 --- INFORM: Using default interpolator sequence for OL3LS.
+2022-12-19 12:00:36.442 --- INFORM: Using default data source for OL3LS.
+2022-12-19 12:00:36.442 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/ol3ls/index for field OL3LS
+2022-12-19 12:00:36.442 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.442 --- INFORM: Using default interpolator sequence for OL4LS.
+2022-12-19 12:00:36.442 --- INFORM: Using default data source for OL4LS.
+2022-12-19 12:00:36.442 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/ol4ls/index for field OL4LS
+2022-12-19 12:00:36.442 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.442 --- INFORM: Using default interpolator sequence for CONSS.
+2022-12-19 12:00:36.442 --- INFORM: Using default data source for CONSS.
+2022-12-19 12:00:36.442 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/conss/index for field CONSS
+2022-12-19 12:00:36.442 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.442 --- INFORM: Using default interpolator sequence for VARSS.
+2022-12-19 12:00:36.442 --- INFORM: Using default data source for VARSS.
+2022-12-19 12:00:36.442 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/varss/index for field VARSS
+2022-12-19 12:00:36.442 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.442 --- INFORM: Using default interpolator sequence for OA1SS.
+2022-12-19 12:00:36.442 --- INFORM: Using default data source for OA1SS.
+2022-12-19 12:00:36.442 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/oa1ss/index for field OA1SS
+2022-12-19 12:00:36.442 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.442 --- INFORM: Using default interpolator sequence for OA2SS.
+2022-12-19 12:00:36.442 --- INFORM: Using default data source for OA2SS.
+2022-12-19 12:00:36.442 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/oa2ss/index for field OA2SS
+2022-12-19 12:00:36.442 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.442 --- INFORM: Using default interpolator sequence for OA3SS.
+2022-12-19 12:00:36.442 --- INFORM: Using default data source for OA3SS.
+2022-12-19 12:00:36.442 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/oa3ss/index for field OA3SS
+2022-12-19 12:00:36.442 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.442 --- INFORM: Using default interpolator sequence for OA4SS.
+2022-12-19 12:00:36.442 --- INFORM: Using default data source for OA4SS.
+2022-12-19 12:00:36.442 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/oa4ss/index for field OA4SS
+2022-12-19 12:00:36.442 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.442 --- INFORM: Using default interpolator sequence for OL1SS.
+2022-12-19 12:00:36.442 --- INFORM: Using default data source for OL1SS.
+2022-12-19 12:00:36.442 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/ol1ss/index for field OL1SS
+2022-12-19 12:00:36.442 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.443 --- INFORM: Using default interpolator sequence for OL2SS.
+2022-12-19 12:00:36.443 --- INFORM: Using default data source for OL2SS.
+2022-12-19 12:00:36.443 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/ol2ss/index for field OL2SS
+2022-12-19 12:00:36.443 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.443 --- INFORM: Using default interpolator sequence for OL3SS.
+2022-12-19 12:00:36.443 --- INFORM: Using default data source for OL3SS.
+2022-12-19 12:00:36.443 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/ol3ss/index for field OL3SS
+2022-12-19 12:00:36.443 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.443 --- INFORM: Using default interpolator sequence for OL4SS.
+2022-12-19 12:00:36.443 --- INFORM: Using default data source for OL4SS.
+2022-12-19 12:00:36.443 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/ol4ss/index for field OL4SS
+2022-12-19 12:00:36.443 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.443 --- INFORM: Using default interpolator sequence for BATHYMETRY.
+2022-12-19 12:00:36.443 --- INFORM: Using default data source for BATHYMETRY.
+2022-12-19 12:00:36.443 --- INFORM: Could not read 'index' file ../../ENV/GEOG/topobath_30s/index for field BATHYMETRY
+2022-12-19 12:00:36.443 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:36.559 --- Processing field 1 of 23 (LANDUSEF)
+2022-12-19 12:00:39.136 --- Processing field 2 of 23 (LU_INDEX)
+2022-12-19 12:00:39.138 --- Processing field 3 of 23 (HGT_M)
+2022-12-19 12:00:41.731 --- Processing field 4 of 23 (SOILTEMP)
+2022-12-19 12:00:41.748 --- Processing field 5 of 23 (SOILCTOP)
+2022-12-19 12:00:44.214 --- Processing field 6 of 23 (SCT_DOM)
+2022-12-19 12:00:44.215 --- Processing field 7 of 23 (SOILCBOT)
+2022-12-19 12:00:46.711 --- Processing field 8 of 23 (SCB_DOM)
+2022-12-19 12:00:46.712 --- Processing field 9 of 23 (ALBEDO12M)
+2022-12-19 12:00:47.204 --- Processing field 10 of 23 (GREENFRAC)
+2022-12-19 12:00:51.930 --- Processing field 11 of 23 (LAI12M)
+2022-12-19 12:00:51.953 --- Processing field 12 of 23 (SNOALB)
+2022-12-19 12:00:51.985 --- Processing field 13 of 23 (CON)
+2022-12-19 12:00:52.015 --- Processing field 14 of 23 (VAR)
+2022-12-19 12:00:52.042 --- Processing field 15 of 23 (OA1)
+2022-12-19 12:00:52.069 --- Processing field 16 of 23 (OA2)
+2022-12-19 12:00:52.097 --- Processing field 17 of 23 (OA3)
+2022-12-19 12:00:52.124 --- Processing field 18 of 23 (OA4)
+2022-12-19 12:00:52.151 --- Processing field 19 of 23 (OL1)
+2022-12-19 12:00:52.174 --- Processing field 20 of 23 (OL2)
+2022-12-19 12:00:52.198 --- Processing field 21 of 23 (OL3)
+2022-12-19 12:00:52.222 --- Processing field 22 of 23 (OL4)
+2022-12-19 12:00:52.245 --- Processing field 23 of 23 (VAR_SSO)
+2022-12-19 12:00:52.256 --- Optional fields not processed by geogrid:
+2022-12-19 12:00:52.256 ---     LAKE_DEPTH (priority=1, resolution='default', path='../../ENV/GEOG/lake_depth/')
+2022-12-19 12:00:52.256 ---     URB_PARAM (priority=1, resolution='default', path='../../ENV/GEOG/NUDAPT44_1km/')
+2022-12-19 12:00:52.257 ---     FRC_URB2D (priority=1, resolution='default', path='../../ENV/GEOG/urbfrac_nlcd2011/')
+2022-12-19 12:00:52.257 ---     IMPERV (priority=1, resolution='default', path='../../ENV/GEOG/nlcd2011_imp_ll_9s/')
+2022-12-19 12:00:52.257 ---     CANFRA (priority=1, resolution='default', path='../../ENV/GEOG/nlcd2011_can_ll_9s/')
+2022-12-19 12:00:52.258 ---     EROD (priority=1, resolution='default', path='../../ENV/GEOG/erod/')
+2022-12-19 12:00:52.258 ---     CLAYFRAC (priority=1, resolution='default', path='../../ENV/GEOG/clayfrac_5m/')
+2022-12-19 12:00:52.259 ---     SANDFRAC (priority=1, resolution='default', path='../../ENV/GEOG/sandfrac_5m/')
+2022-12-19 12:00:52.260 ---     IRRIGATION (priority=1, resolution='default', path='../../ENV/GEOG/irrigation/fao/')
+2022-12-19 12:00:52.260 ---     CONLS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/conls/')
+2022-12-19 12:00:52.261 ---     VARLS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/varls/')
+2022-12-19 12:00:52.261 ---     OA1LS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/oa1ls/')
+2022-12-19 12:00:52.262 ---     OA2LS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/oa2ls/')
+2022-12-19 12:00:52.262 ---     OA3LS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/oa3ls/')
+2022-12-19 12:00:52.263 ---     OA4LS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/oa4ls/')
+2022-12-19 12:00:52.263 ---     OL1LS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/ol1ls/')
+2022-12-19 12:00:52.263 ---     OL2LS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/ol2ls/')
+2022-12-19 12:00:52.264 ---     OL3LS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/ol3ls/')
+2022-12-19 12:00:52.264 ---     OL4LS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/ol4ls/')
+2022-12-19 12:00:52.265 ---     CONSS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/conss/')
+2022-12-19 12:00:52.265 ---     VARSS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/varss/')
+2022-12-19 12:00:52.266 ---     OA1SS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/oa1ss/')
+2022-12-19 12:00:52.266 ---     OA2SS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/oa2ss/')
+2022-12-19 12:00:52.267 ---     OA3SS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/oa3ss/')
+2022-12-19 12:00:52.267 ---     OA4SS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/oa4ss/')
+2022-12-19 12:00:52.267 ---     OL1SS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/ol1ss/')
+2022-12-19 12:00:52.268 ---     OL2SS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/ol2ss/')
+2022-12-19 12:00:52.268 ---     OL3SS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/ol3ss/')
+2022-12-19 12:00:52.269 ---     OL4SS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/ol4ss/')
+2022-12-19 12:00:52.269 ---     BATHYMETRY (priority=1, resolution='default', path='../../ENV/GEOG/topobath_30s/')
+2022-12-19 12:00:52.270 --- Processing domain 2 of 2
+2022-12-19 12:00:52.270 --- INFORM: Using default interpolator sequence for HGT_M.
+2022-12-19 12:00:52.270 --- INFORM: Using default data source for HGT_M.
+2022-12-19 12:00:52.270 --- INFORM: Using default interpolator sequence for LANDUSEF.
+2022-12-19 12:00:52.270 --- INFORM: Using default data source for LANDUSEF.
+2022-12-19 12:00:52.270 --- INFORM: Using default interpolator sequence for SOILTEMP.
+2022-12-19 12:00:52.270 --- INFORM: Using default data source for SOILTEMP.
+2022-12-19 12:00:52.271 --- INFORM: Using default interpolator sequence for SOILCTOP.
+2022-12-19 12:00:52.271 --- INFORM: Using default data source for SOILCTOP.
+2022-12-19 12:00:52.271 --- INFORM: Using default interpolator sequence for SOILCBOT.
+2022-12-19 12:00:52.271 --- INFORM: Using default data source for SOILCBOT.
+2022-12-19 12:00:52.271 --- INFORM: Using default interpolator sequence for ALBEDO12M.
+2022-12-19 12:00:52.271 --- INFORM: Using default data source for ALBEDO12M.
+2022-12-19 12:00:52.271 --- INFORM: Using default interpolator sequence for GREENFRAC.
+2022-12-19 12:00:52.271 --- INFORM: Using default data source for GREENFRAC.
+2022-12-19 12:00:52.272 --- INFORM: Using default interpolator sequence for LAI12M.
+2022-12-19 12:00:52.272 --- INFORM: Using default data source for LAI12M.
+2022-12-19 12:00:52.272 --- INFORM: Using default interpolator sequence for SNOALB.
+2022-12-19 12:00:52.272 --- INFORM: Using default data source for SNOALB.
+2022-12-19 12:00:52.273 --- INFORM: Using default interpolator sequence for CON.
+2022-12-19 12:00:52.273 --- INFORM: Using default data source for CON.
+2022-12-19 12:00:52.273 --- INFORM: Using default interpolator sequence for VAR.
+2022-12-19 12:00:52.273 --- INFORM: Using default data source for VAR.
+2022-12-19 12:00:52.273 --- INFORM: Using default interpolator sequence for OA1.
+2022-12-19 12:00:52.273 --- INFORM: Using default data source for OA1.
+2022-12-19 12:00:52.274 --- INFORM: Using default interpolator sequence for OA2.
+2022-12-19 12:00:52.274 --- INFORM: Using default data source for OA2.
+2022-12-19 12:00:52.274 --- INFORM: Using default interpolator sequence for OA3.
+2022-12-19 12:00:52.274 --- INFORM: Using default data source for OA3.
+2022-12-19 12:00:52.274 --- INFORM: Using default interpolator sequence for OA4.
+2022-12-19 12:00:52.274 --- INFORM: Using default data source for OA4.
+2022-12-19 12:00:52.274 --- INFORM: Using default interpolator sequence for OL1.
+2022-12-19 12:00:52.274 --- INFORM: Using default data source for OL1.
+2022-12-19 12:00:52.275 --- INFORM: Using default interpolator sequence for OL2.
+2022-12-19 12:00:52.275 --- INFORM: Using default data source for OL2.
+2022-12-19 12:00:52.275 --- INFORM: Using default interpolator sequence for OL3.
+2022-12-19 12:00:52.275 --- INFORM: Using default data source for OL3.
+2022-12-19 12:00:52.275 --- INFORM: Using default interpolator sequence for OL4.
+2022-12-19 12:00:52.275 --- INFORM: Using default data source for OL4.
+2022-12-19 12:00:52.275 --- INFORM: Using default interpolator sequence for VAR_SSO.
+2022-12-19 12:00:52.275 --- INFORM: Using default data source for VAR_SSO.
+2022-12-19 12:00:52.276 --- INFORM: Using default interpolator sequence for LAKE_DEPTH.
+2022-12-19 12:00:52.276 --- INFORM: Using default data source for LAKE_DEPTH.
+2022-12-19 12:00:52.276 --- INFORM: Could not read 'index' file ../../ENV/GEOG/lake_depth/index for field LAKE_DEPTH
+2022-12-19 12:00:52.276 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.276 --- INFORM: Using default interpolator sequence for URB_PARAM.
+2022-12-19 12:00:52.276 --- INFORM: Using default data source for URB_PARAM.
+2022-12-19 12:00:52.276 --- INFORM: Could not read 'index' file ../../ENV/GEOG/NUDAPT44_1km/index for field URB_PARAM
+2022-12-19 12:00:52.276 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.276 --- INFORM: Using default interpolator sequence for FRC_URB2D.
+2022-12-19 12:00:52.276 --- INFORM: Using default data source for FRC_URB2D.
+2022-12-19 12:00:52.276 --- INFORM: Could not read 'index' file ../../ENV/GEOG/urbfrac_nlcd2011/index for field FRC_URB2D
+2022-12-19 12:00:52.276 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.276 --- INFORM: Using default interpolator sequence for IMPERV.
+2022-12-19 12:00:52.276 --- INFORM: Using default data source for IMPERV.
+2022-12-19 12:00:52.276 --- INFORM: Could not read 'index' file ../../ENV/GEOG/nlcd2011_imp_ll_9s/index for field IMPERV
+2022-12-19 12:00:52.276 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.276 --- INFORM: Using default interpolator sequence for CANFRA.
+2022-12-19 12:00:52.276 --- INFORM: Using default data source for CANFRA.
+2022-12-19 12:00:52.276 --- INFORM: Could not read 'index' file ../../ENV/GEOG/nlcd2011_can_ll_9s/index for field CANFRA
+2022-12-19 12:00:52.276 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.276 --- INFORM: Using default interpolator sequence for EROD.
+2022-12-19 12:00:52.276 --- INFORM: Using default data source for EROD.
+2022-12-19 12:00:52.276 --- INFORM: Could not read 'index' file ../../ENV/GEOG/erod/index for field EROD
+2022-12-19 12:00:52.276 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.276 --- INFORM: Using default interpolator sequence for CLAYFRAC.
+2022-12-19 12:00:52.276 --- INFORM: Using default data source for CLAYFRAC.
+2022-12-19 12:00:52.277 --- INFORM: Could not read 'index' file ../../ENV/GEOG/clayfrac_5m/index for field CLAYFRAC
+2022-12-19 12:00:52.277 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.277 --- INFORM: Using default interpolator sequence for SANDFRAC.
+2022-12-19 12:00:52.277 --- INFORM: Using default data source for SANDFRAC.
+2022-12-19 12:00:52.277 --- INFORM: Could not read 'index' file ../../ENV/GEOG/sandfrac_5m/index for field SANDFRAC
+2022-12-19 12:00:52.277 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.277 --- INFORM: Using default interpolator sequence for IRRIGATION.
+2022-12-19 12:00:52.277 --- INFORM: Using default data source for IRRIGATION.
+2022-12-19 12:00:52.277 --- INFORM: Could not read 'index' file ../../ENV/GEOG/irrigation/fao/index for field IRRIGATION
+2022-12-19 12:00:52.277 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.277 --- INFORM: Using default interpolator sequence for CONLS.
+2022-12-19 12:00:52.277 --- INFORM: Using default data source for CONLS.
+2022-12-19 12:00:52.277 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/conls/index for field CONLS
+2022-12-19 12:00:52.277 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.277 --- INFORM: Using default interpolator sequence for VARLS.
+2022-12-19 12:00:52.277 --- INFORM: Using default data source for VARLS.
+2022-12-19 12:00:52.277 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/varls/index for field VARLS
+2022-12-19 12:00:52.277 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.277 --- INFORM: Using default interpolator sequence for OA1LS.
+2022-12-19 12:00:52.277 --- INFORM: Using default data source for OA1LS.
+2022-12-19 12:00:52.277 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/oa1ls/index for field OA1LS
+2022-12-19 12:00:52.277 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.277 --- INFORM: Using default interpolator sequence for OA2LS.
+2022-12-19 12:00:52.277 --- INFORM: Using default data source for OA2LS.
+2022-12-19 12:00:52.277 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/oa2ls/index for field OA2LS
+2022-12-19 12:00:52.278 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.278 --- INFORM: Using default interpolator sequence for OA3LS.
+2022-12-19 12:00:52.278 --- INFORM: Using default data source for OA3LS.
+2022-12-19 12:00:52.278 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/oa3ls/index for field OA3LS
+2022-12-19 12:00:52.278 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.278 --- INFORM: Using default interpolator sequence for OA4LS.
+2022-12-19 12:00:52.278 --- INFORM: Using default data source for OA4LS.
+2022-12-19 12:00:52.278 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/oa4ls/index for field OA4LS
+2022-12-19 12:00:52.278 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.278 --- INFORM: Using default interpolator sequence for OL1LS.
+2022-12-19 12:00:52.278 --- INFORM: Using default data source for OL1LS.
+2022-12-19 12:00:52.278 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/ol1ls/index for field OL1LS
+2022-12-19 12:00:52.278 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.278 --- INFORM: Using default interpolator sequence for OL2LS.
+2022-12-19 12:00:52.278 --- INFORM: Using default data source for OL2LS.
+2022-12-19 12:00:52.278 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/ol2ls/index for field OL2LS
+2022-12-19 12:00:52.278 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.278 --- INFORM: Using default interpolator sequence for OL3LS.
+2022-12-19 12:00:52.278 --- INFORM: Using default data source for OL3LS.
+2022-12-19 12:00:52.278 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/ol3ls/index for field OL3LS
+2022-12-19 12:00:52.278 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.278 --- INFORM: Using default interpolator sequence for OL4LS.
+2022-12-19 12:00:52.278 --- INFORM: Using default data source for OL4LS.
+2022-12-19 12:00:52.278 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/ol4ls/index for field OL4LS
+2022-12-19 12:00:52.278 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.278 --- INFORM: Using default interpolator sequence for CONSS.
+2022-12-19 12:00:52.278 --- INFORM: Using default data source for CONSS.
+2022-12-19 12:00:52.279 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/conss/index for field CONSS
+2022-12-19 12:00:52.279 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.279 --- INFORM: Using default interpolator sequence for VARSS.
+2022-12-19 12:00:52.279 --- INFORM: Using default data source for VARSS.
+2022-12-19 12:00:52.279 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/varss/index for field VARSS
+2022-12-19 12:00:52.279 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.279 --- INFORM: Using default interpolator sequence for OA1SS.
+2022-12-19 12:00:52.279 --- INFORM: Using default data source for OA1SS.
+2022-12-19 12:00:52.279 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/oa1ss/index for field OA1SS
+2022-12-19 12:00:52.279 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.279 --- INFORM: Using default interpolator sequence for OA2SS.
+2022-12-19 12:00:52.279 --- INFORM: Using default data source for OA2SS.
+2022-12-19 12:00:52.279 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/oa2ss/index for field OA2SS
+2022-12-19 12:00:52.279 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.279 --- INFORM: Using default interpolator sequence for OA3SS.
+2022-12-19 12:00:52.279 --- INFORM: Using default data source for OA3SS.
+2022-12-19 12:00:52.279 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/oa3ss/index for field OA3SS
+2022-12-19 12:00:52.279 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.279 --- INFORM: Using default interpolator sequence for OA4SS.
+2022-12-19 12:00:52.279 --- INFORM: Using default data source for OA4SS.
+2022-12-19 12:00:52.279 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/oa4ss/index for field OA4SS
+2022-12-19 12:00:52.279 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.279 --- INFORM: Using default interpolator sequence for OL1SS.
+2022-12-19 12:00:52.279 --- INFORM: Using default data source for OL1SS.
+2022-12-19 12:00:52.279 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/ol1ss/index for field OL1SS
+2022-12-19 12:00:52.279 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.279 --- INFORM: Using default interpolator sequence for OL2SS.
+2022-12-19 12:00:52.280 --- INFORM: Using default data source for OL2SS.
+2022-12-19 12:00:52.280 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/ol2ss/index for field OL2SS
+2022-12-19 12:00:52.280 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.280 --- INFORM: Using default interpolator sequence for OL3SS.
+2022-12-19 12:00:52.280 --- INFORM: Using default data source for OL3SS.
+2022-12-19 12:00:52.280 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/ol3ss/index for field OL3SS
+2022-12-19 12:00:52.280 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.280 --- INFORM: Using default interpolator sequence for OL4SS.
+2022-12-19 12:00:52.280 --- INFORM: Using default data source for OL4SS.
+2022-12-19 12:00:52.280 --- INFORM: Could not read 'index' file ../../ENV/GEOG/orogwd3_10m/ol4ss/index for field OL4SS
+2022-12-19 12:00:52.280 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.280 --- INFORM: Using default interpolator sequence for BATHYMETRY.
+2022-12-19 12:00:52.280 --- INFORM: Using default data source for BATHYMETRY.
+2022-12-19 12:00:52.280 --- INFORM: Could not read 'index' file ../../ENV/GEOG/topobath_30s/index for field BATHYMETRY
+2022-12-19 12:00:52.280 --- INFORM: This field is optional and will not be processed.
+2022-12-19 12:00:52.391 --- Processing field 1 of 23 (LANDUSEF)
+2022-12-19 12:00:53.659 --- Processing field 2 of 23 (LU_INDEX)
+2022-12-19 12:00:53.664 --- Processing field 3 of 23 (HGT_M)
+2022-12-19 12:00:54.953 --- Processing field 4 of 23 (SOILTEMP)
+2022-12-19 12:00:54.961 --- Processing field 5 of 23 (SOILCTOP)
+2022-12-19 12:00:56.243 --- Processing field 6 of 23 (SCT_DOM)
+2022-12-19 12:00:56.244 --- Processing field 7 of 23 (SOILCBOT)
+2022-12-19 12:00:57.482 --- Processing field 8 of 23 (SCB_DOM)
+2022-12-19 12:00:57.484 --- Processing field 9 of 23 (ALBEDO12M)
+2022-12-19 12:00:57.731 --- Processing field 10 of 23 (GREENFRAC)
+2022-12-19 12:00:59.732 --- Processing field 11 of 23 (LAI12M)
+2022-12-19 12:00:59.759 --- Processing field 12 of 23 (SNOALB)
+2022-12-19 12:00:59.780 --- Processing field 13 of 23 (CON)
+2022-12-19 12:00:59.806 --- Processing field 14 of 23 (VAR)
+2022-12-19 12:00:59.833 --- Processing field 15 of 23 (OA1)
+2022-12-19 12:00:59.862 --- Processing field 16 of 23 (OA2)
+2022-12-19 12:00:59.917 --- Processing field 17 of 23 (OA3)
+2022-12-19 12:00:59.974 --- Processing field 18 of 23 (OA4)
+2022-12-19 12:01:00.014 --- Processing field 19 of 23 (OL1)
+2022-12-19 12:01:00.047 --- Processing field 20 of 23 (OL2)
+2022-12-19 12:01:00.080 --- Processing field 21 of 23 (OL3)
+2022-12-19 12:01:00.111 --- Processing field 22 of 23 (OL4)
+2022-12-19 12:01:00.146 --- Processing field 23 of 23 (VAR_SSO)
+2022-12-19 12:01:00.167 --- Optional fields not processed by geogrid:
+2022-12-19 12:01:00.167 ---     LAKE_DEPTH (priority=1, resolution='default', path='../../ENV/GEOG/lake_depth/')
+2022-12-19 12:01:00.167 ---     URB_PARAM (priority=1, resolution='default', path='../../ENV/GEOG/NUDAPT44_1km/')
+2022-12-19 12:01:00.167 ---     FRC_URB2D (priority=1, resolution='default', path='../../ENV/GEOG/urbfrac_nlcd2011/')
+2022-12-19 12:01:00.167 ---     IMPERV (priority=1, resolution='default', path='../../ENV/GEOG/nlcd2011_imp_ll_9s/')
+2022-12-19 12:01:00.167 ---     CANFRA (priority=1, resolution='default', path='../../ENV/GEOG/nlcd2011_can_ll_9s/')
+2022-12-19 12:01:00.167 ---     EROD (priority=1, resolution='default', path='../../ENV/GEOG/erod/')
+2022-12-19 12:01:00.167 ---     CLAYFRAC (priority=1, resolution='default', path='../../ENV/GEOG/clayfrac_5m/')
+2022-12-19 12:01:00.167 ---     SANDFRAC (priority=1, resolution='default', path='../../ENV/GEOG/sandfrac_5m/')
+2022-12-19 12:01:00.168 ---     IRRIGATION (priority=1, resolution='default', path='../../ENV/GEOG/irrigation/fao/')
+2022-12-19 12:01:00.169 ---     CONLS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/conls/')
+2022-12-19 12:01:00.169 ---     VARLS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/varls/')
+2022-12-19 12:01:00.170 ---     OA1LS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/oa1ls/')
+2022-12-19 12:01:00.170 ---     OA2LS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/oa2ls/')
+2022-12-19 12:01:00.170 ---     OA3LS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/oa3ls/')
+2022-12-19 12:01:00.171 ---     OA4LS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/oa4ls/')
+2022-12-19 12:01:00.171 ---     OL1LS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/ol1ls/')
+2022-12-19 12:01:00.171 ---     OL2LS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/ol2ls/')
+2022-12-19 12:01:00.171 ---     OL3LS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/ol3ls/')
+2022-12-19 12:01:00.172 ---     OL4LS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/ol4ls/')
+2022-12-19 12:01:00.172 ---     CONSS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/conss/')
+2022-12-19 12:01:00.172 ---     VARSS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/varss/')
+2022-12-19 12:01:00.173 ---     OA1SS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/oa1ss/')
+2022-12-19 12:01:00.173 ---     OA2SS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/oa2ss/')
+2022-12-19 12:01:00.173 ---     OA3SS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/oa3ss/')
+2022-12-19 12:01:00.174 ---     OA4SS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/oa4ss/')
+2022-12-19 12:01:00.174 ---     OL1SS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/ol1ss/')
+2022-12-19 12:01:00.175 ---     OL2SS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/ol2ss/')
+2022-12-19 12:01:00.175 ---     OL3SS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/ol3ss/')
+2022-12-19 12:01:00.175 ---     OL4SS (priority=1, resolution='default', path='../../ENV/GEOG/orogwd3_10m/ol4ss/')
+2022-12-19 12:01:00.176 ---     BATHYMETRY (priority=1, resolution='default', path='../../ENV/GEOG/topobath_30s/')
+2022-12-19 12:01:00.176 ---  *** Successful completion of program geogrid.exe ***
