@@ -1,20 +1,20 @@
 &time_control
  run_days = 0,
- run_hours = $RUN_HOURS,
+ run_hours = 12,
  run_minutes = 0,
  run_seconds = 0,
- start_year = $START_YEAR,$START_YEAR,$START_YEAR,
- start_month = $START_MONTH,$START_MONTH,$START_MONTH,
- start_day = $START_DAY,$START_DAY,$START_DAY,
- start_hour = $START_HOUR,$START_HOUR,$START_HOUR,
+ start_year = 2022, 2022, 2022,
+ start_month = 1, 1, 1,
+ start_day = 20, 20, 20,
+ start_hour = 0, 0, 0,
  start_minute = 0, 0, 0,
  start_second = 0, 0, 0,
- end_year = $END_YEAR,$END_YEAR,$END_YEAR,
- end_month = $END_MONTH,$END_MONTH,$END_MONTH,
- end_day = $END_DAY,$END_DAY,$END_DAY,
- end_hour = $END_HOUR,$END_HOUR,$END_HOUR,
- end_minute = 0, 0, 0,
- end_second = 0, 0, 0,
+ end_year = 2022, 2022, 2022,
+ end_month = 1, 1, 1,
+ end_day = 20, 20, 20,
+ end_hour = 12, 12, 12,
+ end_minute = 00, 00, 00,
+ end_second = 00, 00, 00,
  interval_seconds = 10800,
  input_from_file = .true., .true., .true.,
  history_interval = 99999, 99999, 99999,
@@ -30,7 +30,7 @@
  auxinput4_inname = "wrflowinp_d<domain>",
  auxinput4_interval = 18000, 18000, 18000,
  auxhist23_interval = 60, 60, 60,
- iofields_filename = "wrf_var.txt", "wrf_var.txt", "wrf_var.txt",
+ iofields_filename = "wrf_var.txt", "wrf_var.txt", "wrf_var.txt"
  frames_per_auxhist23 = 1, 1, 1,
  io_form_auxhist23 = 2,
  
@@ -47,7 +47,7 @@
     gridpt_stddev_sppt=0.5, 0.5, 0.5,
     stddev_cutoff_sppt=2.0, 2.0, 2.0,
     nens=1
-    iseed_sppt=$ENSEMBLE_SEED
+    iseed_sppt=53
 /
 
 &domains
@@ -63,12 +63,12 @@
  target_cfl = 1, 1, 1,
  target_hcfl = 0.84, 0.84, 0.84,
  max_step_increase_pct = 5, 51, 51,
- starting_time_step = 81, 27, 9,
- max_time_step = 99, 33, 11,
+ starting_time_step = 81 27 9,
+ max_time_step = 81 27 9,
  min_time_step = 36, 12, 4,
  adaptation_domain = 3
  p_top_requested = 5000,
- num_metgrid_levels = $METGRID_LEVELS,
+ num_metgrid_levels = 34,
  num_metgrid_soil_levels = 4,
  dx = 22500, 7500, 2500,
  dy = 22500, 7500, 2500,
