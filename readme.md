@@ -3,7 +3,7 @@
 !OK * fare avgvar solo se >= 24 ore
 !OK * modificare percorsi da cui leggere le obs
 !OK * rendere possibile saltare la parte WPS
-* assicurarsi di linkare da obs anche le wunder
+!OK * assicurarsi di linkare da obs anche le wunder
 * implementare opzione AssimilateOnlyInnerDomain
 
 * confrontare i template namelist attuali con quelli di LEXIS 
