@@ -12,3 +12,5 @@ GfsDir: /data/unsafe/gfs
 BeDir: ./be
 RunWPS: true
 EnsembleMembers: 10
+AssimilateOnlyInnerDomain: false
+AssimilateFirstCycle: true

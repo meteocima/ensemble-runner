@@ -23,7 +23,8 @@ var Values = struct {
 	BeDir                     string `yaml:"BeDir"`
 	RunWPS                    bool   `yaml:"RunWPS"`
 	EnsembleMembers           int    `yaml:"EnsembleMembers"`
-	AssimilateOnlyInnerDomain int    `yaml:"AssimilateOnlyInnerDomain"`
+	AssimilateOnlyInnerDomain bool   `yaml:"AssimilateOnlyInnerDomain"`
+	AssimilateFirstCycle      bool   `yaml:"AssimilateFirstCycle"`
 }{}
 
 func Initialize() {
