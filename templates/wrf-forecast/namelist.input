@@ -40,16 +40,6 @@
  write_input = .false.,
 /
 
-&stoch
-    sppt = 1, 1, 1,
-    lengthscale_sppt = 135000, 45000, 15000,
-    timescale_sppt = 32400, 10800, 3600,
-    gridpt_stddev_sppt=0.5, 0.5, 0.5,
-    stddev_cutoff_sppt=2.0, 2.0, 2.0,
-    nens=1
-    iseed_sppt=$ENSEMBLE_SEED
-/
-
 &domains
  time_step = 90,
  time_step_fract_num = 0,
