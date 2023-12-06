@@ -110,7 +110,9 @@ func (s *Simulation) Run() {
 
 	if conf.Values.AssimilateFirstCycle {
 		// assimilate D-6 (first cycle) for all domains
-		server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da01"), join(da18dir[1], "wrfbdy_d01"))
+		if !conf.Values.AssimilateOnlyInnerDomain {
+			server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da01"), join(da18dir[1], "wrfbdy_d01"))
+		}
 		for domain := firstDomain; domain <= 3; domain++ {
 			// input condition are copied from wps
 			server.CopyFile(s.Workdir, join(wpsOutputsDir, fmt.Sprintf("wrfinput_d%02d", domain)), join(da18dir[domain], "fg"))
@@ -120,6 +122,8 @@ func (s *Simulation) Run() {
 		// to run WRF from D-6 to D-3, input and boundary conditions are copied from da dirs of first cycle.
 		if !conf.Values.AssimilateOnlyInnerDomain {
 			server.CopyFile(s.Workdir, join(da18dir[1], "wrfbdy_d01"), join(wrf18dir, "wrfbdy_d01"))
+		} else {
+			server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da01"), join(wrf18dir, "wrfbdy_d01"))
 		}
 		for domain := firstDomain; domain <= 3; domain++ {
 			server.CopyFile(s.Workdir, join(da18dir[domain], "wrfvar_output"), join(wrf18dir, fmt.Sprintf("wrfinput_d%02d", domain)))
