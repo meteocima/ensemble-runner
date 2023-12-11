@@ -40,39 +40,50 @@ func ExecRetry(cmd, cwd, collectStdErr, logsToSave string) {
 		g = glob.MustCompile(logsToSave)
 	}
 
+	logfn := log.Warning
+	retryS := ""
 	for i := 0; i < 5; i++ {
+
+		if i == 4 {
+			logfn = log.Error
+			retryS = ""
+		} else {
+			retryS = fmt.Sprintf(" Retry n.%d in 1 minute...", i+1)
+		}
 		err = tryExec(cmd, cwd, collectStdErr)
 		if err == nil {
 			break
 		}
-		log.Warning("Command `%s` has failed: %s. Retry n.%d in 1 minute", cmd, err.Error(), i+1)
+		logfn("Command `%s` has failed: %s.%s\n", cmd, err.Error(), retryS)
 
 		if logsToSave != "" {
-			files, err := os.ReadDir(cwd)
+			var files []fs.DirEntry
+			files, err = os.ReadDir(cwd)
 			if err != nil {
-				log.Warning("Cannot save logs for previous attempt: %s", err.Error())
+				logfn("Cannot save logs for previous attempt: %s", err.Error())
 			} else {
 				for _, f := range files {
 					if !g.Match(f.Name()) {
 						continue
 					}
-					input, err := os.ReadFile(pt.Join(cwd, f.Name()))
+					var input []byte
+					input, err = os.ReadFile(pt.Join(cwd, f.Name()))
 					if err != nil {
-						log.Warning("Cannot read original log file %s: %s", f.Name(), err.Error())
+						logfn("Cannot read original log file %s: %s", f.Name(), err.Error())
 						continue
 					}
 
 					destinationFile := fmt.Sprintf("%s.%d", f.Name(), i)
 					err = os.WriteFile(pt.Join(cwd, destinationFile), input, 0644)
 					if err != nil {
-						log.Warning("Cannot save log file %s to %s: %s", f.Name(), destinationFile, err.Error())
+						logfn("Cannot save log file %s to %s: %s", f.Name(), destinationFile, err.Error())
 					}
 
 				}
 			}
 		}
 
-		time.Sleep(1 * time.Minute)
+		time.Sleep(1 * time.Second)
 	}
 	errors.Check(err)
 }

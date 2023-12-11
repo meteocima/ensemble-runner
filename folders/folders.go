@@ -105,6 +105,10 @@ func DAProcWorkdir(workdir string, startTime time.Time, domain int) string {
 	return filepath.Join(workdir, fmt.Sprintf("da%s_d%02d", startTime.Format("15"), domain))
 }
 
-func WrfProcWorkdir(workdir string, startTime time.Time) string {
+func WrfControlProcWorkdir(workdir string, startTime time.Time) string {
 	return filepath.Join(workdir, "wrf"+startTime.Format("15"))
+}
+
+func WrfEnsembleProcWorkdir(workdir string, startTime time.Time, ensnum int) string {
+	return filepath.Join(workdir, fmt.Sprintf("wrf%s.ens%d", startTime.Format("15"), ensnum))
 }

@@ -2,8 +2,10 @@ package simulation
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/meteocima/ensemble-runner/conf"
@@ -26,9 +28,9 @@ var join = filepath.Join
 func (s *Simulation) Run() {
 	// define directories vars for the workdir of various steps of the simulation:
 	wpsdir := folders.WPSProcWorkdir(s.Workdir)
-	wrf18dir := folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour))
-	wrf21dir := folders.WrfProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour))
-	wrf00dir := folders.WrfProcWorkdir(s.Workdir, s.Start)
+	wrf18dir := folders.WrfControlProcWorkdir(s.Workdir, s.Start.Add(-6*time.Hour))
+	wrf21dir := folders.WrfControlProcWorkdir(s.Workdir, s.Start.Add(-3*time.Hour))
+	wrf00dir := folders.WrfControlProcWorkdir(s.Workdir, s.Start)
 	wpsOutputsDir := folders.WPSOutputsDir(s.Start)
 
 	// da dirs have one dir for every domain
@@ -71,11 +73,20 @@ func (s *Simulation) Run() {
 	// create all directories for the various wrf cycles.
 	s.CreateWrfStepDir(s.Start.Add(-6 * time.Hour))
 	s.CreateWrfStepDir(s.Start.Add(-3 * time.Hour))
-	s.CreateWrfForecastDir(s.Start, s.Duration)
+	s.CreateWrfControlForecastDir(s.Start, s.Duration)
 	for domain := firstDomain; domain <= 3; domain++ {
 		s.CreateDaDir(s.Start.Add(-6*time.Hour), domain)
 		s.CreateDaDir(s.Start.Add(-3*time.Hour), domain)
 		s.CreateDaDir(s.Start, domain)
+	}
+	rnd := rand.NewSource(0xfeedbabebadcafe)
+
+	for ensnum := 1; ensnum <= conf.Values.EnsembleMembers; ensnum++ {
+		seed := rnd.Int63()%100 + 1
+		os.Setenv("ENSEMBLE_SEED", fmt.Sprintf("%02d", seed))
+		log.Debug("Using seed %02d for member n.%d.", seed, ensnum)
+
+		s.CreateWrfEnsembleMemberDir(s.Start, s.Duration, ensnum)
 	}
 
 	if conf.Values.RunWPS {
@@ -143,7 +154,7 @@ func (s *Simulation) Run() {
 	}
 
 	// run WRF from D-6 to D-3.
-	s.RunWrf(s.Start.Add(-6 * time.Hour))
+	s.RunWrf(s.Start.Add(-6*time.Hour), 0)
 
 	// assimilate D-3 (second cycle) for all domains
 	if !conf.Values.AssimilateOnlyInnerDomain {
@@ -172,7 +183,7 @@ func (s *Simulation) Run() {
 		}
 	}
 
-	s.RunWrf(s.Start.Add(-3 * time.Hour))
+	s.RunWrf(s.Start.Add(-3*time.Hour), 0)
 
 	// assimilate D (third cycle) for all domains
 	if !conf.Values.AssimilateOnlyInnerDomain {
@@ -198,8 +209,32 @@ func (s *Simulation) Run() {
 			server.CopyFile(s.Workdir, join(wrf21dir, fmt.Sprintf("wrfvar_input_d%02d", domain)), join(wrf00dir, fmt.Sprintf("wrfinput_d%02d", domain)))
 		}
 	}
-	s.RunWrf(s.Start)
-	log.Info("Simulation completed successfully.")
+
+	// execute control forecast and all ensemble members
+	var runs sync.WaitGroup
+	var failed bool
+	var failedLock sync.Mutex
+	runs.Add(conf.Values.EnsembleMembers + 1)
+	for ensnum := 0; ensnum <= conf.Values.EnsembleMembers; ensnum++ {
+		go func(ensnum int) {
+			err := s.RunWrf(s.Start, ensnum)
+			if err != nil {
+				failedLock.Lock()
+				failed = true
+				failedLock.Unlock()
+			}
+			runs.Done()
+		}(ensnum)
+	}
+	runs.Wait()
+	failedLock.Lock()
+	if failed {
+		log.Info("One or members failed to run.")
+	} else {
+		log.Info("Simulation completed successfully.")
+	}
+	failedLock.Unlock()
+
 }
 
 func New() Simulation {
@@ -220,12 +255,15 @@ func (s Simulation) CreateWpsDir(start time.Time, duration time.Duration) {
 	server.RenderTemplate(folders.WPSProcWorkdir(s.Workdir), "wps", start.Add(-6*time.Hour), 6+int(duration.Hours()))
 }
 
-func (s Simulation) CreateWrfForecastDir(start time.Time, duration time.Duration) {
-	server.RenderTemplate(folders.WrfProcWorkdir(s.Workdir, start), "wrf-forecast", start, int(duration.Hours()))
+func (s Simulation) CreateWrfControlForecastDir(start time.Time, duration time.Duration) {
+	server.RenderTemplate(folders.WrfControlProcWorkdir(s.Workdir, start), "wrf-forecast", start, int(duration.Hours()))
+}
+func (s Simulation) CreateWrfEnsembleMemberDir(start time.Time, duration time.Duration, ensnum int) {
+	server.RenderTemplate(folders.WrfEnsembleProcWorkdir(s.Workdir, start, ensnum), "wrf-ensmember", start, int(duration.Hours()))
 }
 
 func (s Simulation) CreateWrfStepDir(start time.Time) {
-	server.RenderTemplate(folders.WrfProcWorkdir(s.Workdir, start), "wrf-step", start, 3)
+	server.RenderTemplate(folders.WrfControlProcWorkdir(s.Workdir, start), "wrf-step", start, 3)
 }
 
 func (s Simulation) CreateDaDir(start time.Time, domain int) {

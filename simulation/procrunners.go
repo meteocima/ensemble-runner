@@ -144,12 +144,21 @@ func (s Simulation) RunDa(startTime time.Time, domain int) {
 	log.Info("  - Da_wrfvar process completed successfully.")
 }
 
-func (s Simulation) RunWrf(startTime time.Time) string {
-	path := folders.WrfProcWorkdir(s.Workdir, startTime)
+func (s Simulation) RunWrf(startTime time.Time, ensnum int) (err error) {
+	var path string
+	var descr string
+	defer errors.OnFailuresSet(&err)
+	if ensnum == 0 {
+		path = folders.WrfControlProcWorkdir(s.Workdir, startTime)
+		descr = "control"
+	} else {
+		path = folders.WrfEnsembleProcWorkdir(s.Workdir, startTime, ensnum)
+		descr = fmt.Sprintf("ensemble n. %d", ensnum)
+	}
 
 	wrfRelDir := errors.CheckResult(filepath.Rel(s.Workdir, path))
 
-	log.Info("Running wrf for %02d:00\t\t\tDIR: $WORKDIR/%s LOGS: %s", startTime.Hour(), wrfRelDir, "wrf.detail.log rsl.out.* rsl.error.*")
+	log.Info("Running WRF %s for %02d:00\tDIR: $WORKDIR/%s LOGS: %s", descr, startTime.Hour(), wrfRelDir, "wrf.detail.log rsl.out.* rsl.error.*")
 
 	server.ExecRetry(fmt.Sprintf("mpirun %s -n %d ./wrf.exe", conf.Values.MpiOptions, conf.Values.WrfProcCount), path, "wrf.detail.log", "{wrf.detail.log,rsl.out.????,rsl.error.????}")
 
@@ -164,11 +173,11 @@ func (s Simulation) RunWrf(startTime time.Time) string {
 
 	if p.Completed {
 		if p.Err != nil {
-			errors.FailF("wrf process failed: %w", p.Err)
+			errors.FailF("WRF %s process failed: %w", descr, p.Err)
 		} else {
-			log.Info("  - Wrf process completed successfully.")
+			log.Info("  - WRF %s process completed successfully.", descr)
 		}
 	}
 
-	return path
+	return nil
 }
