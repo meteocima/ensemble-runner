@@ -2,13 +2,14 @@
 
 !OK * fare avgvar solo se >= 24 ore
 !OK * aggiungere verifica successo dei vari processi
+!OK * rimuovere creazione AUX dom. 1 e 2
+!OK * implementare opzione AssimilateOnlyInnerDomain
+!OK * implementare opzione AssimilateFirstCycle
 
-* rimuovere creazione AUX dom. 1 e 2
-* implementare opzione AssimilateOnlyInnerDomain
-* implementare opzione AssimilateFirstCycle
 * aggiornare script per eseguire tutti gli ensemble member
 * testare malfunzionamenti
 * moltiplicare il post process su tutti gli ensemble member
+* implementare il post process
 
 OK * rimuovere creazione wrfout, lasciare solo AUX dom. 3
 OK * modificare percorsi da cui leggere le obs
