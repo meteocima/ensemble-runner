@@ -210,6 +210,14 @@ func (s *Simulation) Run() {
 		}
 	}
 
+	for ensnum := 1; ensnum <= conf.Values.EnsembleMembers; ensnum++ {
+		ensdir := folders.WrfEnsembleProcWorkdir(s.Workdir, s.Start, ensnum)
+		server.CopyFile(s.Workdir, join(wrf00dir, "wrfinput_d01"), join(ensdir, "wrfinput_d01"))
+		server.CopyFile(s.Workdir, join(wrf00dir, "wrfinput_d02"), join(ensdir, "wrfinput_d02"))
+		server.CopyFile(s.Workdir, join(wrf00dir, "wrfinput_d03"), join(ensdir, "wrfinput_d03"))
+		server.CopyFile(s.Workdir, join(wrf00dir, "wrfbdy_d01"), join(ensdir, "wrfbdy_d01"))
+	}
+
 	// execute control forecast and all ensemble members
 	var runs sync.WaitGroup
 	var failed bool
@@ -229,7 +237,7 @@ func (s *Simulation) Run() {
 	runs.Wait()
 	failedLock.Lock()
 	if failed {
-		log.Info("One or members failed to run.")
+		log.Info("One or more members failed to run.")
 	} else {
 		log.Info("Simulation completed successfully.")
 	}
