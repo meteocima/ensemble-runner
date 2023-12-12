@@ -2,6 +2,7 @@
 set -e
 
 RH_EXPR="RH2=100*(PSFC*Q2/0.622)/(611.2*exp(17.67*(T2-273.15)/((T2-273.15)+243.5)))"
+ENSEMBLE_COUNT=$1
 
 function regrid_date() {
 	SRC_DIR=$1
@@ -41,7 +42,7 @@ function regrid_date() {
 }
 
 regrid_date $ROOTDIR/workdir/$START_FORECAST/wrf00
-for [[ $i = 1; $i -le 10; $i++ ]]; do
-	regrid_date $ROOTDIR/workdir/$START_FORECAST/wrf00.ens$i
+for ensdir in `find $ROOTDIR/workdir/$START_FORECAST/ -type d -name 'wrf00.ens*'`; do
+	regrid_date $ensdir
 done
 			
