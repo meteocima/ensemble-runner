@@ -144,7 +144,19 @@ func (s Simulation) RunDa(startTime time.Time, domain int) {
 	log.Info("  - Da_wrfvar process completed successfully.")
 }
 
-func (s Simulation) RunWrf(startTime time.Time, ensnum int, procCount int) (err error) {
+func (s Simulation) RunWrfForecast(startTime time.Time) (err error) {
+	return s.runWrf(startTime, 0, conf.Values.WrfProcCount)
+}
+
+func (s Simulation) RunWrfEnsemble(startTime time.Time, ensnum int) (err error) {
+	return s.runWrf(startTime, ensnum, conf.Values.WrfProcCount)
+}
+
+func (s Simulation) RunWrfStep(startTime time.Time) (err error) {
+	return s.runWrf(startTime, 0, conf.Values.WrfStepProcCount)
+}
+
+func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err error) {
 	var path string
 	var descr string
 	defer errors.OnFailuresSet(&err)

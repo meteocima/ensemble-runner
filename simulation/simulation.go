@@ -154,7 +154,7 @@ func (s *Simulation) Run() {
 	}
 
 	// run WRF from D-6 to D-3.
-	s.RunWrf(s.Start.Add(-6*time.Hour), 0, conf.Values.WrfStepProcCount)
+	s.RunWrfStep(s.Start.Add(-6 * time.Hour))
 
 	// assimilate D-3 (second cycle) for all domains
 	if !conf.Values.AssimilateOnlyInnerDomain {
@@ -183,7 +183,7 @@ func (s *Simulation) Run() {
 		}
 	}
 
-	s.RunWrf(s.Start.Add(-3*time.Hour), 0, conf.Values.WrfStepProcCount)
+	s.RunWrfStep(s.Start.Add(-3 * time.Hour))
 
 	// assimilate D (third cycle) for all domains
 	if !conf.Values.AssimilateOnlyInnerDomain {
@@ -227,7 +227,7 @@ func (s *Simulation) Run() {
 			w.Add(ensnum)
 		}
 		w.Do(conf.Values.EnsembleParallelism, func(ensnum int) {
-			err := s.RunWrf(s.Start, ensnum, conf.Values.WrfProcCount)
+			err := s.RunWrfEnsemble(s.Start, ensnum)
 			if err != nil {
 				failed <- true
 			}

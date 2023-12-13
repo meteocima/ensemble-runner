@@ -1,16 +1,16 @@
 # CIMA Ensemble Runner
 
-!OK * fare avgvar solo se >= 24 ore
-!OK * aggiungere verifica successo dei vari processi
-!OK * rimuovere creazione AUX dom. 1 e 2
-!OK * implementare opzione AssimilateOnlyInnerDomain
-!OK * implementare opzione AssimilateFirstCycle
+!OK * aggiornare script per eseguire tutti gli ensemble member
+!OK * moltiplicare il post process su tutti gli ensemble member
+!OK * implementare il post process
 
-* aggiornare script per eseguire tutti gli ensemble member
 * testare malfunzionamenti
-* moltiplicare il post process su tutti gli ensemble member
-* implementare il post process
 
+OK * fare avgvar solo se >= 24 ore
+OK * aggiungere verifica successo dei vari processi
+OK * implementare opzione AssimilateOnlyInnerDomain
+OK * implementare opzione AssimilateFirstCycle
+OK * rimuovere creazione AUX dom. 1 e 2
 OK * rimuovere creazione wrfout, lasciare solo AUX dom. 3
 OK * modificare percorsi da cui leggere le obs
 OK * rendere possibile saltare la parte WPS
