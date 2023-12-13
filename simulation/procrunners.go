@@ -144,7 +144,7 @@ func (s Simulation) RunDa(startTime time.Time, domain int) {
 	log.Info("  - Da_wrfvar process completed successfully.")
 }
 
-func (s Simulation) RunWrf(startTime time.Time, ensnum int) (err error) {
+func (s Simulation) RunWrf(startTime time.Time, ensnum int, procCount int) (err error) {
 	var path string
 	var descr string
 	defer errors.OnFailuresSet(&err)
@@ -160,7 +160,7 @@ func (s Simulation) RunWrf(startTime time.Time, ensnum int) (err error) {
 
 	log.Info("Running WRF %s for %02d:00\tDIR: $WORKDIR/%s LOGS: %s", descr, startTime.Hour(), wrfRelDir, "wrf.detail.log rsl.out.* rsl.error.*")
 
-	server.ExecRetry(fmt.Sprintf("mpirun %s -n %d ./wrf.exe", conf.Values.MpiOptions, conf.Values.WrfProcCount), path, "wrf.detail.log", "{wrf.detail.log,rsl.out.????,rsl.error.????}")
+	server.ExecRetry(fmt.Sprintf("mpirun %s -n %d ./wrf.exe", conf.Values.MpiOptions, procCount), path, "wrf.detail.log", "{wrf.detail.log,rsl.out.????,rsl.error.????}")
 
 	logf := errors.CheckResult(os.Open(join(path, "rsl.out.0000")))
 	defer logf.Close()

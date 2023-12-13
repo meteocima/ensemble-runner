@@ -5,13 +5,13 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
-	"sync"
 	"time"
 
 	"github.com/meteocima/ensemble-runner/conf"
 	"github.com/meteocima/ensemble-runner/errors"
 	"github.com/meteocima/ensemble-runner/folders"
 	"github.com/meteocima/ensemble-runner/log"
+	"github.com/meteocima/ensemble-runner/par"
 	"github.com/meteocima/ensemble-runner/server"
 )
 
@@ -154,7 +154,7 @@ func (s *Simulation) Run() {
 	}
 
 	// run WRF from D-6 to D-3.
-	s.RunWrf(s.Start.Add(-6*time.Hour), 0)
+	s.RunWrf(s.Start.Add(-6*time.Hour), 0, conf.Values.WrfStepProcCount)
 
 	// assimilate D-3 (second cycle) for all domains
 	if !conf.Values.AssimilateOnlyInnerDomain {
@@ -183,7 +183,7 @@ func (s *Simulation) Run() {
 		}
 	}
 
-	s.RunWrf(s.Start.Add(-3*time.Hour), 0)
+	s.RunWrf(s.Start.Add(-3*time.Hour), 0, conf.Values.WrfStepProcCount)
 
 	// assimilate D (third cycle) for all domains
 	if !conf.Values.AssimilateOnlyInnerDomain {
@@ -219,29 +219,27 @@ func (s *Simulation) Run() {
 	}
 
 	// execute control forecast and all ensemble members
-	var runs sync.WaitGroup
-	var failed bool
-	var failedLock sync.Mutex
-	runs.Add(conf.Values.EnsembleMembers + 1)
-	for ensnum := 0; ensnum <= conf.Values.EnsembleMembers; ensnum++ {
-		go func(ensnum int) {
-			err := s.RunWrf(s.Start, ensnum)
+	failed := make(chan bool, conf.Values.EnsembleMembers)
+
+	go func() {
+		var w par.Work[int]
+		for ensnum := 0; ensnum <= conf.Values.EnsembleMembers; ensnum++ {
+			w.Add(ensnum)
+		}
+		w.Do(conf.Values.EnsembleParallelism, func(ensnum int) {
+			err := s.RunWrf(s.Start, ensnum, conf.Values.WrfProcCount)
 			if err != nil {
-				failedLock.Lock()
-				failed = true
-				failedLock.Unlock()
+				failed <- true
 			}
-			runs.Done()
-		}(ensnum)
-	}
-	runs.Wait()
-	failedLock.Lock()
-	if failed {
+		})
+		close(failed)
+	}()
+
+	if <-failed {
 		log.Info("One or more members failed to run.")
 	} else {
 		log.Info("Simulation completed successfully.")
 	}
-	failedLock.Unlock()
 
 }
 

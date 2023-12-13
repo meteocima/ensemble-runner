@@ -14,6 +14,7 @@ var Values = struct {
 	GeogridProcCount          int    `yaml:"GeogridProc"`
 	MetgridProcCount          int    `yaml:"MetgridProc"`
 	WrfProcCount              int    `yaml:"WrfProc"`
+	WrfStepProcCount          int    `yaml:"WrfStepProcCount"`
 	WrfdaProcCount            int    `yaml:"WrfdaProc"`
 	RealProcCount             int    `yaml:"RealProc"`
 	MpiOptions                string `yaml:"MpiOptions"`
@@ -23,6 +24,7 @@ var Values = struct {
 	BeDir                     string `yaml:"BeDir"`
 	RunWPS                    bool   `yaml:"RunWPS"`
 	EnsembleMembers           int    `yaml:"EnsembleMembers"`
+	EnsembleParallelism       int    `yaml:"EnsembleParallelism"`
 	AssimilateOnlyInnerDomain bool   `yaml:"AssimilateOnlyInnerDomain"`
 	AssimilateFirstCycle      bool   `yaml:"AssimilateFirstCycle"`
 }{}
@@ -57,16 +59,22 @@ func Initialize() {
 	}
 
 	for name, value := range map[string]any{
-		"GeogridProcCount": Values.GeogridProcCount,
-		"MetgridProcCount": Values.MetgridProcCount,
-		"WrfProcCount":     Values.WrfProcCount,
-		"WrfdaProcCount":   Values.WrfdaProcCount,
-		"RealProcCount":    Values.RealProcCount,
-		"MpiOptions":       Values.MpiOptions,
-		"ObDataDir":        Values.ObDataDir,
-		"GeogDataDir":      Values.GeogDataDir,
-		"GfsDir":           Values.GfsDir,
-		"BeDir":            Values.BeDir,
+		"GeogridProcCount":          Values.GeogridProcCount,
+		"MetgridProcCount":          Values.MetgridProcCount,
+		"WrfProcCount":              Values.WrfProcCount,
+		"WrfStepProcCount":          Values.WrfStepProcCount,
+		"WrfdaProcCount":            Values.WrfdaProcCount,
+		"RealProcCount":             Values.RealProcCount,
+		"MpiOptions":                Values.MpiOptions,
+		"ObDataDir":                 Values.ObDataDir,
+		"GeogDataDir":               Values.GeogDataDir,
+		"GfsDir":                    Values.GfsDir,
+		"BeDir":                     Values.BeDir,
+		"RunWPS":                    Values.RunWPS,
+		"EnsembleMembers":           Values.EnsembleMembers,
+		"EnsembleParallelism":       Values.EnsembleParallelism,
+		"AssimilateOnlyInnerDomain": Values.AssimilateOnlyInnerDomain,
+		"AssimilateFirstCycle":      Values.AssimilateFirstCycle,
 	} {
 		log.Info("  -- %s: %v", name, value)
 	}
