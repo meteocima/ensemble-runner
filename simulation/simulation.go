@@ -210,6 +210,7 @@ func (s *Simulation) Run() {
 		}
 	}
 
+	// if an ensemble is procduced, copy wrfinput and wrfbdy from control forecast to all ensemble members
 	for ensnum := 1; ensnum <= conf.Values.EnsembleMembers; ensnum++ {
 		ensdir := folders.WrfEnsembleProcWorkdir(s.Workdir, s.Start, ensnum)
 		server.CopyFile(s.Workdir, join(wrf00dir, "wrfinput_d01"), join(ensdir, "wrfinput_d01"))
@@ -219,6 +220,21 @@ func (s *Simulation) Run() {
 	}
 
 	// execute control forecast and all ensemble members
+	failed := RunForecast(s)
+
+	if <-failed {
+		log.Info("One or more members of the forecast failed to run.")
+		return
+	}
+
+	log.Info("Post-processing results.")
+	server.ExecRetry("delivery.sh > delivery.log", s.Workdir, "delivery.log", "delivery.log")
+
+	log.Info("Simulation completed successfully.")
+
+}
+
+func RunForecast(s *Simulation) chan bool {
 	failed := make(chan bool, conf.Values.EnsembleMembers)
 
 	go func() {
@@ -234,13 +250,7 @@ func (s *Simulation) Run() {
 		})
 		close(failed)
 	}()
-
-	if <-failed {
-		log.Info("One or more members failed to run.")
-	} else {
-		log.Info("Simulation completed successfully.")
-	}
-
+	return failed
 }
 
 func New() Simulation {

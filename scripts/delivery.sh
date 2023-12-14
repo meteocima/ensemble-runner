@@ -2,11 +2,10 @@
 set -e
 
 RH_EXPR="RH2=100*(PSFC*Q2/0.622)/(611.2*exp(17.67*(T2-273.15)/((T2-273.15)+243.5)))"
-ENSEMBLE_COUNT=$1
 
 function regrid_date() {
 	SRC_DIR=$1
-
+	ENS_NUM=$2
 	cd $SRC_DIR;
 	echo REGRIDDING $SRC_DIR;
 
@@ -33,16 +32,17 @@ function regrid_date() {
 	cdo -L -setrtoc,100,1.e99,100 -setunit,"%" -expr,$RH_EXPR raw-$START_FORECAST.nc rh-$START_FORECAST.nc
 
 	# Merge source file and RH file
-	cdo -v merge raw-$START_FORECAST.nc rh-$START_FORECAST.nc italy-ensemble-$START_FORECAST.nc
-
+	RESULT_NAME=lexis-italy-${START_FORECAST//-/}_$ENS_NUM.nc
+        cdo -v merge raw-$START_FORECAST.nc rh-$START_FORECAST.nc $RESULT_NAME
 	RESULT_DIR=$ROOTDIR/results/$START_FORECAST/
 		
 	mkdir -p $RESULT_DIR
-	mv italy-ensemble-$START_FORECAST.nc $RESULT_DIR
+	mv -v $RESULT_NAME $RESULT_DIR
 }
 
-regrid_date $ROOTDIR/workdir/$START_FORECAST/wrf00
+regrid_date $ROOTDIR/workdir/$START_FORECAST/wrf00 0
 for ensdir in `find $ROOTDIR/workdir/$START_FORECAST/ -type d -name 'wrf00.ens*'`; do
-	regrid_date $ensdir
+    file=`basename $ensdir`; 
+    regrid_date $ensdir ${file#*.ens}    
 done
 			
