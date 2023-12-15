@@ -20,23 +20,23 @@ func (s Simulation) RunGeogrid() {
 
 	log.Info("Running geogrid.\t\t\tDIR: $WORKDIR/%s LOGS: %s", wpsRelDir, "geogrid.detail.log geogrid.log.*")
 	server.ExecRetry(fmt.Sprintf("mpiexec %s -n %d ./geogrid.exe", conf.Values.MpiOptions, conf.Values.GeogridProcCount), wpsPath, "geogrid.detail.log", "{geogrid.detail.log,geogrid.log.????}")
-
-	logf := errors.CheckResult(os.Open(join(wpsPath, "geogrid.log.0000")))
+	logFile := join(wpsPath, "geogrid.log.0000")
+	logf := errors.CheckResult(os.Open(logFile))
 	defer logf.Close()
 
 	prgs := wrfprocs.ShowGeogridProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
 
 	var p wrfprocs.Progress
 	for p = range prgs {
-	}
-
-	if p.Completed {
-		if p.Err != nil {
-			errors.FailF("geogrid process failed: %w", p.Err)
-		} else {
-			log.Info("  - Geogrid process completed successfully.")
+		if p.Completed {
+			if p.Err != nil {
+				errors.FailF("geogrid process failed: %w", p.Err)
+			} else {
+				log.Info("  - Geogrid process completed successfully.")
+			}
 		}
 	}
+	log.Warning("log file %s is malformed.", logFile)
 }
 
 func (s Simulation) RunLinkGrib(startTime time.Time) {
@@ -55,24 +55,24 @@ func (s Simulation) RunUngrib() {
 
 	log.Info("Running ungrib.\t\t\t\tDIR: $WORKDIR/%s LOGS: %s", wpsRelDir, "ungrib.detail.log ungrib.log")
 	server.ExecRetry("./ungrib.exe", wpsPath, "ungrib.detail.log", "{ungrib.detail.log,ungrib.log}")
-
-	logf := errors.CheckResult(os.Open(join(wpsPath, "ungrib.log")))
+	logFile := join(wpsPath, "ungrib.log")
+	logf := errors.CheckResult(os.Open(logFile))
 	defer logf.Close()
 
 	prgs := wrfprocs.ShowUngribProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
 
 	var p wrfprocs.Progress
 	for p = range prgs {
-	}
 
-	if p.Completed {
-		if p.Err != nil {
-			errors.FailF("ungrib process failed: %w", p.Err)
-		} else {
-			log.Info("  - Ungrib process completed successfully.")
+		if p.Completed {
+			if p.Err != nil {
+				errors.FailF("ungrib process failed: %w", p.Err)
+			} else {
+				log.Info("  - Ungrib process completed successfully.")
+			}
 		}
 	}
-
+	log.Warning("log file %s is malformed.", logFile)
 }
 
 func (s Simulation) RunMetgrid() {
@@ -81,23 +81,24 @@ func (s Simulation) RunMetgrid() {
 
 	log.Info("Running metgrid.\t\t\tDIR: $WORKDIR/%s LOGS: %s", wpsRelDir, "metgrid.detail.log metgrid.log.*")
 	server.ExecRetry(fmt.Sprintf("mpiexec %s -n %d ./metgrid.exe", conf.Values.MpiOptions, conf.Values.MetgridProcCount), wpsPath, "metgrid.detail.log", "{metgrid.detail.log,metgrid.log.????}")
-
-	logf := errors.CheckResult(os.Open(join(wpsPath, "metgrid.log.0000")))
+	logFile := join(wpsPath, "metgrid.log.0000")
+	logf := errors.CheckResult(os.Open(logFile))
 	defer logf.Close()
 
 	prgs := wrfprocs.ShowMetgridProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
 
 	var p wrfprocs.Progress
 	for p = range prgs {
-	}
-
-	if p.Completed {
-		if p.Err != nil {
-			errors.FailF("metgrid process failed: %w", p.Err)
-		} else {
-			log.Info("  - Metgrid process completed successfully.")
+		if p.Completed {
+			if p.Err != nil {
+				errors.FailF("metgrid process failed: %w", p.Err)
+			} else {
+				log.Info("  - Metgrid process completed successfully.")
+			}
 		}
 	}
+	log.Warning("log file %s is malformed.", logFile)
+
 }
 
 func (s Simulation) RunAvgtsfc() {
@@ -115,22 +116,25 @@ func (s Simulation) RunReal(startTime time.Time) {
 	log.Info("Running real for %02d:00\t\t\tDIR: $WORKDIR/%s LOGS: %s", startTime.Hour(), wpsRelDir, "real.detail.log,rsl.out.* rsl.error.*")
 	server.ExecRetry(fmt.Sprintf("mpiexec %s -n %d ./real.exe", conf.Values.MpiOptions, conf.Values.RealProcCount), wpsPath, "real.detail.log", "{real.detail.log,rsl.out.????,rsl.error.????}")
 
-	logf := errors.CheckResult(os.Open(join(wpsPath, "rsl.out.0000")))
+	logFile := join(wpsPath, "rsl.out.0000")
+	logf := errors.CheckResult(os.Open(logFile))
 	defer logf.Close()
 
 	prgs := wrfprocs.ShowRealProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
 
 	var p wrfprocs.Progress
 	for p = range prgs {
-	}
 
-	if p.Completed {
-		if p.Err != nil {
-			errors.FailF("real process failed: %w", p.Err)
-		} else {
-			log.Info("  - Real process completed successfully.")
+		if p.Completed {
+			if p.Err != nil {
+				errors.FailF("real process failed: %w", p.Err)
+			} else {
+				log.Info("  - Real process completed successfully.")
+			}
 		}
 	}
+	log.Warning("log file %s is malformed.", logFile)
+
 }
 
 func (s Simulation) RunDa(startTime time.Time, domain int) {
@@ -141,35 +145,34 @@ func (s Simulation) RunDa(startTime time.Time, domain int) {
 	log.Info("Running da_wrfvar for %02d:00 (domain %d)\t\tDIR: $WORKDIR/%s LOGS: %s", startTime.Hour(), domain, daRelDir, "da_wrfvar.detail.log rsl.out.* rsl.error.*")
 
 	server.ExecRetry(fmt.Sprintf("mpirun %s -n %d ./da_wrfvar.exe", conf.Values.MpiOptions, conf.Values.WrfdaProcCount), pathDA, "da_wrfvar.detail.log", "{da_wrfvar.detail.log,rsl.out.????,rsl.error.????}")
-	logf := errors.CheckResult(os.Open(join(pathDA, "rsl.out.0000")))
+
+	logFile := join(pathDA, "rsl.out.0000")
+	logf := errors.CheckResult(os.Open(logFile))
 	defer logf.Close()
 
-	prgs := wrfprocs.ShowDAProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
+	prgs := wrfprocs.ShowDAProgress(logf)
 
 	var p wrfprocs.Progress
 	for p = range prgs {
-	}
 
-	if p.Completed {
-		if p.Err != nil {
-			errors.FailF("Da_wrfvar process failed: %w", p.Err)
-		} else {
-			log.Info("  - Da_wrfvar process completed successfully.")
+		if p.Completed {
+			if p.Err != nil {
+				errors.FailF("Da_wrfvar process failed: %w", p.Err)
+			} else {
+				log.Info("  - Da_wrfvar process completed successfully.")
+			}
 		}
 	}
+	log.Warning("log file %s is malformed.", logFile)
 
-}
-
-func (s Simulation) RunWrfForecast(startTime time.Time) (err error) {
-	return s.runWrf(startTime, 0, conf.Values.WrfProcCount)
 }
 
 func (s Simulation) RunWrfEnsemble(startTime time.Time, ensnum int) (err error) {
 	return s.runWrf(startTime, ensnum, conf.Values.WrfProcCount)
 }
 
-func (s Simulation) RunWrfStep(startTime time.Time) (err error) {
-	return s.runWrf(startTime, 0, conf.Values.WrfStepProcCount)
+func (s Simulation) RunWrfStep(startTime time.Time) {
+	errors.Check(s.runWrf(startTime, 0, conf.Values.WrfStepProcCount))
 }
 
 func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err error) {
@@ -190,22 +193,24 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 
 	server.ExecRetry(fmt.Sprintf("mpirun %s -n %d ./wrf.exe", conf.Values.MpiOptions, procCount), path, "wrf.detail.log", "{wrf.detail.log,rsl.out.????,rsl.error.????}")
 
-	logf := errors.CheckResult(os.Open(join(path, "rsl.out.0000")))
+	logFile := join(path, "rsl.out.0000")
+	logf := errors.CheckResult(os.Open(logFile))
 	defer logf.Close()
 
 	prgs := wrfprocs.ShowProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
 
 	var p wrfprocs.Progress
 	for p = range prgs {
-	}
 
-	if p.Completed {
-		if p.Err != nil {
-			errors.FailF("WRF %s process failed: %w", descr, p.Err)
-		} else {
-			log.Info("  - WRF %s process completed successfully.", descr)
+		if p.Completed {
+			if p.Err != nil {
+				errors.FailF("WRF %s process failed: %w", descr, p.Err)
+			} else {
+				log.Info("  - WRF %s process completed successfully.", descr)
+			}
 		}
 	}
+	log.Warning("log file %s is malformed.", logFile)
 
 	return nil
 }

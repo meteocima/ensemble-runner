@@ -142,7 +142,7 @@ func tryExec(cmd, cwd, collectStdErr string) error {
 
 	if err = c.Run(); err != nil {
 		return fmt.Errorf(
-			"command failed: cannot start:\n"+
+			"command failed:\n"+
 				"    => cmd: %s\n"+
 				"    => wdir: %s\n"+
 				"    => err: %w\n"+

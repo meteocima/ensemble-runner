@@ -14,7 +14,7 @@ func TestDAParser(t *testing.T) {
 	t.Run("fixture", func(t *testing.T) {
 		info, err := fs.Stat(fixtureFS, "rsl.out.wrfda.0000")
 		require.NoError(t, err)
-		require.Equal(t, "rsl.out.wrfita-filse-optim", info.Name())
+		require.Equal(t, "rsl.out.wrfda.0000", info.Name())
 	})
 
 	t.Run("ShowProgress", func(t *testing.T) {

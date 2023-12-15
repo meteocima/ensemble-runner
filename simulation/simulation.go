@@ -223,12 +223,12 @@ func (s *Simulation) Run() {
 	failed := RunForecast(s)
 
 	if <-failed {
-		log.Info("One or more members of the forecast failed to run.")
+		log.Warning("One or more members of the forecast failed to run.")
 		return
 	}
 
 	log.Info("Post-processing results.")
-	server.ExecRetry("delivery.sh > delivery.log", s.Workdir, "delivery.log", "delivery.log")
+	server.ExecRetry("delivery.sh > delivery.log 2>&1", s.Workdir, "delivery.log", "delivery.log")
 
 	log.Info("Simulation completed successfully.")
 
