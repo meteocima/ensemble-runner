@@ -5,6 +5,7 @@
 !OK * implementare il post process
 
 * testare malfunzionamenti
+* aggiungere verifica successo a da e wrf
 
 OK * fare avgvar solo se >= 24 ore
 OK * aggiungere verifica successo dei vari processi

@@ -141,7 +141,23 @@ func (s Simulation) RunDa(startTime time.Time, domain int) {
 	log.Info("Running da_wrfvar for %02d:00 (domain %d)\t\tDIR: $WORKDIR/%s LOGS: %s", startTime.Hour(), domain, daRelDir, "da_wrfvar.detail.log rsl.out.* rsl.error.*")
 
 	server.ExecRetry(fmt.Sprintf("mpirun %s -n %d ./da_wrfvar.exe", conf.Values.MpiOptions, conf.Values.WrfdaProcCount), pathDA, "da_wrfvar.detail.log", "{da_wrfvar.detail.log,rsl.out.????,rsl.error.????}")
-	log.Info("  - Da_wrfvar process completed successfully.")
+	logf := errors.CheckResult(os.Open(join(pathDA, "rsl.out.0000")))
+	defer logf.Close()
+
+	prgs := wrfprocs.ShowDAProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
+
+	var p wrfprocs.Progress
+	for p = range prgs {
+	}
+
+	if p.Completed {
+		if p.Err != nil {
+			errors.FailF("Da_wrfvar process failed: %w", p.Err)
+		} else {
+			log.Info("  - Da_wrfvar process completed successfully.")
+		}
+	}
+
 }
 
 func (s Simulation) RunWrfForecast(startTime time.Time) (err error) {

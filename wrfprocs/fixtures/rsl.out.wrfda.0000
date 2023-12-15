@@ -1,0 +1,771 @@
+taskid: 0 hostname: wn07.e4.cluster
+ Namelist logging not found in namelist.input. Using registry defaults for variables in logging.
+
+*** VARIATIONAL ANALYSIS ***
+    WRFDA V4.1.5                                                                    
+
+ Ntasks in X           19 , ntasks in Y           19
+ *************************************
+ Parent domain
+ ids,ide,jds,jde            1         430           1         469
+ ims,ime,jms,jme           -4          30          -4          32
+ ips,ipe,jps,jpe            1          23           1          25
+ *************************************
+DYNAMICS OPTION: Eulerian Mass Coordinate
+   alloc_space_field: domain            1 ,              63632452  bytes allocated
+   Input data is acceptable to use: fg
+hybrid_opt =  2
+  
+use_theta_m =  1
+  
+ Tile Strategy is not specified. Assuming 1D-Y
+WRF TILE   1 IS      1 IE     23 JS      1 JE     25
+WRF NUMBER OF TILES =   1
+Domain mapping info:
+map_proj =     3
+cen_lat   =    0.421422E+02
+cen_lon   =    0.120326E+02
+truelat1  =    0.470000E+02
+truelat2  =    0.000000E+00
+start_lat =    0.361789E+02
+start_lon =    0.497664E+01
+pole_lat  =    0.900000E+02
+dsm       =    0.250000E+01
+  
+Set up observations (ob)
+  
+Using ASCII format observation input
+  
+Using ASCII format radar observation input
+  
+ Reading RADAR data at station:            
+Observation summary
+   ob time  1
+      synop               3760 global,       0 local
+      radar               1617 global,       0 local
+ 
+Set up background errors for regional application for cv_options =   5
+
+  
+
+   Using the averaged regression coefficients for unbalanced part
+  
+   cloud_cv_options =  1
+   WRFDA dry control variables are: psi, chi_u, t_u and ps_u
+   WRFDA Humidity control variable is qt
+
+
+  
+Vertical truncation for psi    =  17(  99.00%)
+ 
+Vertical truncation for chi_u  =  22(  99.00%)
+ 
+Vertical truncation for t_u    =  35(  99.00%)
+ 
+Vertical truncation for qt     =  26(  99.00%)
+ 
+  
+   Scaling: var, len, ds:   0.100000E+01   0.100000E+01   0.250000E+04
+   Scaling: var, len, ds:   0.100000E+01   0.100000E+01   0.250000E+04
+   Scaling: var, len, ds:   0.100000E+01   0.100000E+01   0.250000E+04
+   Scaling: var, len, ds:   0.100000E+01   0.100000E+01   0.250000E+04
+   Scaling: var, len, ds:   0.100000E+01   0.100000E+01   0.250000E+04
+Calculate innovation vector(iv)
+  
+Minimize cost function using CG method
+  
+Starting outer iteration :   1
+Starting cost function:  3.727255233575106D+03, Gradient=  2.801525668476816D+02
+For this outer iteration gradient target is:        2.801525668476816D+00
+----------------------------------------------------------------------
+              Loop Iter     Cost Function              Gradient                   Step
+ minimize_cg    1    0      3.727255233575106D+03      2.801525668476816D+02      0.000000000000000D+00
+ minimize_cg    1    1      3.686632956257670D+03      1.742981797044805D+02      1.035154204339493D-03
+ minimize_cg    1    2      3.581735771287794D+03      1.754362345569548D+02      6.905706654753840D-03
+ minimize_cg    1    3      3.545521537907173D+03      1.912188913592419D+02      2.353445165564140D-03
+ minimize_cg    1    4      3.431027898135733D+03      1.684463349429207D+02      6.262328863072816D-03
+ minimize_cg    1    5      3.359285167643137D+03      9.201581690323007D+01      5.058857556982369D-03
+ minimize_cg    1    6      3.306121803736662D+03      1.204191146348771D+02      1.247485112327726D-02
+ minimize_cg    1    7      3.201329811957723D+03      9.385815825432370D+01      1.534719421208777D-02
+ minimize_cg    1    8      3.187634719537403D+03      6.383075639267000D+01      1.074329659154226D-03
+ minimize_cg    1    9      3.096478639274267D+03      7.099606343389837D+01      4.694346375207793D-02
+ minimize_cg    1   10      3.090904459397298D+03      4.391597664247187D+01      1.292165589159906D-03
+ minimize_cg    1   11      3.038081720321921D+03      3.066753292898631D+01      5.601826268986854D-02
+ minimize_cg    1   12      3.017131694521876D+03      8.360735826597509D+01      2.821009389176071D-02
+ minimize_cg    1   13      3.019545072227234D+03      8.450625861524357D+01      2.061601167937909D-03
+ minimize_cg    1   14      3.009145802338446D+03      1.877242554685694D+01      1.933470390292250D-03
+ minimize_cg    1   15      3.010511344731111D+03      4.640102016702962D+01      5.313294514987962D-02
+ minimize_cg    1   16      3.003169627625221D+03      5.694305746265115D+01      3.219004462429750D-03
+ minimize_cg    1   17      2.994444464647469D+03      1.785892417705037D+01      2.551676278355981D-03
+ minimize_cg    1   18      2.989008846768100D+03      1.706729761363079D+01      9.802973902053190D-03
+ minimize_cg    1   19      2.988611372860593D+03      3.931643726509929D+01      4.020037042989434D-02
+ minimize_cg    1   20      2.985024514266157D+03      9.046651302514377D+00      8.303759136488034D-04
+ minimize_cg    1   21      2.982663973345269D+03      1.111941251391651D+01      6.366752197211389D-02
+ minimize_cg    1   22      2.982306626768565D+03      1.577301298633802D+01      5.126379754619095D-03
+ minimize_cg    1   23      2.980930250936534D+03      2.004060175178642D+01      3.284923391859984D-03
+ minimize_cg    1   24      2.980360726693793D+03      6.842519660231450D+00      8.380152314881402D-03
+ minimize_cg    1   25      2.979291157751062D+03      1.085871226123569D+01      2.610388199052890D-03
+ minimize_cg    1   26      2.978972480848239D+03      6.089016167201814D+00      1.644219711423271D-02
+ minimize_cg    1   27      2.978769928872308D+03      3.875582464127933D+00      5.851188804316614D-03
+ minimize_cg    1   28      2.979766875490755D+03      8.837022159174751D+00      4.492666291733907D-02
+ minimize_cg    1   29      2.980261913677778D+03      7.134470814762088D+00      1.638759929985777D-03
+ minimize_cg    1   30      2.978016423286630D+03      6.917087438736991D+00      4.582665650857671D-03
+ minimize_cg    1   31      2.978105628957623D+03      2.897657567697313D+00      1.048535307664215D-03
+ minimize_cg    1   32      2.978128805172481D+03      2.436759786514576D+00      6.549477485688722D-02
+----------------------------------------------------------------------
+ 
+Inner iteration stopped after   32 iterations
+ 
+Final:  32 iter, J= 2.978177776210449D+03, g= 2.436759786514688D+00
+----------------------------------------------------------------------
+  
+Diagnostics
+   Final cost function J       =      2978.18
+  
+   Total number of obs.        =     1820
+   Final value of J            =      2978.17778
+   Final value of Jo           =      2754.52492
+   Final value of Jd           =         0.00000
+   Final value of Jb           =       223.65286
+   Final value of Jc           =         0.00000
+   Final value of Je           =         0.00000
+   Final value of Jp           =         0.00000
+   Final value of Jl           =         0.00000
+   Final value of Jm           =         0.00000
+   Final J / total num_obs     =         1.63636
+   var_scaling used(1)         =         1.00000
+   var_scaling used(2)         =         1.00000
+   var_scaling used(3)         =         1.00000
+   var_scaling used(4)         =         1.00000
+   var_scaling used(5)         =         1.00000
+   Jb factor used              =         1.00000
+   Je factor used              =         1.00000
+   VarBC factor used           =         1.00000
+  
+Writing radar OMA ascii file
+  
+Nothing to read from radar_omb_oma_01.0000
+  
+Nothing to read from radar_omb_oma_01.0001
+  
+Nothing to read from radar_omb_oma_01.0002
+  
+Nothing to read from radar_omb_oma_01.0003
+  
+Nothing to read from radar_omb_oma_01.0004
+  
+Nothing to read from radar_omb_oma_01.0005
+  
+Nothing to read from radar_omb_oma_01.0006
+  
+Nothing to read from radar_omb_oma_01.0007
+  
+Nothing to read from radar_omb_oma_01.0008
+  
+Nothing to read from radar_omb_oma_01.0009
+  
+Nothing to read from radar_omb_oma_01.0011
+  
+Nothing to read from radar_omb_oma_01.0014
+  
+Nothing to read from radar_omb_oma_01.0015
+  
+Nothing to read from radar_omb_oma_01.0016
+  
+Nothing to read from radar_omb_oma_01.0017
+  
+Nothing to read from radar_omb_oma_01.0018
+  
+Nothing to read from radar_omb_oma_01.0019
+  
+Nothing to read from radar_omb_oma_01.0020
+  
+Nothing to read from radar_omb_oma_01.0021
+  
+Nothing to read from radar_omb_oma_01.0022
+  
+Nothing to read from radar_omb_oma_01.0023
+  
+Nothing to read from radar_omb_oma_01.0024
+  
+Nothing to read from radar_omb_oma_01.0025
+  
+Nothing to read from radar_omb_oma_01.0026
+  
+Nothing to read from radar_omb_oma_01.0027
+  
+Nothing to read from radar_omb_oma_01.0028
+  
+Nothing to read from radar_omb_oma_01.0029
+  
+Nothing to read from radar_omb_oma_01.0030
+  
+Nothing to read from radar_omb_oma_01.0033
+  
+Nothing to read from radar_omb_oma_01.0034
+  
+Nothing to read from radar_omb_oma_01.0035
+  
+Nothing to read from radar_omb_oma_01.0036
+  
+Nothing to read from radar_omb_oma_01.0037
+  
+Nothing to read from radar_omb_oma_01.0038
+  
+Nothing to read from radar_omb_oma_01.0039
+  
+Nothing to read from radar_omb_oma_01.0040
+  
+Nothing to read from radar_omb_oma_01.0041
+  
+Nothing to read from radar_omb_oma_01.0042
+  
+Nothing to read from radar_omb_oma_01.0043
+  
+Nothing to read from radar_omb_oma_01.0044
+  
+Nothing to read from radar_omb_oma_01.0045
+  
+Nothing to read from radar_omb_oma_01.0046
+  
+Nothing to read from radar_omb_oma_01.0047
+  
+Nothing to read from radar_omb_oma_01.0048
+  
+Nothing to read from radar_omb_oma_01.0049
+  
+Nothing to read from radar_omb_oma_01.0050
+  
+Nothing to read from radar_omb_oma_01.0051
+  
+Nothing to read from radar_omb_oma_01.0053
+  
+Nothing to read from radar_omb_oma_01.0054
+  
+Nothing to read from radar_omb_oma_01.0055
+  
+Nothing to read from radar_omb_oma_01.0056
+  
+Nothing to read from radar_omb_oma_01.0057
+  
+Nothing to read from radar_omb_oma_01.0058
+  
+Nothing to read from radar_omb_oma_01.0059
+  
+Nothing to read from radar_omb_oma_01.0060
+  
+Nothing to read from radar_omb_oma_01.0062
+  
+Nothing to read from radar_omb_oma_01.0063
+  
+Nothing to read from radar_omb_oma_01.0064
+  
+Nothing to read from radar_omb_oma_01.0065
+  
+Nothing to read from radar_omb_oma_01.0066
+  
+Nothing to read from radar_omb_oma_01.0067
+  
+Nothing to read from radar_omb_oma_01.0068
+  
+Nothing to read from radar_omb_oma_01.0069
+  
+Nothing to read from radar_omb_oma_01.0070
+  
+Nothing to read from radar_omb_oma_01.0071
+  
+Nothing to read from radar_omb_oma_01.0072
+  
+Nothing to read from radar_omb_oma_01.0073
+  
+Nothing to read from radar_omb_oma_01.0074
+  
+Nothing to read from radar_omb_oma_01.0075
+  
+Nothing to read from radar_omb_oma_01.0076
+  
+Nothing to read from radar_omb_oma_01.0077
+  
+Nothing to read from radar_omb_oma_01.0078
+  
+Nothing to read from radar_omb_oma_01.0079
+  
+Nothing to read from radar_omb_oma_01.0080
+  
+Nothing to read from radar_omb_oma_01.0081
+  
+Nothing to read from radar_omb_oma_01.0082
+  
+Nothing to read from radar_omb_oma_01.0083
+  
+Nothing to read from radar_omb_oma_01.0084
+  
+Nothing to read from radar_omb_oma_01.0085
+  
+Nothing to read from radar_omb_oma_01.0086
+  
+Nothing to read from radar_omb_oma_01.0087
+  
+Nothing to read from radar_omb_oma_01.0088
+  
+Nothing to read from radar_omb_oma_01.0089
+  
+Nothing to read from radar_omb_oma_01.0090
+  
+Nothing to read from radar_omb_oma_01.0091
+  
+Nothing to read from radar_omb_oma_01.0092
+  
+Nothing to read from radar_omb_oma_01.0093
+  
+Nothing to read from radar_omb_oma_01.0094
+  
+Nothing to read from radar_omb_oma_01.0095
+  
+Nothing to read from radar_omb_oma_01.0096
+  
+Nothing to read from radar_omb_oma_01.0097
+  
+Nothing to read from radar_omb_oma_01.0098
+  
+Nothing to read from radar_omb_oma_01.0099
+  
+Nothing to read from radar_omb_oma_01.0100
+  
+Nothing to read from radar_omb_oma_01.0101
+  
+Nothing to read from radar_omb_oma_01.0102
+  
+Nothing to read from radar_omb_oma_01.0103
+  
+Nothing to read from radar_omb_oma_01.0104
+  
+Nothing to read from radar_omb_oma_01.0105
+  
+Nothing to read from radar_omb_oma_01.0106
+  
+Nothing to read from radar_omb_oma_01.0107
+  
+Nothing to read from radar_omb_oma_01.0108
+  
+Nothing to read from radar_omb_oma_01.0109
+  
+Nothing to read from radar_omb_oma_01.0110
+  
+Nothing to read from radar_omb_oma_01.0111
+  
+Nothing to read from radar_omb_oma_01.0112
+  
+Nothing to read from radar_omb_oma_01.0113
+  
+Nothing to read from radar_omb_oma_01.0114
+  
+Nothing to read from radar_omb_oma_01.0115
+  
+Nothing to read from radar_omb_oma_01.0116
+  
+Nothing to read from radar_omb_oma_01.0117
+  
+Nothing to read from radar_omb_oma_01.0118
+  
+Nothing to read from radar_omb_oma_01.0120
+  
+Nothing to read from radar_omb_oma_01.0121
+  
+Nothing to read from radar_omb_oma_01.0122
+  
+Nothing to read from radar_omb_oma_01.0123
+  
+Nothing to read from radar_omb_oma_01.0124
+  
+Nothing to read from radar_omb_oma_01.0125
+  
+Nothing to read from radar_omb_oma_01.0128
+  
+Nothing to read from radar_omb_oma_01.0130
+  
+Nothing to read from radar_omb_oma_01.0131
+  
+Nothing to read from radar_omb_oma_01.0132
+  
+Nothing to read from radar_omb_oma_01.0133
+  
+Nothing to read from radar_omb_oma_01.0134
+  
+Nothing to read from radar_omb_oma_01.0135
+  
+Nothing to read from radar_omb_oma_01.0138
+  
+Nothing to read from radar_omb_oma_01.0139
+  
+Nothing to read from radar_omb_oma_01.0140
+  
+Nothing to read from radar_omb_oma_01.0141
+  
+Nothing to read from radar_omb_oma_01.0142
+  
+Nothing to read from radar_omb_oma_01.0143
+  
+Nothing to read from radar_omb_oma_01.0144
+  
+Nothing to read from radar_omb_oma_01.0145
+  
+Nothing to read from radar_omb_oma_01.0147
+  
+Nothing to read from radar_omb_oma_01.0148
+  
+Nothing to read from radar_omb_oma_01.0149
+  
+Nothing to read from radar_omb_oma_01.0150
+  
+Nothing to read from radar_omb_oma_01.0151
+  
+Nothing to read from radar_omb_oma_01.0152
+  
+Nothing to read from radar_omb_oma_01.0153
+  
+Nothing to read from radar_omb_oma_01.0154
+  
+Nothing to read from radar_omb_oma_01.0155
+  
+Nothing to read from radar_omb_oma_01.0156
+  
+Nothing to read from radar_omb_oma_01.0158
+  
+Nothing to read from radar_omb_oma_01.0159
+  
+Nothing to read from radar_omb_oma_01.0160
+  
+Nothing to read from radar_omb_oma_01.0161
+  
+Nothing to read from radar_omb_oma_01.0163
+  
+Nothing to read from radar_omb_oma_01.0164
+  
+Nothing to read from radar_omb_oma_01.0165
+  
+Nothing to read from radar_omb_oma_01.0166
+  
+Nothing to read from radar_omb_oma_01.0167
+  
+Nothing to read from radar_omb_oma_01.0168
+  
+Nothing to read from radar_omb_oma_01.0169
+  
+Nothing to read from radar_omb_oma_01.0170
+  
+Nothing to read from radar_omb_oma_01.0171
+  
+Nothing to read from radar_omb_oma_01.0172
+  
+Nothing to read from radar_omb_oma_01.0173
+  
+Nothing to read from radar_omb_oma_01.0174
+  
+Nothing to read from radar_omb_oma_01.0175
+  
+Nothing to read from radar_omb_oma_01.0176
+  
+Nothing to read from radar_omb_oma_01.0177
+  
+Nothing to read from radar_omb_oma_01.0178
+  
+Nothing to read from radar_omb_oma_01.0180
+  
+Nothing to read from radar_omb_oma_01.0183
+  
+Nothing to read from radar_omb_oma_01.0184
+  
+Nothing to read from radar_omb_oma_01.0185
+  
+Nothing to read from radar_omb_oma_01.0186
+  
+Nothing to read from radar_omb_oma_01.0187
+  
+Nothing to read from radar_omb_oma_01.0188
+  
+Nothing to read from radar_omb_oma_01.0189
+  
+Nothing to read from radar_omb_oma_01.0190
+  
+Nothing to read from radar_omb_oma_01.0191
+  
+Nothing to read from radar_omb_oma_01.0192
+  
+Nothing to read from radar_omb_oma_01.0193
+  
+Nothing to read from radar_omb_oma_01.0194
+  
+Nothing to read from radar_omb_oma_01.0195
+  
+Nothing to read from radar_omb_oma_01.0196
+  
+Nothing to read from radar_omb_oma_01.0199
+  
+Nothing to read from radar_omb_oma_01.0201
+  
+Nothing to read from radar_omb_oma_01.0202
+  
+Nothing to read from radar_omb_oma_01.0203
+  
+Nothing to read from radar_omb_oma_01.0204
+  
+Nothing to read from radar_omb_oma_01.0205
+  
+Nothing to read from radar_omb_oma_01.0206
+  
+Nothing to read from radar_omb_oma_01.0207
+  
+Nothing to read from radar_omb_oma_01.0208
+  
+Nothing to read from radar_omb_oma_01.0209
+  
+Nothing to read from radar_omb_oma_01.0210
+  
+Nothing to read from radar_omb_oma_01.0211
+  
+Nothing to read from radar_omb_oma_01.0212
+  
+Nothing to read from radar_omb_oma_01.0213
+  
+Nothing to read from radar_omb_oma_01.0220
+  
+Nothing to read from radar_omb_oma_01.0222
+  
+Nothing to read from radar_omb_oma_01.0223
+  
+Nothing to read from radar_omb_oma_01.0224
+  
+Nothing to read from radar_omb_oma_01.0225
+  
+Nothing to read from radar_omb_oma_01.0226
+  
+Nothing to read from radar_omb_oma_01.0227
+  
+Nothing to read from radar_omb_oma_01.0228
+  
+Nothing to read from radar_omb_oma_01.0229
+  
+Nothing to read from radar_omb_oma_01.0230
+  
+Nothing to read from radar_omb_oma_01.0231
+  
+Nothing to read from radar_omb_oma_01.0238
+  
+Nothing to read from radar_omb_oma_01.0239
+  
+Nothing to read from radar_omb_oma_01.0241
+  
+Nothing to read from radar_omb_oma_01.0242
+  
+Nothing to read from radar_omb_oma_01.0243
+  
+Nothing to read from radar_omb_oma_01.0244
+  
+Nothing to read from radar_omb_oma_01.0245
+  
+Nothing to read from radar_omb_oma_01.0246
+  
+Nothing to read from radar_omb_oma_01.0247
+  
+Nothing to read from radar_omb_oma_01.0248
+  
+Nothing to read from radar_omb_oma_01.0249
+  
+Nothing to read from radar_omb_oma_01.0250
+  
+Nothing to read from radar_omb_oma_01.0254
+  
+Nothing to read from radar_omb_oma_01.0256
+  
+Nothing to read from radar_omb_oma_01.0257
+  
+Nothing to read from radar_omb_oma_01.0258
+  
+Nothing to read from radar_omb_oma_01.0259
+  
+Nothing to read from radar_omb_oma_01.0260
+  
+Nothing to read from radar_omb_oma_01.0261
+  
+Nothing to read from radar_omb_oma_01.0262
+  
+Nothing to read from radar_omb_oma_01.0263
+  
+Nothing to read from radar_omb_oma_01.0264
+  
+Nothing to read from radar_omb_oma_01.0265
+  
+Nothing to read from radar_omb_oma_01.0266
+  
+Nothing to read from radar_omb_oma_01.0267
+  
+Nothing to read from radar_omb_oma_01.0268
+  
+Nothing to read from radar_omb_oma_01.0274
+  
+Nothing to read from radar_omb_oma_01.0275
+  
+Nothing to read from radar_omb_oma_01.0276
+  
+Nothing to read from radar_omb_oma_01.0277
+  
+Nothing to read from radar_omb_oma_01.0278
+  
+Nothing to read from radar_omb_oma_01.0279
+  
+Nothing to read from radar_omb_oma_01.0280
+  
+Nothing to read from radar_omb_oma_01.0281
+  
+Nothing to read from radar_omb_oma_01.0282
+  
+Nothing to read from radar_omb_oma_01.0283
+  
+Nothing to read from radar_omb_oma_01.0284
+  
+Nothing to read from radar_omb_oma_01.0285
+  
+Nothing to read from radar_omb_oma_01.0286
+  
+Nothing to read from radar_omb_oma_01.0287
+  
+Nothing to read from radar_omb_oma_01.0289
+  
+Nothing to read from radar_omb_oma_01.0292
+  
+Nothing to read from radar_omb_oma_01.0293
+  
+Nothing to read from radar_omb_oma_01.0294
+  
+Nothing to read from radar_omb_oma_01.0295
+  
+Nothing to read from radar_omb_oma_01.0296
+  
+Nothing to read from radar_omb_oma_01.0297
+  
+Nothing to read from radar_omb_oma_01.0298
+  
+Nothing to read from radar_omb_oma_01.0299
+  
+Nothing to read from radar_omb_oma_01.0300
+  
+Nothing to read from radar_omb_oma_01.0301
+  
+Nothing to read from radar_omb_oma_01.0302
+  
+Nothing to read from radar_omb_oma_01.0303
+  
+Nothing to read from radar_omb_oma_01.0304
+  
+Nothing to read from radar_omb_oma_01.0305
+  
+Nothing to read from radar_omb_oma_01.0306
+  
+Nothing to read from radar_omb_oma_01.0307
+  
+Nothing to read from radar_omb_oma_01.0308
+  
+Nothing to read from radar_omb_oma_01.0309
+  
+Nothing to read from radar_omb_oma_01.0310
+  
+Nothing to read from radar_omb_oma_01.0311
+  
+Nothing to read from radar_omb_oma_01.0312
+  
+Nothing to read from radar_omb_oma_01.0313
+  
+Nothing to read from radar_omb_oma_01.0314
+  
+Nothing to read from radar_omb_oma_01.0316
+  
+Nothing to read from radar_omb_oma_01.0317
+  
+Nothing to read from radar_omb_oma_01.0318
+  
+Nothing to read from radar_omb_oma_01.0319
+  
+Nothing to read from radar_omb_oma_01.0320
+  
+Nothing to read from radar_omb_oma_01.0321
+  
+Nothing to read from radar_omb_oma_01.0322
+  
+Nothing to read from radar_omb_oma_01.0323
+  
+Nothing to read from radar_omb_oma_01.0324
+  
+Nothing to read from radar_omb_oma_01.0325
+  
+Nothing to read from radar_omb_oma_01.0326
+  
+Nothing to read from radar_omb_oma_01.0327
+  
+Nothing to read from radar_omb_oma_01.0328
+  
+Nothing to read from radar_omb_oma_01.0329
+  
+Nothing to read from radar_omb_oma_01.0330
+  
+Nothing to read from radar_omb_oma_01.0331
+  
+Nothing to read from radar_omb_oma_01.0332
+  
+Nothing to read from radar_omb_oma_01.0333
+  
+Nothing to read from radar_omb_oma_01.0334
+  
+Nothing to read from radar_omb_oma_01.0335
+  
+Nothing to read from radar_omb_oma_01.0336
+  
+Nothing to read from radar_omb_oma_01.0337
+  
+Nothing to read from radar_omb_oma_01.0338
+  
+Nothing to read from radar_omb_oma_01.0339
+  
+Nothing to read from radar_omb_oma_01.0340
+  
+Nothing to read from radar_omb_oma_01.0341
+  
+Nothing to read from radar_omb_oma_01.0342
+  
+Nothing to read from radar_omb_oma_01.0343
+  
+Nothing to read from radar_omb_oma_01.0344
+  
+Nothing to read from radar_omb_oma_01.0345
+  
+Nothing to read from radar_omb_oma_01.0346
+  
+Nothing to read from radar_omb_oma_01.0347
+  
+Nothing to read from radar_omb_oma_01.0348
+  
+Nothing to read from radar_omb_oma_01.0349
+  
+Nothing to read from radar_omb_oma_01.0350
+  
+Nothing to read from radar_omb_oma_01.0351
+  
+Nothing to read from radar_omb_oma_01.0352
+  
+Nothing to read from radar_omb_oma_01.0353
+  
+Nothing to read from radar_omb_oma_01.0354
+  
+Nothing to read from radar_omb_oma_01.0356
+  
+Nothing to read from radar_omb_oma_01.0357
+  
+Nothing to read from radar_omb_oma_01.0358
+  
+Nothing to read from radar_omb_oma_01.0359
+  
+Nothing to read from radar_omb_oma_01.0360
+  
+convert T to THM when use_theta_m =  1
+  
+*** WRF-Var completed successfully ***
