@@ -191,7 +191,12 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 
 	log.Info("Running WRF %s for %02d:00\tDIR: $WORKDIR/%s LOGS: %s", descr, startTime.Hour(), wrfRelDir, "wrf.detail.log rsl.out.* rsl.error.*")
 
-	server.ExecRetry(fmt.Sprintf("mpirun %s -n %d ./wrf.exe", conf.Values.MpiOptions, procCount), path, "wrf.detail.log", "{wrf.detail.log,rsl.out.????,rsl.error.????}")
+	//--cpu-set 0-15 --bind-to core
+	cpuset := s.UseFreeCpuSet()
+	cmd := fmt.Sprintf("mpirun %s %s -n %d ./wrf.exe", conf.Values.MpiOptions, cpuset.String(), procCount)
+	log.Debug("Running command: %s", cmd)
+	server.ExecRetry(cmd, path, "wrf.detail.log", "{wrf.detail.log,rsl.out.????,rsl.error.????}")
+	s.Dispose(cpuset)
 
 	logFile := join(path, "rsl.out.0000")
 	logf := errors.CheckResult(os.Open(logFile))

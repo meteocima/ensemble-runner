@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/meteocima/ensemble-runner/conf"
@@ -15,10 +16,13 @@ import (
 	"github.com/meteocima/ensemble-runner/server"
 )
 
+type CpuSet int
 type Simulation struct {
-	Start    time.Time
-	Duration time.Duration
-	Workdir  string
+	Start        time.Time
+	Duration     time.Duration
+	Workdir      string
+	cpuSetsInUse map[CpuSet]bool
+	cpuSetsLock  *sync.Mutex
 }
 
 var ShortDtFormat = "2006-01-02-15"
@@ -254,17 +258,51 @@ func RunForecast(s *Simulation) chan bool {
 	return failed
 }
 
+func (s *Simulation) CreateAllCpuSets() {
+	s.cpuSetsLock.Lock()
+	defer s.cpuSetsLock.Unlock()
+	for i := 0; i < conf.Values.EnsembleParallelism; i++ {
+		s.cpuSetsInUse[CpuSet(i)] = false
+	}
+}
+
+func (s *Simulation) UseFreeCpuSet() CpuSet {
+	s.cpuSetsLock.Lock()
+	defer s.cpuSetsLock.Unlock()
+
+	for set, inuse := range s.cpuSetsInUse {
+		if !inuse {
+			s.cpuSetsInUse[set] = true
+			return set
+		}
+	}
+	return -1
+}
+
+func (s *Simulation) Dispose(set CpuSet) {
+	s.cpuSetsLock.Lock()
+	defer s.cpuSetsLock.Unlock()
+	s.cpuSetsInUse[set] = false
+}
+
+func (set CpuSet) String() string {
+	proc := conf.Values.WrfProcCount
+	return fmt.Sprintf("--cpu-set %d-%d --bind-to core", int(set)*proc, int(set+1)*proc-1)
+}
+
 func New() Simulation {
 	start := errors.CheckResult(time.Parse(ShortDtFormat, os.Getenv("START_FORECAST")))
 	duration := errors.CheckResult(time.ParseDuration(os.Getenv("DURATION_HOURS") + "h"))
 	workdir := join(folders.WorkDir, os.Getenv("START_FORECAST"))
 
 	sim := Simulation{
-		Start:    start,
-		Duration: duration,
-		Workdir:  workdir,
+		Start:        start,
+		Duration:     duration,
+		Workdir:      workdir,
+		cpuSetsInUse: make(map[CpuSet]bool),
+		cpuSetsLock:  &sync.Mutex{},
 	}
-
+	sim.CreateAllCpuSets()
 	return sim
 }
 
