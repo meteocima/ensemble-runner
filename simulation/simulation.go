@@ -245,6 +245,7 @@ func RunForecast(s *Simulation) chan bool {
 		w.Do(conf.Values.EnsembleParallelism, func(ensnum int) {
 			err := s.RunWrfEnsemble(s.Start, ensnum)
 			if err != nil {
+				log.Error("Member %d failed: %s", ensnum, err)
 				failed <- true
 			}
 		})
