@@ -287,7 +287,7 @@ func (s *Simulation) Dispose(set CpuSet) {
 
 func (set CpuSet) String() string {
 	proc := conf.Values.WrfProcCount
-	return fmt.Sprintf("--cpu-set %d-%d --bind-to core", int(set)*proc, int(set+1)*proc-1)
+	return fmt.Sprintf("-genv I_MPI_PIN_PROCESSOR_LIST=%d-%d", int(set)*proc, int(set+1)*proc-1)
 }
 
 func New() Simulation {
