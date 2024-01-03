@@ -5,6 +5,28 @@ import (
 	"strconv"
 )
 
+func ParseHosts(hosts string) (SlurmHosts, error) {
+	var p parser
+
+	if len(hosts) == 0 {
+		return p.fail("empty hosts list")
+	}
+	p.err.Src = hosts
+
+	for pos, c := range hosts {
+		p.err.Pos = pos
+		if p.parseChar(c) {
+			return nil, p.err
+		}
+	}
+
+	if len(p.currHost) > 0 {
+		p.resHosts = append(p.resHosts, string(p.currHost))
+	}
+
+	return p.resHosts, nil
+}
+
 type SlurmHosts []string
 type ParseError struct {
 	Pos int
@@ -18,98 +40,109 @@ func (e ParseError) Error() string {
 
 var _ error = ParseError{}
 
-func ParseHosts(hosts string) (SlurmHosts, error) {
-	var resHosts []string
-	var currHost []rune
-	var currPrefix []rune
-	var rangeStart []rune
-	err := ParseError{
-		Pos: 0,
-		Src: hosts,
-	}
+type parser struct {
+	resHosts   []string
+	currHost   []rune
+	currPrefix []rune
+	rangeStart []rune
+	err        ParseError
+}
 
-	parseRange := func(c rune) bool {
-		fail := func(msg string) bool {
-			err.Msg = msg
-			return true
-		}
-		if len(currHost) == 0 {
-			return fail("range end cannot be empty")
-		}
-		zeroPadding := 0
-		if len(rangeStart) > 0 && rangeStart[0] == '0' {
-			zeroPadding = len(rangeStart)
-		}
-		start, err := strconv.Atoi(string(rangeStart))
-		if err != nil {
-			return fail("range start is not a number")
-		}
-		end, err := strconv.Atoi(string(currHost))
-		if err != nil {
-			return fail("range end is not a number")
-		}
-		for i := start; i <= end; i++ {
-			host := fmt.Sprintf("%s%0*d", string(currPrefix), zeroPadding, i)
-			resHosts = append(resHosts, host)
-		}
-		rangeStart = nil
-		currHost = nil
+func (p *parser) parseEndRange() bool {
+
+	if len(p.currHost) == 0 {
+		p.fail("range end cannot be empty")
+		return true
+	}
+	zeroPadding := 0
+	if len(p.rangeStart) > 0 && p.rangeStart[0] == '0' {
+		zeroPadding = len(p.rangeStart)
+	}
+	start, err := strconv.Atoi(string(p.rangeStart))
+	if err != nil {
+		p.fail("range start is not a number")
+		return true
+	}
+	end, err := strconv.Atoi(string(p.currHost))
+	if err != nil {
+		p.fail("range end is not a number")
+		return true
+	}
+	for i := start; i <= end; i++ {
+		host := fmt.Sprintf("%s%0*d", string(p.currPrefix), zeroPadding, i)
+		p.resHosts = append(p.resHosts, host)
+	}
+	p.rangeStart = nil
+	p.currHost = nil
+	return false
+}
+
+func (p *parser) fail(msg string) (SlurmHosts, error) {
+	p.err.Msg = msg
+	return nil, p.err
+}
+
+func (p *parser) parseChar(c rune) bool {
+	switch c {
+	case ',':
+		return p.parseComma()
+	case '[':
+		return p.parseStartGroup()
+	case ']':
+		return p.parseEndGroup()
+	case '-':
+		return p.parseStartRange()
+	default:
+		p.currHost = append(p.currHost, c)
 		return false
 	}
-	fail := func(msg string) (SlurmHosts, error) {
-		err.Msg = msg
-		return nil, err
-	}
-	if len(hosts) == 0 {
-		return fail("empty hosts list")
-	}
-	for pos, c := range hosts {
-		err.Pos = pos
-		switch c {
-		case ',':
-			if rangeStart != nil {
-				if parseRange(c) {
-					return nil, err
-				}
-				continue
-			}
-			if len(currHost) == 0 && len(currPrefix) == 0 {
-				continue
-			}
-			host := string(currPrefix) + string(currHost)
-			resHosts = append(resHosts, host)
-			currHost = nil
-		case '[':
-			currPrefix = currHost
-			currHost = nil
-		case ']':
-			if rangeStart != nil {
-				if parseRange(c) {
-					return nil, err
-				}
-				currPrefix = nil
-				continue
-			}
-			if len(currHost) == 0 && len(currPrefix) == 0 {
-				return fail("empty group")
-			}
-			host := string(currPrefix) + string(currHost)
-			resHosts = append(resHosts, host)
-			currHost = nil
-			currPrefix = nil
-		case '-':
-			if len(currHost) == 0 {
-				return fail("range start cannot be empty")
-			}
-			rangeStart = currHost
-			currHost = nil
-		default:
-			currHost = append(currHost, c)
-		}
-	}
-	if len(currHost) > 0 {
-		resHosts = append(resHosts, string(currHost))
-	}
+}
 
-	return resHosts, nil
+func (p *parser) parseStartRange() bool {
+	if len(p.currHost) == 0 {
+		p.fail("range start cannot be empty")
+		return true
+	}
+	p.rangeStart = p.currHost
+	p.currHost = nil
+	return false
+}
+
+func (p *parser) parseStartGroup() bool {
+	p.currPrefix = p.currHost
+	p.currHost = nil
+	return false
+}
+
+func (p *parser) parseEndGroup() bool {
+	if p.rangeStart != nil {
+		if p.parseEndRange() {
+			return true
+		}
+		p.currPrefix = nil
+		return false
+	}
+	if len(p.currHost) == 0 && len(p.currPrefix) == 0 {
+		p.fail("empty group")
+		return true
+	}
+	host := string(p.currPrefix) + string(p.currHost)
+	p.resHosts = append(p.resHosts, host)
+	p.currHost = nil
+	p.currPrefix = nil
+	return false
+
+}
+
+func (p *parser) parseComma() bool {
+	if p.rangeStart != nil {
+		return p.parseEndRange()
+	}
+	if len(p.currHost) == 0 && len(p.currPrefix) == 0 {
+		return false
+	}
+	host := string(p.currPrefix) + string(p.currHost)
+	p.resHosts = append(p.resHosts, host)
+	p.currHost = nil
+	return false
 }
