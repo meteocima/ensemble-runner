@@ -131,7 +131,6 @@ func (p *parser) parseEndGroup() bool {
 	p.currHost = nil
 	p.currPrefix = nil
 	return false
-
 }
 
 func (p *parser) parseComma() bool {
