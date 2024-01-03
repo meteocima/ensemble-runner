@@ -67,5 +67,8 @@ func TestMpiManager(t *testing.T) {
 
 		_, err = mpiman.ParseHosts("[]")
 		assert.EqualError(t, err, "empty group")
+
+		_, err = mpiman.ParseHosts("")
+		assert.EqualError(t, err, "empty hosts list")
 	})
 }

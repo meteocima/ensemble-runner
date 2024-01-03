@@ -60,6 +60,9 @@ func ParseHosts(hosts string) (SlurmHosts, error) {
 		err.msg = msg
 		return nil, err
 	}
+	if len(hosts) == 0 {
+		return fail("empty hosts list")
+	}
 	for pos, c := range hosts {
 		err.pos = pos
 		switch c {
