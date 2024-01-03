@@ -7,13 +7,13 @@ import (
 
 type SlurmHosts []string
 type ParseError struct {
-	pos int
-	src string
-	msg string
+	Pos int
+	Src string
+	Msg string
 }
 
 func (e ParseError) Error() string {
-	return e.msg
+	return e.Msg
 }
 
 var _ error = ParseError{}
@@ -24,13 +24,13 @@ func ParseHosts(hosts string) (SlurmHosts, error) {
 	var currPrefix []rune
 	var rangeStart []rune
 	err := ParseError{
-		pos: 0,
-		src: hosts,
+		Pos: 0,
+		Src: hosts,
 	}
 
 	parseRange := func(c rune) bool {
 		fail := func(msg string) bool {
-			err.msg = msg
+			err.Msg = msg
 			return true
 		}
 		if len(currHost) == 0 {
@@ -57,14 +57,14 @@ func ParseHosts(hosts string) (SlurmHosts, error) {
 		return false
 	}
 	fail := func(msg string) (SlurmHosts, error) {
-		err.msg = msg
+		err.Msg = msg
 		return nil, err
 	}
 	if len(hosts) == 0 {
 		return fail("empty hosts list")
 	}
 	for pos, c := range hosts {
-		err.pos = pos
+		err.Pos = pos
 		switch c {
 		case ',':
 			if rangeStart != nil {

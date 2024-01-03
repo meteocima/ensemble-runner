@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"strings"
 
 	"github.com/meteocima/ensemble-runner/mpiman"
 )
@@ -30,7 +31,17 @@ func main() {
 	}
 	hosts, err := mpiman.ParseHosts(hostsStr)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Invalid hosts string: %s", err)
+		if e, ok := err.(mpiman.ParseError); ok {
+			msg := fmt.Sprintf("Invalid hosts string at character %d: %s.\n", e.Pos, e.Msg)
+			fmt.Fprint(os.Stderr, msg)
+			fmt.Fprintf(os.Stderr, "%*s╭", e.Pos, " ")
+			fmt.Fprintf(os.Stderr, "%s╯\n", strings.Repeat("─", len(msg)-e.Pos-3))
+			fmt.Fprintf(os.Stderr, "%*s🡣\n", e.Pos, " ")
+			fmt.Fprintf(os.Stderr, "%s\n", e.Src)
+
+		} else {
+			fmt.Printf("Invalid hosts string at character: %s.\n", err)
+		}
 		os.Exit(1)
 	}
 	for _, host := range hosts {
