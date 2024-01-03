@@ -2,21 +2,39 @@ package mpiman
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 )
 
 type SlurmHosts []string
+type ParseError struct {
+	pos int
+	src string
+	msg string
+}
 
-func ParseSlurmHosts(hosts string) SlurmHosts {
+func (e ParseError) Error() string {
+	return e.msg
+}
+
+var _ error = ParseError{}
+
+func ParseHosts(hosts string) (SlurmHosts, error) {
 	var resHosts []string
 	var currHost []rune
 	var currPrefix []rune
 	var rangeStart []rune
-	var c rune
-	parseRange := func() {
+	err := ParseError{
+		pos: 0,
+		src: hosts,
+	}
+
+	parseRange := func(c rune) bool {
+		fail := func(msg string) bool {
+			err.msg = msg
+			return true
+		}
 		if len(currHost) == 0 {
-			log.Panicf("Invalid host string: %s", hosts)
+			return fail("range end cannot be empty")
 		}
 		zeroPadding := 0
 		if len(rangeStart) > 0 && rangeStart[0] == '0' {
@@ -24,11 +42,11 @@ func ParseSlurmHosts(hosts string) SlurmHosts {
 		}
 		start, err := strconv.Atoi(string(rangeStart))
 		if err != nil {
-			log.Panicf("Invalid host string: %s", hosts)
+			return fail("range start is not a number")
 		}
 		end, err := strconv.Atoi(string(currHost))
 		if err != nil {
-			log.Panicf("Invalid host string: %s", hosts)
+			return fail("range end is not a number")
 		}
 		for i := start; i <= end; i++ {
 			host := fmt.Sprintf("%s%0*d", string(currPrefix), zeroPadding, i)
@@ -36,16 +54,24 @@ func ParseSlurmHosts(hosts string) SlurmHosts {
 		}
 		rangeStart = nil
 		currHost = nil
+		return false
 	}
-	for _, c = range hosts {
+	fail := func(msg string) (SlurmHosts, error) {
+		err.msg = msg
+		return nil, err
+	}
+	for pos, c := range hosts {
+		err.pos = pos
 		switch c {
 		case ',':
 			if rangeStart != nil {
-				parseRange()
+				if parseRange(c) {
+					return nil, err
+				}
 				continue
 			}
 			if len(currHost) == 0 && len(currPrefix) == 0 {
-				log.Panicf("Invalid host string: %s", hosts)
+				continue
 			}
 			host := string(currPrefix) + string(currHost)
 			resHosts = append(resHosts, host)
@@ -55,12 +81,14 @@ func ParseSlurmHosts(hosts string) SlurmHosts {
 			currHost = nil
 		case ']':
 			if rangeStart != nil {
-				parseRange()
+				if parseRange(c) {
+					return nil, err
+				}
 				currPrefix = nil
 				continue
 			}
 			if len(currHost) == 0 && len(currPrefix) == 0 {
-				log.Panicf("Invalid host string: %s", hosts)
+				return fail("empty group")
 			}
 			host := string(currPrefix) + string(currHost)
 			resHosts = append(resHosts, host)
@@ -68,7 +96,7 @@ func ParseSlurmHosts(hosts string) SlurmHosts {
 			currPrefix = nil
 		case '-':
 			if len(currHost) == 0 {
-				log.Panicf("Invalid host string: %s", hosts)
+				return fail("range start cannot be empty")
 			}
 			rangeStart = currHost
 			currHost = nil
@@ -79,5 +107,6 @@ func ParseSlurmHosts(hosts string) SlurmHosts {
 	if len(currHost) > 0 {
 		resHosts = append(resHosts, string(currHost))
 	}
-	return resHosts
+
+	return resHosts, nil
 }

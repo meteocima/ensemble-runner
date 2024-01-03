@@ -9,34 +9,63 @@ import (
 
 func TestMpiManager(t *testing.T) {
 	t.Run("ParseSlurmHosts", func(t *testing.T) {
-		hosts := mpiman.ParseSlurmHosts("localhost")
+		hosts, err := mpiman.ParseHosts("localhost")
+		assert.NoError(t, err)
 		assert.Equal(t, mpiman.SlurmHosts{"localhost"}, hosts)
 
-		hosts = mpiman.ParseSlurmHosts("loc,al,host")
+		hosts, err = mpiman.ParseHosts("loc,al,host")
+		assert.NoError(t, err)
 		assert.Equal(t, mpiman.SlurmHosts{"loc", "al", "host"}, hosts)
 
-		assert.Panics(t, func() { mpiman.ParseSlurmHosts(",host") })
+		hosts, err = mpiman.ParseHosts(",host")
+		assert.NoError(t, err)
+		assert.Equal(t, mpiman.SlurmHosts{"host"}, hosts)
 
-		hosts = mpiman.ParseSlurmHosts("loc[host]")
+		hosts, err = mpiman.ParseHosts("loc[host]")
+		assert.NoError(t, err)
 		assert.Equal(t, mpiman.SlurmHosts{"lochost"}, hosts)
 
-		hosts = mpiman.ParseSlurmHosts("un[loc,al,host]")
+		hosts, err = mpiman.ParseHosts("un[loc,al,host]")
+		assert.NoError(t, err)
 		assert.Equal(t, mpiman.SlurmHosts{"unloc", "unal", "unhost"}, hosts)
 
-		hosts = mpiman.ParseSlurmHosts("[1-4,a]")
+		hosts, err = mpiman.ParseHosts("[1-4,a]")
+		assert.NoError(t, err)
 		assert.Equal(t, mpiman.SlurmHosts{"1", "2", "3", "4", "a"}, hosts)
 
-		hosts = mpiman.ParseSlurmHosts("[001-4,a]")
+		hosts, err = mpiman.ParseHosts("[001-4,a]")
+		assert.NoError(t, err)
 		assert.Equal(t, mpiman.SlurmHosts{"001", "002", "003", "004", "a"}, hosts)
 
-		hosts = mpiman.ParseSlurmHosts("[1-0004,a]")
+		hosts, err = mpiman.ParseHosts("[1-0004,a]")
+		assert.NoError(t, err)
 		assert.Equal(t, mpiman.SlurmHosts{"1", "2", "3", "4", "a"}, hosts)
 
-		hosts = mpiman.ParseSlurmHosts("[1-4]")
+		hosts, err = mpiman.ParseHosts("[1-4]")
+		assert.NoError(t, err)
 		assert.Equal(t, mpiman.SlurmHosts{"1", "2", "3", "4"}, hosts)
 
-		hosts = mpiman.ParseSlurmHosts("h[1-4,a,b,06-8]")
+		hosts, err = mpiman.ParseHosts("h[1-4,a,b,06-8]")
+		assert.NoError(t, err)
 		assert.Equal(t, mpiman.SlurmHosts{"h1", "h2", "h3", "h4", "ha", "hb", "h06", "h07", "h08"}, hosts)
 
+		hosts, err = mpiman.ParseHosts("h[1-2],h2[06-8]")
+		assert.NoError(t, err)
+		assert.Equal(t, mpiman.SlurmHosts{"h1", "h2", "h206", "h207", "h208"}, hosts)
+
+		_, err = mpiman.ParseHosts("[-2]")
+		assert.EqualError(t, err, "range start cannot be empty")
+
+		_, err = mpiman.ParseHosts("[1-]")
+		assert.EqualError(t, err, "range end cannot be empty")
+
+		_, err = mpiman.ParseHosts("[a2-3]")
+		assert.EqualError(t, err, "range start is not a number")
+
+		_, err = mpiman.ParseHosts("[1-a2]")
+		assert.EqualError(t, err, "range end is not a number")
+
+		_, err = mpiman.ParseHosts("[]")
+		assert.EqualError(t, err, "empty group")
 	})
 }
