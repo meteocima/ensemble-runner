@@ -9,7 +9,8 @@ func ParseHosts(hosts string) (SlurmHosts, error) {
 	var p parser
 
 	if len(hosts) == 0 {
-		return p.fail("empty hosts list")
+		p.fail("empty hosts list")
+		return nil, p.err
 	}
 	p.err.Src = hosts
 
@@ -51,8 +52,7 @@ type parser struct {
 func (p *parser) parseEndRange() bool {
 
 	if len(p.currHost) == 0 {
-		p.fail("range end cannot be empty")
-		return true
+		return p.fail("range end cannot be empty")
 	}
 	zeroPadding := 0
 	if len(p.rangeStart) > 0 && p.rangeStart[0] == '0' {
@@ -60,13 +60,11 @@ func (p *parser) parseEndRange() bool {
 	}
 	start, err := strconv.Atoi(string(p.rangeStart))
 	if err != nil {
-		p.fail("range start is not a number")
-		return true
+		return p.fail("range start is not a number")
 	}
 	end, err := strconv.Atoi(string(p.currHost))
 	if err != nil {
-		p.fail("range end is not a number")
-		return true
+		return p.fail("range end is not a number")
 	}
 	for i := start; i <= end; i++ {
 		host := fmt.Sprintf("%s%0*d", string(p.currPrefix), zeroPadding, i)
@@ -77,9 +75,9 @@ func (p *parser) parseEndRange() bool {
 	return false
 }
 
-func (p *parser) fail(msg string) (SlurmHosts, error) {
+func (p *parser) fail(msg string) bool {
 	p.err.Msg = msg
-	return nil, p.err
+	return true
 }
 
 func (p *parser) parseChar(c rune) bool {
@@ -100,8 +98,7 @@ func (p *parser) parseChar(c rune) bool {
 
 func (p *parser) parseStartRange() bool {
 	if len(p.currHost) == 0 {
-		p.fail("range start cannot be empty")
-		return true
+		return p.fail("range start cannot be empty")
 	}
 	p.rangeStart = p.currHost
 	p.currHost = nil
@@ -123,8 +120,7 @@ func (p *parser) parseEndGroup() bool {
 		return false
 	}
 	if len(p.currHost) == 0 && len(p.currPrefix) == 0 {
-		p.fail("empty group")
-		return true
+		return p.fail("empty group")
 	}
 	host := string(p.currPrefix) + string(p.currHost)
 	p.resHosts = append(p.resHosts, host)
