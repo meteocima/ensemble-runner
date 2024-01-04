@@ -44,7 +44,7 @@ func main() {
 		}
 		os.Exit(1)
 	}
-	for _, host := range hosts {
+	for _, host := range hosts.All() {
 		fmt.Println(host)
 	}
 
