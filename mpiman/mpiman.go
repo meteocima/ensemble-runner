@@ -12,7 +12,7 @@ import (
 
 func ParseSlurmNodes(hosts string) (SlurmNodes, error) {
 	var p parser
-	p.resHosts = NewSlurmNodes()
+	p.resHosts = newSlurmNodes()
 	if len(hosts) == 0 {
 		p.fail("empty hosts list")
 		return SlurmNodes{}, p.err
@@ -32,7 +32,7 @@ func ParseSlurmNodes(hosts string) (SlurmNodes, error) {
 
 	return p.resHosts, nil
 }
-func NewSlurmNodes() SlurmNodes {
+func newSlurmNodes() SlurmNodes {
 	return SlurmNodes{
 		Nodes: make(map[string]bool),
 		Lock:  &sync.Mutex{},

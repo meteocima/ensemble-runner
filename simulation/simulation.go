@@ -260,12 +260,22 @@ func New() Simulation {
 	start := errors.CheckResult(time.Parse(ShortDtFormat, os.Getenv("START_FORECAST")))
 	duration := errors.CheckResult(time.ParseDuration(os.Getenv("DURATION_HOURS") + "h"))
 	workdir := join(folders.WorkDir, os.Getenv("START_FORECAST"))
+	nodesStr, ok := os.LookupEnv("SLURM_NODELIST")
+	if !ok {
+		fmt.Fprintln(os.Stderr, "$SLURM_NODELIST not set")
+		os.Exit(1)
+	}
 
+	nodes, err := mpiman.ParseSlurmNodes(nodesStr)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "cannot parse $SLURM_NODELIST: %s\n", err)
+		os.Exit(1)
+	}
 	sim := Simulation{
 		Start:    start,
 		Duration: duration,
 		Workdir:  workdir,
-		Nodes:    mpiman.NewSlurmNodes(),
+		Nodes:    nodes,
 	}
 	return sim
 }
