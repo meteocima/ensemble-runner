@@ -2,33 +2,54 @@ package mpiman
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
+	"sync"
 )
 
-func ParseHosts(hosts string) (SlurmHosts, error) {
+func ParseHosts(hosts string) (SlurmNodes, error) {
 	var p parser
-
+	p.resHosts = NewSlurmNodes()
 	if len(hosts) == 0 {
 		p.fail("empty hosts list")
-		return nil, p.err
+		return SlurmNodes{}, p.err
 	}
 	p.err.Src = hosts
 
 	for pos, c := range hosts {
 		p.err.Pos = pos
 		if p.parseChar(c) {
-			return nil, p.err
+			return SlurmNodes{}, p.err
 		}
 	}
 
 	if len(p.currHost) > 0 {
-		p.resHosts = append(p.resHosts, string(p.currHost))
+		p.resHosts.nodes[string(p.currHost)] = true
 	}
 
 	return p.resHosts, nil
 }
+func NewSlurmNodes() SlurmNodes {
+	return SlurmNodes{
+		nodes: make(map[string]bool),
+		lock:  &sync.Mutex{},
+	}
+}
 
-type SlurmHosts []string
+type SlurmNodes struct {
+	nodes map[string]bool
+	lock  *sync.Mutex
+}
+
+func (sn SlurmNodes) AsArray() []string {
+	res := make([]string, 0, len(sn.nodes))
+	for k := range sn.nodes {
+		res = append(res, k)
+	}
+	sort.Strings(res)
+	return res
+}
+
 type ParseError struct {
 	Pos int
 	Src string
@@ -42,7 +63,7 @@ func (e ParseError) Error() string {
 var _ error = ParseError{}
 
 type parser struct {
-	resHosts   []string
+	resHosts   SlurmNodes
 	currHost   []rune
 	currPrefix []rune
 	rangeStart []rune
@@ -68,7 +89,7 @@ func (p *parser) parseEndRange() bool {
 	}
 	for i := start; i <= end; i++ {
 		host := fmt.Sprintf("%s%0*d", string(p.currPrefix), zeroPadding, i)
-		p.resHosts = append(p.resHosts, host)
+		p.resHosts.nodes[host] = true
 	}
 	p.rangeStart = nil
 	p.currHost = nil
@@ -123,7 +144,7 @@ func (p *parser) parseEndGroup() bool {
 		return p.fail("empty group")
 	}
 	host := string(p.currPrefix) + string(p.currHost)
-	p.resHosts = append(p.resHosts, host)
+	p.resHosts.nodes[host] = true
 	p.currHost = nil
 	p.currPrefix = nil
 	return false
@@ -137,7 +158,7 @@ func (p *parser) parseComma() bool {
 		return false
 	}
 	host := string(p.currPrefix) + string(p.currHost)
-	p.resHosts = append(p.resHosts, host)
+	p.resHosts.nodes[host] = true
 	p.currHost = nil
 	return false
 }
