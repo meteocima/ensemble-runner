@@ -29,7 +29,7 @@ func main() {
 	} else {
 		hostsStr = os.Args[1]
 	}
-	hosts, err := mpiman.ParseHosts(hostsStr)
+	hosts, err := mpiman.ParseSlurmNodes(hostsStr)
 	if err != nil {
 		if e, ok := err.(mpiman.ParseError); ok {
 			msg := fmt.Sprintf("Invalid hosts string at character %d: %s.\n", e.Pos, e.Msg)

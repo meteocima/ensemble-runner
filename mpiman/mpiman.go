@@ -4,10 +4,13 @@ import (
 	"fmt"
 	"sort"
 	"strconv"
+	"strings"
 	"sync"
+
+	"golang.org/x/exp/maps"
 )
 
-func ParseHosts(hosts string) (SlurmNodes, error) {
+func ParseSlurmNodes(hosts string) (SlurmNodes, error) {
 	var p parser
 	p.resHosts = NewSlurmNodes()
 	if len(hosts) == 0 {
@@ -24,30 +27,69 @@ func ParseHosts(hosts string) (SlurmNodes, error) {
 	}
 
 	if len(p.currHost) > 0 {
-		p.resHosts.nodes[string(p.currHost)] = true
+		p.resHosts.Nodes[string(p.currHost)] = true
 	}
 
 	return p.resHosts, nil
 }
 func NewSlurmNodes() SlurmNodes {
 	return SlurmNodes{
-		nodes: make(map[string]bool),
-		lock:  &sync.Mutex{},
+		Nodes: make(map[string]bool),
+		Lock:  &sync.Mutex{},
 	}
 }
 
 type SlurmNodes struct {
-	nodes map[string]bool
-	lock  *sync.Mutex
+	Nodes map[string]bool
+	Lock  *sync.Mutex
 }
 
-func (sn SlurmNodes) AsArray() []string {
-	res := make([]string, 0, len(sn.nodes))
-	for k := range sn.nodes {
+type SlurmNodesList []string
+
+func (sn SlurmNodes) All() SlurmNodesList {
+	res := make(SlurmNodesList, 0, len(sn.Nodes))
+	for k := range sn.Nodes {
 		res = append(res, k)
 	}
 	sort.Strings(res)
 	return res
+}
+
+func (lst SlurmNodesList) String() string {
+	return fmt.Sprintf("-hosts %s", strings.Join(lst, ","))
+}
+
+func (sn SlurmNodes) Dispose(lst SlurmNodesList) {
+	sn.Lock.Lock()
+	defer sn.Lock.Unlock()
+
+	for _, k := range lst {
+		sn.Nodes[k] = true
+	}
+}
+
+func (sn SlurmNodes) FindFreeNodes(n int) (SlurmNodesList, bool) {
+	res := make(SlurmNodesList, 0, len(sn.Nodes))
+	sn.Lock.Lock()
+	defer sn.Lock.Unlock()
+	nodes := maps.Keys(sn.Nodes)
+	sort.Strings(nodes)
+
+	for _, node := range nodes {
+		free := sn.Nodes[node]
+		if free {
+			res = append(res, node)
+			sn.Nodes[node] = false
+		}
+		if len(res) == n {
+			break
+		}
+	}
+	if len(res) < n {
+		return nil, false
+	}
+	sort.Strings(res)
+	return res, true
 }
 
 type ParseError struct {
@@ -89,7 +131,7 @@ func (p *parser) parseEndRange() bool {
 	}
 	for i := start; i <= end; i++ {
 		host := fmt.Sprintf("%s%0*d", string(p.currPrefix), zeroPadding, i)
-		p.resHosts.nodes[host] = true
+		p.resHosts.Nodes[host] = true
 	}
 	p.rangeStart = nil
 	p.currHost = nil
@@ -144,7 +186,7 @@ func (p *parser) parseEndGroup() bool {
 		return p.fail("empty group")
 	}
 	host := string(p.currPrefix) + string(p.currHost)
-	p.resHosts.nodes[host] = true
+	p.resHosts.Nodes[host] = true
 	p.currHost = nil
 	p.currPrefix = nil
 	return false
@@ -158,7 +200,7 @@ func (p *parser) parseComma() bool {
 		return false
 	}
 	host := string(p.currPrefix) + string(p.currHost)
-	p.resHosts.nodes[host] = true
+	p.resHosts.Nodes[host] = true
 	p.currHost = nil
 	return false
 }
