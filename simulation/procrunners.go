@@ -28,8 +28,10 @@ func (s Simulation) RunGeogrid() {
 	prgs := wrfprocs.ShowGeogridProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
 
 	var p wrfprocs.Progress
+	var endLineFound bool
 	for p = range prgs {
 		if p.Completed {
+			endLineFound = true
 			if p.Err != nil {
 				errors.FailF("geogrid process failed: %w", p.Err)
 			} else {
@@ -37,7 +39,9 @@ func (s Simulation) RunGeogrid() {
 			}
 		}
 	}
-	log.Warning("log file %s is malformed.", logFile)
+	if !endLineFound {
+		log.Warning("log file %s is malformed: completion line not found.", logFile)
+	}
 }
 
 func (s Simulation) RunLinkGrib(startTime time.Time) {
@@ -63,9 +67,10 @@ func (s Simulation) RunUngrib() {
 	prgs := wrfprocs.ShowUngribProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
 
 	var p wrfprocs.Progress
+	var endLineFound bool
 	for p = range prgs {
-
 		if p.Completed {
+			endLineFound = true
 			if p.Err != nil {
 				errors.FailF("ungrib process failed: %w", p.Err)
 			} else {
@@ -73,7 +78,9 @@ func (s Simulation) RunUngrib() {
 			}
 		}
 	}
-	log.Warning("log file %s is malformed.", logFile)
+	if !endLineFound {
+		log.Warning("log file %s is malformed: completion line not found.", logFile)
+	}
 }
 
 func (s Simulation) RunMetgrid() {
@@ -89,8 +96,10 @@ func (s Simulation) RunMetgrid() {
 	prgs := wrfprocs.ShowMetgridProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
 
 	var p wrfprocs.Progress
+	var endLineFound bool
 	for p = range prgs {
 		if p.Completed {
+			endLineFound = true
 			if p.Err != nil {
 				errors.FailF("metgrid process failed: %w", p.Err)
 			} else {
@@ -98,7 +107,9 @@ func (s Simulation) RunMetgrid() {
 			}
 		}
 	}
-	log.Warning("log file %s is malformed.", logFile)
+	if !endLineFound {
+		log.Warning("log file %s is malformed: completion line not found.", logFile)
+	}
 
 }
 
@@ -124,9 +135,10 @@ func (s Simulation) RunReal(startTime time.Time) {
 	prgs := wrfprocs.ShowRealProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
 
 	var p wrfprocs.Progress
+	var endLineFound bool
 	for p = range prgs {
-
 		if p.Completed {
+			endLineFound = true
 			if p.Err != nil {
 				errors.FailF("real process failed: %w", p.Err)
 			} else {
@@ -134,7 +146,9 @@ func (s Simulation) RunReal(startTime time.Time) {
 			}
 		}
 	}
-	log.Warning("log file %s is malformed.", logFile)
+	if !endLineFound {
+		log.Warning("log file %s is malformed: completion line not found.", logFile)
+	}
 
 }
 
@@ -154,9 +168,10 @@ func (s Simulation) RunDa(startTime time.Time, domain int) {
 	prgs := wrfprocs.ShowDAProgress(logf)
 
 	var p wrfprocs.Progress
+	var endLineFound bool
 	for p = range prgs {
-
 		if p.Completed {
+			endLineFound = true
 			if p.Err != nil {
 				errors.FailF("Da_wrfvar process failed: %w", p.Err)
 			} else {
@@ -164,7 +179,9 @@ func (s Simulation) RunDa(startTime time.Time, domain int) {
 			}
 		}
 	}
-	log.Warning("log file %s is malformed.", logFile)
+	if !endLineFound {
+		log.Warning("log file %s is malformed: completion line not found.", logFile)
+	}
 
 }
 
@@ -209,9 +226,10 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 	prgs := wrfprocs.ShowProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
 
 	var p wrfprocs.Progress
+	var endLineFound bool
 	for p = range prgs {
-
 		if p.Completed {
+			endLineFound = true
 			if p.Err != nil {
 				errors.FailF("WRF %s process failed: %w", descr, p.Err)
 			} else {
@@ -219,7 +237,9 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 			}
 		}
 	}
-	log.Warning("log file %s is malformed.", logFile)
+	if !endLineFound {
+		log.Warning("log file %s is malformed: completion line not found.", logFile)
+	}
 
 	return nil
 }
