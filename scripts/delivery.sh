@@ -2,6 +2,8 @@
 set -e
 
 RH_EXPR="RH2=100*(PSFC*Q2/0.622)/(611.2*exp(17.67*(T2-273.15)/((T2-273.15)+243.5)))"
+PATH+=:$CDO/bin
+LD_LIBRARY_PATH+=:$CDO/lib
 
 function regrid_date() {
 	SRC_DIR=$1
