@@ -210,9 +210,9 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 	log.Info("Running WRF %s for %02d:00\tDIR: $WORKDIR/%s LOGS: %s", descr, startTime.Hour(), wrfRelDir, "wrf.detail.log rsl.out.* rsl.error.*")
 
 	//--cpu-set 0-15 --bind-to core
-	nodes, ok := s.Nodes.FindFreeNodes(int(math.Ceil(float64(procCount) / 128)))
+	nodes, ok := s.Nodes.FindFreeNodes(int(math.Ceil(float64(procCount) / float64(conf.Values.CoresPerNode))))
 	if !ok {
-		panic("Not enough free nodes to run WRF")
+		errors.FailF("Not enough free nodes to run WRF")
 	}
 	cmd := fmt.Sprintf("mpirun %s %s -n %d ./wrf.exe", conf.Values.MpiOptions, nodes.String(), procCount)
 	log.Debug("Running command: %s", cmd)

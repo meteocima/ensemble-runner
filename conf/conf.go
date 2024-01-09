@@ -27,6 +27,7 @@ var Values = struct {
 	EnsembleParallelism       int    `yaml:"EnsembleParallelism"`
 	AssimilateOnlyInnerDomain bool   `yaml:"AssimilateOnlyInnerDomain"`
 	AssimilateFirstCycle      bool   `yaml:"AssimilateFirstCycle"`
+	CoresPerNode              int    `yaml:"CoresPerNode"`
 }{}
 
 func Initialize() {

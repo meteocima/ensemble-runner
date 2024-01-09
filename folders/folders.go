@@ -97,8 +97,11 @@ func WPSProcWorkdir(workdir string) string {
 	return filepath.Join(workdir, "wps")
 }
 
+func WPSOutputsRootDir() string {
+	return filepath.Join(Rootdir, "inputs")
+}
 func WPSOutputsDir(startTime time.Time) string {
-	return filepath.Join(Rootdir, "inputs", startTime.Format("20060102"))
+	return filepath.Join(WPSOutputsRootDir(), startTime.Format("20060102"))
 }
 
 func DAProcWorkdir(workdir string, startTime time.Time, domain int) string {

@@ -1,10 +1,14 @@
 package simulation
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"math/rand"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/meteocima/ensemble-runner/conf"
@@ -256,10 +260,7 @@ func RunForecast(s *Simulation) chan bool {
 	return failed
 }
 
-func New() Simulation {
-	start := errors.CheckResult(time.Parse(ShortDtFormat, os.Getenv("START_FORECAST")))
-	duration := errors.CheckResult(time.ParseDuration(os.Getenv("DURATION_HOURS") + "h"))
-	workdir := join(folders.WorkDir, os.Getenv("START_FORECAST"))
+func RunForecastsFromInputs() {
 	nodesStr, ok := os.LookupEnv("SLURM_NODELIST")
 	if !ok {
 		fmt.Fprintln(os.Stderr, "$SLURM_NODELIST not set")
@@ -271,6 +272,75 @@ func New() Simulation {
 		fmt.Fprintf(os.Stderr, "cannot parse $SLURM_NODELIST: %s\n", err)
 		os.Exit(1)
 	}
+
+	for _, run := range readArgumentsFile() {
+		sim := New(run.start, run.duration, nodes)
+		sim.Run()
+	}
+}
+
+type run struct {
+	start    time.Time
+	duration time.Duration
+}
+
+func readArgumentsFile() []run {
+	var runs []run
+
+	argfilePath := filepath.Join(folders.WPSOutputsRootDir(), "arguments.txt")
+	argFile := errors.CheckResult(os.Open(argfilePath))
+	defer argFile.Close()
+	argReader := bufio.NewReader(argFile)
+
+	// ignore first line, it's the config file name and is not used.
+	readline(argReader)
+
+	for {
+		line := readline(argReader)
+		if len(line) == 0 {
+			break
+		}
+		line = strings.TrimSuffix(line, "\n")
+		start := errors.CheckResult(time.Parse("2006010215", line[0:10]))
+		duration := time.Hour * time.Duration(errors.CheckResult(strconv.Atoi(line[11:])))
+		runs = append(runs, run{start, duration})
+	}
+	return runs
+}
+
+func readline(argReader *bufio.Reader) string {
+	line, err := argReader.ReadString('\n')
+	if err == io.EOF {
+		err = nil
+	}
+	errors.Check(err)
+
+	return line
+}
+
+func RunForecastFromEnv() {
+	start := errors.CheckResult(time.Parse(ShortDtFormat, os.Getenv("START_FORECAST")))
+	duration := errors.CheckResult(time.ParseDuration(os.Getenv("DURATION_HOURS") + "h"))
+
+	nodesStr, ok := os.LookupEnv("SLURM_NODELIST")
+	if !ok {
+		fmt.Fprintln(os.Stderr, "$SLURM_NODELIST not set")
+		os.Exit(1)
+	}
+
+	nodes, err := mpiman.ParseSlurmNodes(nodesStr)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "cannot parse $SLURM_NODELIST: %s\n", err)
+		os.Exit(1)
+	}
+
+	sim := New(start, duration, nodes)
+	sim.Run()
+}
+
+func New(start time.Time, duration time.Duration, nodes mpiman.SlurmNodes) Simulation {
+	workdir := join(folders.WorkDir, start.Format(ShortDtFormat))
+
 	sim := Simulation{
 		Start:    start,
 		Duration: duration,

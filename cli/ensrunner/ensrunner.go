@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/meteocima/ensemble-runner/conf"
@@ -15,7 +14,7 @@ func main() {
 	log.Info("WRF runner starting. Checking configuration...")
 
 	defer errors.OnFailuresDo(func(err errors.RunTimeError) {
-		fmt.Fprintf(os.Stderr, "simulation failed: %s\n", err)
+		log.Error("Simulation failed: %s\n", err)
 		os.Exit(1)
 	})
 
@@ -23,8 +22,10 @@ func main() {
 	conf.Initialize()
 	log.SetLevel(log.LevelDebug)
 
-	sim := simulation.New()
-
-	sim.Run()
+	if _, ok := os.LookupEnv("START_FORECAST"); ok {
+		simulation.RunForecastFromEnv()
+	} else {
+		simulation.RunForecastsFromInputs()
+	}
 
 }

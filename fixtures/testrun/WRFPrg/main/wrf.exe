@@ -39,6 +39,6 @@ echo wrfvar_input_d03 from $DIR > wrfvar_input_d03
 
 cat /home/parroit/repos/cima/ensemble-runner/wrfprocs/fixtures/rsl.out.wrfita-filse-optim >rsl.out.0000
 
-if [[ $CYCLE == "00" ]]; then
-    sleep 30
-fi
+# if [[ $CYCLE == "00" ]]; then
+#     sleep 30
+# fi
