@@ -274,6 +274,8 @@ func RunForecastsFromInputs() {
 	}
 
 	for _, run := range readArgumentsFile() {
+		errors.Check(os.Setenv("START_FORECAST", run.start.Format(ShortDtFormat)))
+		errors.Check(os.Setenv("DURATION_HOURS", fmt.Sprintf("%.0f", run.duration.Hours())))
 		sim := New(run.start, run.duration, nodes)
 		sim.Run()
 	}
