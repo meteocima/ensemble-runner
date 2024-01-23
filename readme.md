@@ -1,52 +1,64 @@
-# WRF-DA runner
+# ensemble-runner
 
-This repository contain GO source code of wrfda-runner command, which allows
-to run a WRF simulation using either a GFS or IFS forecast as guiding conditions,
+This repository contain GO source code of a series of commands which allows
+to run a WRF simulation using either a GFS forecast as guiding conditions,
 assimilating radars and weather forecast observations.
 
 ## Work environment preparation.
 
-The command must run in a work directory containing a `wrfda-runner.cfg` config file. 
-This file should be in toml format, and allows to customize the path of all others 
-external files and directories needed by the process.
+The command must run in a work directory containing a `config.yaml` config file. 
+This file should be in `yaml`` format, and allows, among other things, to customize 
+the path of all others external files and directories needed by the process.
 
 The config files contains following variables:
 
-* __GeodataDir__	-	path to a directory containing static geographic data used by geogrid.exe.
-* __CovarMatrixesDir__-	path to a directory containing background errors of covariance matrices.
-* __WPSPrg__-	path to compiled binaries of the WPS program.
-* __WRFDAPrg__-	path to compiled binaries of the WRF-DA program.
-* __WRFMainRunPrg__-	path to compiled binaries of the WRF program, compiled with a custom variables Registry suitable to produce the final output of the simulation.
-* __WRFAssStepPrg__-	path to compiled binaries of the WRF program.
-* __GFSArchive__-	path to guiding initial and boundary conditions (the variable is used for both GFS and IFS datasets)
-* __ObservationsArchive__ - directory containing radars and weather stations datasets to assimilate.
-* __NamelistsDir__		- directory of namelists templates used to generates namelists for the configuration of the various processes.
+* __GeogDataDir__					- path to a directory containing static geographic data used by geogrid.exe.
+* __CovarMatrixesDir__				- path to a directory containing background errors of covariance matrices.
+* __GeogridProc__ 					- number of MPI processes to use when running `geogrid.exe`
+* __MetgridProc__ 					- number of MPI processes to use when running `metgrid.exe`
+* __WrfProc__ 						- number of MPI processes to use when running `wrf.exe` to run the final forecast or ensemble members
+* __WrfdaProc__ 					- number of MPI processes to use when running `dawrf_var.exe`
+* __RealProc__ 						- number of MPI processes to use when running `real.exe`
+* __WrfStepProcCount__ 				- number of MPI processes to use when running `wrf.exe` to run the intermediate steps
+* __MpiOptions__					- additional arguments to pass in every invocation of `mpirun`
+* __RunWPS__						- specify if boundary conditions are produced or read from an `inputs` directory
+* __EnsembleMembers__				- number of members in the ensemble (excluding the control forecast)
+* __EnsembleParallelism__			- how many ensemble members to run in parallel
+* __AssimilateOnlyInnerDomain__		- when true, assimilation of observation data is done only for the innermost domain
+* __AssimilateFirstCycle__			- when true, assimilation of observation data is done also in the first cycle
+* __CoresPerNode__					- specify how many cores each node has
+
+Additionally, some other informations are read from environment variables. Some of this variables
+are already defined by other parts of the system, other ones change for every simulations, so it
+does not make sense to have them in the config file.
+
+* __START_FORECAST__	-	start of forecast to simulate, in format YYYY-MM-DD-HH. If `START_FORECAST` is omitted, the system find the date or dates to run by reading the file `inputs/arguments.txt`
+* __DURATION_HOURS__	-	duration of the forecast. value is ignored when file `inputs/arguments.txt` is used.
+* __SLURM_NODELIST__	-	contains hostnames of all available nodes for the simulation.
+* __WRF_DIR__			-	path to compiled binaries of the WRF program.
+* __WPS_DIR__			-	path to compiled binaries of the WPS program.
+* __WRFDA_DIR__			-	path to compiled binaries of the WRF-DA program.
+* __ROOTDIR__			-	path to the root directory of the simulation. This is the directory which contains `templates` directory, `workdir` directory, etc. 
+
 
 ## Command syntax
 
-Run the command without arguments to show syntax:
+Run the command without arguments to start the simulation:
 
 ```bash
 $ wrfda-run 
-Usage: wrfda-run [-p WPS|DA|WPSDA] [-i GFS|IFS] <workdir> <dates...>
-format for dates: YYYYMMDDHH
-default for -p is WPSDA
-default for -i is GFS
+Usage: ensrunner [-p WPS|DA|WPSDA] [-i GFS|IFS] <workdir> <dates...>
 ```
 
-### Arguments
+#### $ROOTDIR directory
 
-#### Workdir argument
+This is the path of the directory containing `config.yaml` config file. 
+Directory `$ROOTDIR/workdir` will be used as starting work directory for the command while running the simulations.
 
-Path of the directory containing `wrfda-runner.cfg` config file. 
-This directory will be used as starting work directory for the command while running the simulations.
+At the end of the simulation, the directory `$ROOTDIR/workdir` will contains a subdirectory for each date of simulation ran, each one directory containing the complete three of intermediates data and log files used. These directory are named using a YYYY-MM-DD-HH format; 
 
-At the end of the simulation, the directory will contains a subdirectory for each date of simulation
-ran, each one directory containing the complete three of intermediates data and log files used.
-These directory are named using a YYYYMMDD format; the command will fail if one of this directories already exists.
-
-Moreover, an inputs directory will be created containing a subdirectories for each date ran containing 
-WPS results files and/or DA results files.
+Moreover, if WPS is run, an `$ROOTDIR/inputs` directory will be created containing a subdirectories for each date ran containing WPS results files. 
+Another directory will contains all output files of the simulation: `$ROOTDIR/results`
 
 #### Dates arguments
 
@@ -75,46 +87,6 @@ Both 1 and 2 can be optionally followed by a comma and number of hours to foreca
 If not specified, number of hours default to 48.
 >	e.g. 2020122523,48
 
-##### Example
-
-Example below execute a simulation starting at 25/12/2020 23:00 and lasting 24 hour.
-After that, a second simulation will be run, starting on 26/12/2020 00:00 and lasting 48h
-
-```bash
-$ wrfda-run .  2020122523,24 2020122600,48
-```
-
-### Other options
-
-#### Phase option `-p`
-
-Allows the user to specify which phase o phases to execute. See [#WRFDA-runner-phases](WRFDA runner phases).
-The option can assume following values:
-
-* __WPS__	-	only execute the WPS phase. Save results in `<workdir>/inputs`	(this position is not actually configurable)
-* __DA__	-	only execute the DA phase. Read as inputs the output files of WPS phase from `<workdir>/inputs`.
-* __WPSDA__	-	serially execute both WPS and DA phases, using output of WPS phase as input for the other.
-
->
-> _If this option is not specified, it defaults to "WPSDA"_
-> 
-
-#### Input option `-i`
-
-This option allows the user to specify if he want to use a GFS or IFS dataset for boundaries and initial conditions.
-GFS datasets normally consists of a file for each hour of forecasts, containing all forecasted variable data.
-IFS consists instead of two files, one containing 3D variables data for all hours, the other containing 4D variables.
-The command anyway try to import all files contained in the directory specified.
-
-> 
-> _If this option is not specified, it defaults to "GFS"_
-> 
-
-## WRFDA runner phases
-
-The `phase` argument allows the user to perform the WRFDA simulation as a whole, or to split it in two different phase: WPS and DA. 
-In the LEXIS environment, this allow us to run the WPS pre-processing phase in the CLOUD, and the DA phase afterwards, in an HPC cluster.
-When running the simulation as a whole is preferred, the command allow to execute he two phases serially.
 
 ### Processes organization within the WPS and DA phases.	
 

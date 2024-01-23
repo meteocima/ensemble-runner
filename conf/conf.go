@@ -21,7 +21,7 @@ var Values = struct {
 	ObDataDir                 string `yaml:"ObDataDir"`
 	GeogDataDir               string `yaml:"GeogDataDir"`
 	GfsDir                    string `yaml:"GfsDir"`
-	BeDir                     string `yaml:"BeDir"`
+	CovarMatrixesDir          string `yaml:"CovarMatrixesDir"`
 	RunWPS                    bool   `yaml:"RunWPS"`
 	EnsembleMembers           int    `yaml:"EnsembleMembers"`
 	EnsembleParallelism       int    `yaml:"EnsembleParallelism"`
@@ -42,7 +42,7 @@ func Initialize() {
 		&Values.ObDataDir,
 		&Values.GeogDataDir,
 		&Values.GfsDir,
-		&Values.BeDir,
+		&Values.CovarMatrixesDir,
 	} {
 		if !filepath.IsAbs(*dir) {
 			*dir = errors.CheckResult(filepath.Abs(*dir))
@@ -52,7 +52,7 @@ func Initialize() {
 	for name, value := range map[string]string{
 		"GEOG_DATA": Values.GeogDataDir,
 		"GFS":       Values.GfsDir,
-		"BE_DIR":    Values.BeDir,
+		"BE_DIR":    Values.CovarMatrixesDir,
 		"MPIOPTS":   Values.MpiOptions,
 		"OB_DATDIR": Values.ObDataDir,
 	} {
@@ -70,7 +70,7 @@ func Initialize() {
 		"ObDataDir":                 Values.ObDataDir,
 		"GeogDataDir":               Values.GeogDataDir,
 		"GfsDir":                    Values.GfsDir,
-		"BeDir":                     Values.BeDir,
+		"CovarMatrixesDir":          Values.CovarMatrixesDir,
 		"RunWPS":                    Values.RunWPS,
 		"EnsembleMembers":           Values.EnsembleMembers,
 		"EnsembleParallelism":       Values.EnsembleParallelism,

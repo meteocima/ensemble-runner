@@ -9,7 +9,7 @@ MpiOptions: --prefix /opt/share/comps/gcc-8.3.1/ompi-4.1.4 -bind-to core -x LD_L
 ObDataDir: ./obs
 GeogDataDir: /data/unsafe/geog
 GfsDir: /data/unsafe/gfs
-BeDir: ./be
+CovarMatrixesDir: ./be
 RunWPS: true
 EnsembleMembers: 10
 EnsembleParallelism: 1
