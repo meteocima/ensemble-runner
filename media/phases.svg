@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.1 (9b9bdc1480, 2023-11-25, custom)"
+   sodipodi:docname="phases.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.3220258"
+     inkscape:cx="404.30375"
+     inkscape:cy="263.61059"
+     inkscape:window-width="1452"
+     inkscape:window-height="991"
+     inkscape:window-x="26"
+     inkscape:window-y="23"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g36" />
+  <defs
+     id="defs1">
+    <linearGradient
+       id="linearGradient24"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop24" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop25" />
+    </linearGradient>
+    <rect
+       x="130.6234"
+       y="67.400703"
+       width="424.21874"
+       height="307.13399"
+       id="rect12" />
+    <linearGradient
+       id="swatch3"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop3" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient24"
+       id="linearGradient25"
+       x1="7.7272614"
+       y1="36.693954"
+       x2="24.522507"
+       y2="36.693954"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text12"
+       style="white-space:pre;shape-inside:url(#rect12);display:inline;fill:#ffdd55;fill-opacity:1;fill-rule:nonzero" />
+    <g
+       id="g13"
+       transform="matrix(1.5492552,0,0,1.5033772,-5.8182658,13.52554)">
+      <rect
+         style="fill:#ffdd55;fill-opacity:1;fill-rule:nonzero;stroke-width:0.264583;stroke:#000000;stroke-opacity:1"
+         id="rect9"
+         width="16.530663"
+         height="17.361691"
+         x="8.1719093"
+         y="27.19253" />
+      <text
+         xml:space="preserve"
+         style="font-size:3.175px;fill:#1a1a1a;fill-opacity:1;fill-rule:nonzero;stroke-width:0.264583"
+         x="9.3031321"
+         y="37.095287"
+         id="text13"><tspan
+           sodipodi:role="line"
+           id="tspan13"
+           style="fill:#1a1a1a;stroke-width:0.264583"
+           x="9.3031321"
+           y="37.095287">START-6h</tspan></text>
+    </g>
+    <g
+       id="g14"
+       transform="matrix(1.5492552,0,0,1.5033772,87.227986,14.90303)" />
+    <g
+       id="g15"
+       transform="matrix(1.5492552,0,0,1.5033772,40.807663,13.36684)">
+      <rect
+         style="fill:#ffdd55;fill-opacity:1;fill-rule:nonzero;stroke-width:0.264583;stroke:#000000;stroke-opacity:1"
+         id="rect14"
+         width="16.530663"
+         height="17.361691"
+         x="8.1719093"
+         y="27.19253" />
+      <text
+         xml:space="preserve"
+         style="font-size:3.175px;fill:#1a1a1a;fill-opacity:1;fill-rule:nonzero;stroke-width:0.264583"
+         x="9.3031321"
+         y="37.095287"
+         id="text15"><tspan
+           sodipodi:role="line"
+           id="tspan15"
+           style="fill:#1a1a1a;stroke-width:0.264583"
+           x="9.3031321"
+           y="37.095287">START-3h</tspan></text>
+    </g>
+    <g
+       id="g16"
+       transform="matrix(1.5492552,0,0,1.5033772,84.812297,13.29648)">
+      <rect
+         style="fill:#ffdd55;fill-opacity:1;fill-rule:nonzero;stroke-width:0.264583;stroke:#000000;stroke-opacity:1"
+         id="rect15"
+         width="16.530663"
+         height="17.361691"
+         x="8.125989"
+         y="27.694862" />
+      <text
+         xml:space="preserve"
+         style="font-size:3.175px;fill:#1a1a1a;fill-opacity:1;fill-rule:nonzero;stroke-width:0.264583"
+         x="9.3031321"
+         y="37.095287"
+         id="text16"><tspan
+           sodipodi:role="line"
+           id="tspan16"
+           style="fill:#1a1a1a;stroke-width:0.264583"
+           x="9.3031321"
+           y="37.095287">  START   </tspan></text>
+    </g>
+    <g
+       id="g18"
+       transform="matrix(1.5492552,0,0,1.5033772,132.02066,-18.69303)">
+      <rect
+         style="fill:#ffdd55;fill-opacity:1;fill-rule:nonzero;stroke-width:0.264583;stroke:#000000;stroke-opacity:1"
+         id="rect16"
+         width="16.530663"
+         height="17.361691"
+         x="7.7818422"
+         y="27.327732" />
+      <text
+         xml:space="preserve"
+         style="font-size:3.175px;white-space:pre;inline-size:18.6344;display:inline;fill:#1a1a1a;fill-opacity:1;fill-rule:nonzero;stroke-width:0.264583"
+         x="9.3031321"
+         y="37.095287"
+         id="text17"
+         transform="translate(0.96734576,-2.2022572)"><tspan
+           x="9.3031321"
+           y="37.095287"
+           id="tspan2"><tspan
+             style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+             id="tspan1">CONTROL </tspan></tspan><tspan
+           x="9.3031321"
+           y="41.064037"
+           id="tspan4"><tspan
+             style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+             id="tspan3">FORECAST</tspan></tspan></text>
+    </g>
+    <g
+       id="g20"
+       transform="matrix(1.5492552,0,0,1.5033772,127.85145,10.711928)"
+       style="stroke:#000000;stroke-opacity:1">
+      <g
+         id="g21"
+         transform="translate(1.1399239,1.692644)"
+         style="stroke:#000000;stroke-opacity:1">
+        <rect
+           style="fill:#ffdd55;fill-opacity:1;fill-rule:nonzero;stroke-width:0.264583;stroke:#000000;stroke-opacity:1"
+           id="rect18"
+           width="16.530663"
+           height="17.361691"
+           x="7.8595529"
+           y="28.013109" />
+        <text
+           xml:space="preserve"
+           style="font-size:3.175px;white-space:pre;inline-size:18.6344;display:inline;fill:#1a1a1a;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+           x="9.3031321"
+           y="37.095287"
+           id="text20"
+           transform="translate(0.03633223,-2.0311728)"><tspan
+             x="9.3031321"
+             y="37.095287"
+             id="tspan6"><tspan
+               style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+               id="tspan5">ENSEMBLE </tspan></tspan><tspan
+             x="9.3031321"
+             y="41.064037"
+             id="tspan8"><tspan
+               style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+               id="tspan7">MEMBER #1</tspan></tspan></text>
+      </g>
+      <g
+         id="g22"
+         transform="translate(1.1399239,1.692644)"
+         style="stroke:#000000;stroke-opacity:1">
+        <rect
+           style="fill:#ffdd55;fill-opacity:1;fill-rule:nonzero;stroke-width:0.264583;stroke:#000000;stroke-opacity:1"
+           id="rect21"
+           width="16.530663"
+           height="17.361691"
+           x="7.8595529"
+           y="28.013109" />
+        <text
+           xml:space="preserve"
+           style="font-size:3.175px;white-space:pre;inline-size:18.6344;display:inline;fill:#1a1a1a;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.264583;stroke-opacity:1"
+           x="9.3031321"
+           y="37.095287"
+           id="text22"
+           transform="translate(0.03633223,-2.0311728)"><tspan
+             x="9.3031321"
+             y="37.095287"
+             id="tspan10"><tspan
+               style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+               id="tspan9">ENSEMBLE </tspan></tspan><tspan
+             x="9.3031321"
+             y="41.064037"
+             id="tspan12"><tspan
+               style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+               id="tspan11">MEMBER #1</tspan></tspan></text>
+      </g>
+    </g>
+    <g
+       id="g29"
+       transform="matrix(1.5492552,0,0,1.5033772,130.71744,14.591885)"
+       style="stroke:#000000;stroke-opacity:1">
+      <g
+         id="g26"
+         transform="translate(1.1399239,1.692644)"
+         style="stroke:#000000;stroke-opacity:1">
+        <rect
+           style="fill:#ffdd55;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+           id="rect25"
+           width="16.530663"
+           height="17.361691"
+           x="7.8595529"
+           y="28.013109" />
+        <text
+           xml:space="preserve"
+           style="font-size:3.175px;white-space:pre;inline-size:18.6344;display:inline;fill:#1a1a1a;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+           x="9.3031321"
+           y="37.095287"
+           id="text26"
+           transform="translate(0.03633223,-2.0311728)"><tspan
+             x="9.3031321"
+             y="37.095287"
+             id="tspan17"><tspan
+               style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+               id="tspan14">ENSEMBLE </tspan></tspan><tspan
+             x="9.3031321"
+             y="41.064037"
+             id="tspan19"><tspan
+               style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+               id="tspan18">MEMBER #1</tspan></tspan></text>
+      </g>
+      <g
+         id="g28"
+         transform="translate(1.1399239,1.692644)"
+         style="stroke:#000000;stroke-opacity:1">
+        <rect
+           style="fill:#ffdd55;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+           id="rect26"
+           width="16.530663"
+           height="17.361691"
+           x="7.8595529"
+           y="28.013109" />
+        <text
+           xml:space="preserve"
+           style="font-size:3.175px;white-space:pre;inline-size:18.6344;display:inline;fill:#1a1a1a;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.264583;stroke-opacity:1"
+           x="9.3031321"
+           y="37.095287"
+           id="text28"
+           transform="translate(0.03633223,-2.0311728)"><tspan
+             x="9.3031321"
+             y="37.095287"
+             id="tspan21"><tspan
+               style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+               id="tspan20">ENSEMBLE </tspan></tspan><tspan
+             x="9.3031321"
+             y="41.064037"
+             id="tspan23"><tspan
+               style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+               id="tspan22">MEMBER #1</tspan></tspan></text>
+      </g>
+    </g>
+    <g
+       id="g33"
+       transform="matrix(1.5492552,0,0,1.5033772,135.69579,19.599163)"
+       style="stroke:#000000;stroke-opacity:1">
+      <g
+         id="g30"
+         transform="translate(1.1399239,1.692644)"
+         style="stroke:#000000;stroke-opacity:1">
+        <rect
+           style="fill:#ffdd55;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+           id="rect29"
+           width="16.530663"
+           height="17.361691"
+           x="7.8595529"
+           y="28.013109" />
+        <text
+           xml:space="preserve"
+           style="font-size:3.175px;white-space:pre;inline-size:18.6344;display:inline;fill:#1a1a1a;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+           x="9.3031321"
+           y="37.095287"
+           id="text30"
+           transform="translate(0.03633223,-2.0311728)"><tspan
+             x="9.3031321"
+             y="37.095287"
+             id="tspan25"><tspan
+               style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+               id="tspan24">ENSEMBLE </tspan></tspan><tspan
+             x="9.3031321"
+             y="41.064037"
+             id="tspan27"><tspan
+               style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+               id="tspan26">MEMBER #1</tspan></tspan></text>
+      </g>
+      <g
+         id="g32"
+         transform="translate(1.1399239,1.692644)"
+         style="stroke:#000000;stroke-opacity:1">
+        <rect
+           style="fill:#ffdd55;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+           id="rect30"
+           width="16.530663"
+           height="17.361691"
+           x="7.8595529"
+           y="28.013109" />
+        <text
+           xml:space="preserve"
+           style="font-size:3.175px;white-space:pre;inline-size:18.6344;display:inline;fill:#1a1a1a;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.264583;stroke-opacity:1"
+           x="9.3031321"
+           y="37.095287"
+           id="text32"
+           transform="translate(0.03633223,-2.0311728)"><tspan
+             x="9.3031321"
+             y="37.095287"
+             id="tspan29"><tspan
+               style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+               id="tspan28">ENSEMBLE </tspan></tspan><tspan
+             x="9.3031321"
+             y="41.064037"
+             id="tspan37"><tspan
+               style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+               id="tspan30">MEMBER #1</tspan></tspan></text>
+      </g>
+    </g>
+    <g
+       id="g37"
+       transform="matrix(1.5492552,0,0,1.5033772,140.13003,23.956785)"
+       style="stroke:#000000;stroke-opacity:1">
+      <g
+         id="g34"
+         transform="translate(1.1399239,1.692644)"
+         style="stroke:#000000;stroke-opacity:1">
+        <rect
+           style="fill:#ffdd55;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+           id="rect33"
+           width="16.530663"
+           height="17.361691"
+           x="7.8595529"
+           y="28.013109" />
+        <text
+           xml:space="preserve"
+           style="font-size:3.175px;white-space:pre;inline-size:18.6344;display:inline;fill:#1a1a1a;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+           x="9.3031321"
+           y="37.095287"
+           id="text34"
+           transform="translate(0.03633223,-2.0311728)"><tspan
+             x="9.3031321"
+             y="37.095287"
+             id="tspan39"><tspan
+               style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+               id="tspan38">ENSEMBLE </tspan></tspan><tspan
+             x="9.3031321"
+             y="41.064037"
+             id="tspan41"><tspan
+               style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+               id="tspan40">MEMBER #1</tspan></tspan></text>
+      </g>
+      <g
+         id="g36"
+         transform="translate(1.1399239,1.692644)"
+         style="stroke:#000000;stroke-opacity:1">
+        <rect
+           style="fill:#ffdd55;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.264583;stroke-opacity:1"
+           id="rect34"
+           width="16.530663"
+           height="17.361691"
+           x="7.8595529"
+           y="28.013109" />
+        <text
+           xml:space="preserve"
+           style="font-size:3.175px;white-space:pre;inline-size:18.6344;display:inline;fill:#1a1a1a;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.264583;stroke-opacity:1"
+           x="9.3031321"
+           y="37.095287"
+           id="text36"
+           transform="translate(0.03633223,-2.0311728)"><tspan
+             x="9.3031321"
+             y="37.095287"
+             id="tspan43"><tspan
+               style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+               id="tspan42">ENSEMBLE </tspan></tspan><tspan
+             x="9.3031321"
+             y="41.064037"
+             id="tspan45"><tspan
+               style="font-size:2.31156px;-inkscape-font-specification:'sans-serif, '"
+               id="tspan44">MEMBER #1</tspan></tspan></text>
+      </g>
+    </g>
+  </g>
+</svg>
