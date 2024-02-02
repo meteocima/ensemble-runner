@@ -25,6 +25,7 @@ var Values = struct {
 	RunWPS                    bool   `yaml:"RunWPS"`
 	EnsembleMembers           int    `yaml:"EnsembleMembers"`
 	EnsembleParallelism       int    `yaml:"EnsembleParallelism"`
+	AssimilateObservations    bool   `yaml:"AssimilateObservations"`
 	AssimilateOnlyInnerDomain bool   `yaml:"AssimilateOnlyInnerDomain"`
 	AssimilateFirstCycle      bool   `yaml:"AssimilateFirstCycle"`
 	CoresPerNode              int    `yaml:"CoresPerNode"`

@@ -108,111 +108,130 @@ func (s *Simulation) Run() {
 
 		server.MkdirAll(wpsOutputsDir, 0775)
 
-		// run real for every cycle.
-		server.CopyFile(s.Workdir, join(wrf18dir, "namelist.input"), join(wpsdir, "namelist.input"))
-		s.RunReal(s.Start.Add(-6 * time.Hour))
-		server.CopyFile(s.Workdir, join(wpsdir, "wrfbdy_d01"), join(wpsOutputsDir, "wrfbdy_d01_da01"))
-		server.CopyFile(s.Workdir, join(wpsdir, "wrfinput_d01"), join(wpsOutputsDir, "wrfinput_d01"))
-		server.CopyFile(s.Workdir, join(wpsdir, "wrfinput_d02"), join(wpsOutputsDir, "wrfinput_d02"))
-		server.CopyFile(s.Workdir, join(wpsdir, "wrfinput_d03"), join(wpsOutputsDir, "wrfinput_d03"))
+		if conf.Values.AssimilateObservations {
+			// run real for every cycle.
+			server.CopyFile(s.Workdir, join(wrf18dir, "namelist.input"), join(wpsdir, "namelist.input"))
+			s.RunReal(s.Start.Add(-6 * time.Hour))
+			server.CopyFile(s.Workdir, join(wpsdir, "wrfbdy_d01"), join(wpsOutputsDir, "wrfbdy_d01_da01"))
+			server.CopyFile(s.Workdir, join(wpsdir, "wrfinput_d01"), join(wpsOutputsDir, "wrfinput_d01"))
+			server.CopyFile(s.Workdir, join(wpsdir, "wrfinput_d02"), join(wpsOutputsDir, "wrfinput_d02"))
+			server.CopyFile(s.Workdir, join(wpsdir, "wrfinput_d03"), join(wpsOutputsDir, "wrfinput_d03"))
 
-		server.CopyFile(s.Workdir, join(wrf21dir, "namelist.input"), join(wpsdir, "namelist.input"))
-		s.RunReal(s.Start.Add(-3 * time.Hour))
-		server.CopyFile(s.Workdir, join(wpsdir, "wrfbdy_d01"), join(wpsOutputsDir, "wrfbdy_d01_da02"))
+			server.CopyFile(s.Workdir, join(wrf21dir, "namelist.input"), join(wpsdir, "namelist.input"))
+			s.RunReal(s.Start.Add(-3 * time.Hour))
+			server.CopyFile(s.Workdir, join(wpsdir, "wrfbdy_d01"), join(wpsOutputsDir, "wrfbdy_d01_da02"))
 
-		server.CopyFile(s.Workdir, join(wrf00dir, "namelist.input"), join(wpsdir, "namelist.input"))
-		s.RunReal(s.Start)
-		server.CopyFile(s.Workdir, join(wpsdir, "wrfbdy_d01"), join(wpsOutputsDir, "wrfbdy_d01_da03"))
+			server.CopyFile(s.Workdir, join(wrf00dir, "namelist.input"), join(wpsdir, "namelist.input"))
+			s.RunReal(s.Start)
+			server.CopyFile(s.Workdir, join(wpsdir, "wrfbdy_d01"), join(wpsOutputsDir, "wrfbdy_d01_da03"))
+		} else {
+			server.CopyFile(s.Workdir, join(wrf00dir, "namelist.input"), join(wpsdir, "namelist.input"))
+			s.RunReal(s.Start)
+			server.CopyFile(s.Workdir, join(wpsdir, "wrfbdy_d01"), join(wpsOutputsDir, "wrfbdy_d01"))
+			server.CopyFile(s.Workdir, join(wpsdir, "wrfinput_d01"), join(wpsOutputsDir, "wrfinput_d01"))
+			server.CopyFile(s.Workdir, join(wpsdir, "wrfinput_d02"), join(wpsOutputsDir, "wrfinput_d02"))
+			server.CopyFile(s.Workdir, join(wpsdir, "wrfinput_d03"), join(wpsOutputsDir, "wrfinput_d03"))
+		}
+
 	}
 
-	if conf.Values.AssimilateFirstCycle {
-		// assimilate D-6 (first cycle) for all domains
-		if !conf.Values.AssimilateOnlyInnerDomain {
-			server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da01"), join(da18dir[1], "wrfbdy_d01"))
-		}
-		for domain := firstDomain; domain <= 3; domain++ {
-			// input condition are copied from wps
-			server.CopyFile(s.Workdir, join(wpsOutputsDir, fmt.Sprintf("wrfinput_d%02d", domain)), join(da18dir[domain], "fg"))
-			s.RunDa(s.Start.Add(-6*time.Hour), domain)
-		}
+	if conf.Values.AssimilateObservations {
+		if conf.Values.AssimilateFirstCycle {
+			// assimilate D-6 (first cycle) for all domains
+			if !conf.Values.AssimilateOnlyInnerDomain {
+				server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da01"), join(da18dir[1], "wrfbdy_d01"))
+			}
+			for domain := firstDomain; domain <= 3; domain++ {
+				// input condition are copied from wps
+				server.CopyFile(s.Workdir, join(wpsOutputsDir, fmt.Sprintf("wrfinput_d%02d", domain)), join(da18dir[domain], "fg"))
+				s.RunDa(s.Start.Add(-6*time.Hour), domain)
+			}
 
-		// to run WRF from D-6 to D-3, input and boundary conditions are copied from da dirs of first cycle.
-		if !conf.Values.AssimilateOnlyInnerDomain {
-			server.CopyFile(s.Workdir, join(da18dir[1], "wrfbdy_d01"), join(wrf18dir, "wrfbdy_d01"))
+			// to run WRF from D-6 to D-3, input and boundary conditions are copied from da dirs of first cycle.
+			if !conf.Values.AssimilateOnlyInnerDomain {
+				server.CopyFile(s.Workdir, join(da18dir[1], "wrfbdy_d01"), join(wrf18dir, "wrfbdy_d01"))
+			} else {
+				server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da01"), join(wrf18dir, "wrfbdy_d01"))
+			}
+			for domain := firstDomain; domain <= 3; domain++ {
+				server.CopyFile(s.Workdir, join(da18dir[domain], "wrfvar_output"), join(wrf18dir, fmt.Sprintf("wrfinput_d%02d", domain)))
+			}
+			if conf.Values.AssimilateOnlyInnerDomain {
+				for domain := 1; domain <= 2; domain++ {
+					server.CopyFile(s.Workdir, join(wpsOutputsDir, fmt.Sprintf("wrfinput_d%02d", domain)), join(wrf18dir, fmt.Sprintf("wrfinput_d%02d", domain)))
+				}
+			}
+
 		} else {
+			// to run WRF from D-6 to D-3, input and boundary conditions are copied from wps.
 			server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da01"), join(wrf18dir, "wrfbdy_d01"))
-		}
-		for domain := firstDomain; domain <= 3; domain++ {
-			server.CopyFile(s.Workdir, join(da18dir[domain], "wrfvar_output"), join(wrf18dir, fmt.Sprintf("wrfinput_d%02d", domain)))
-		}
-		if conf.Values.AssimilateOnlyInnerDomain {
-			for domain := 1; domain <= 2; domain++ {
+			for domain := 1; domain <= 3; domain++ {
 				server.CopyFile(s.Workdir, join(wpsOutputsDir, fmt.Sprintf("wrfinput_d%02d", domain)), join(wrf18dir, fmt.Sprintf("wrfinput_d%02d", domain)))
 			}
 		}
-
 	} else {
-		// to run WRF from D-6 to D-3, input and boundary conditions are copied from wps.
-		server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da01"), join(wrf18dir, "wrfbdy_d01"))
+		server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01"), join(wrf00dir, "wrfbdy_d01"))
 		for domain := 1; domain <= 3; domain++ {
-			server.CopyFile(s.Workdir, join(wpsOutputsDir, fmt.Sprintf("wrfinput_d%02d", domain)), join(wrf18dir, fmt.Sprintf("wrfinput_d%02d", domain)))
+			server.CopyFile(s.Workdir, join(wpsOutputsDir, fmt.Sprintf("wrfinput_d%02d", domain)), join(wrf00dir, fmt.Sprintf("wrfinput_d%02d", domain)))
 		}
 	}
 
-	// run WRF from D-6 to D-3.
-	s.RunWrfStep(s.Start.Add(-6 * time.Hour))
+	if conf.Values.AssimilateObservations {
+		// run WRF from D-6 to D-3.
+		s.RunWrfStep(s.Start.Add(-6 * time.Hour))
 
-	// assimilate D-3 (second cycle) for all domains
-	if !conf.Values.AssimilateOnlyInnerDomain {
-		server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da02"), join(da21dir[1], "wrfbdy_d01"))
-	}
-	for domain := firstDomain; domain <= 3; domain++ {
-		// input condition are copied from previous cycle wrf
-		server.CopyFile(s.Workdir, join(wrf18dir, fmt.Sprintf("wrfvar_input_d%02d", domain)), join(da21dir[domain], "fg"))
-		s.RunDa(s.Start.Add(-3*time.Hour), domain)
-	}
-
-	// run WRF from D-3 to D. input and boundary conditions are copied from da dirs of second cycle.
-	// boundary condition are copied from wps
-	if conf.Values.AssimilateOnlyInnerDomain {
-		server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da02"), join(wrf21dir, "wrfbdy_d01"))
-	} else {
-		server.CopyFile(s.Workdir, join(da21dir[1], "wrfbdy_d01"), join(wrf21dir, "wrfbdy_d01"))
-	}
-
-	for domain := firstDomain; domain <= 3; domain++ {
-		server.CopyFile(s.Workdir, join(da21dir[domain], "wrfvar_output"), join(wrf21dir, fmt.Sprintf("wrfinput_d%02d", domain)))
-	}
-	if conf.Values.AssimilateOnlyInnerDomain {
-		for domain := 1; domain <= 2; domain++ {
-			server.CopyFile(s.Workdir, join(wrf18dir, fmt.Sprintf("wrfvar_input_d%02d", domain)), join(wrf21dir, fmt.Sprintf("wrfinput_d%02d", domain)))
+		// assimilate D-3 (second cycle) for all domains
+		if !conf.Values.AssimilateOnlyInnerDomain {
+			server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da02"), join(da21dir[1], "wrfbdy_d01"))
 		}
-	}
+		for domain := firstDomain; domain <= 3; domain++ {
+			// input condition are copied from previous cycle wrf
+			server.CopyFile(s.Workdir, join(wrf18dir, fmt.Sprintf("wrfvar_input_d%02d", domain)), join(da21dir[domain], "fg"))
+			s.RunDa(s.Start.Add(-3*time.Hour), domain)
+		}
 
-	s.RunWrfStep(s.Start.Add(-3 * time.Hour))
+		// run WRF from D-3 to D. input and boundary conditions are copied from da dirs of second cycle.
+		// boundary condition are copied from wps
+		if conf.Values.AssimilateOnlyInnerDomain {
+			server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da02"), join(wrf21dir, "wrfbdy_d01"))
+		} else {
+			server.CopyFile(s.Workdir, join(da21dir[1], "wrfbdy_d01"), join(wrf21dir, "wrfbdy_d01"))
+		}
 
-	// assimilate D (third cycle) for all domains
-	if !conf.Values.AssimilateOnlyInnerDomain {
-		server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da03"), join(da00dir[1], "wrfbdy_d01"))
-	}
-	for domain := firstDomain; domain <= 3; domain++ {
-		// input condition are copied from previous cycle wrf
-		server.CopyFile(s.Workdir, join(wrf21dir, fmt.Sprintf("wrfvar_input_d%02d", domain)), join(da00dir[domain], "fg"))
-		s.RunDa(s.Start, domain)
-	}
+		for domain := firstDomain; domain <= 3; domain++ {
+			server.CopyFile(s.Workdir, join(da21dir[domain], "wrfvar_output"), join(wrf21dir, fmt.Sprintf("wrfinput_d%02d", domain)))
+		}
+		if conf.Values.AssimilateOnlyInnerDomain {
+			for domain := 1; domain <= 2; domain++ {
+				server.CopyFile(s.Workdir, join(wrf18dir, fmt.Sprintf("wrfvar_input_d%02d", domain)), join(wrf21dir, fmt.Sprintf("wrfinput_d%02d", domain)))
+			}
+		}
 
-	if conf.Values.AssimilateOnlyInnerDomain {
-		server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da03"), join(wrf00dir, "wrfbdy_d01"))
-	} else {
-		server.CopyFile(s.Workdir, join(da00dir[1], "wrfbdy_d01"), join(wrf00dir, "wrfbdy_d01"))
-	}
-	// run WRF from D for the duration of the forecast. input and boundary conditions are copied from da dirs of third cycle.
-	for domain := firstDomain; domain <= 3; domain++ {
-		server.CopyFile(s.Workdir, join(da00dir[domain], "wrfvar_output"), join(wrf00dir, fmt.Sprintf("wrfinput_d%02d", domain)))
-	}
-	if conf.Values.AssimilateOnlyInnerDomain {
-		for domain := 1; domain <= 2; domain++ {
-			server.CopyFile(s.Workdir, join(wrf21dir, fmt.Sprintf("wrfvar_input_d%02d", domain)), join(wrf00dir, fmt.Sprintf("wrfinput_d%02d", domain)))
+		s.RunWrfStep(s.Start.Add(-3 * time.Hour))
+
+		// assimilate D (third cycle) for all domains
+		if !conf.Values.AssimilateOnlyInnerDomain {
+			server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da03"), join(da00dir[1], "wrfbdy_d01"))
+		}
+		for domain := firstDomain; domain <= 3; domain++ {
+			// input condition are copied from previous cycle wrf
+			server.CopyFile(s.Workdir, join(wrf21dir, fmt.Sprintf("wrfvar_input_d%02d", domain)), join(da00dir[domain], "fg"))
+			s.RunDa(s.Start, domain)
+		}
+
+		if conf.Values.AssimilateOnlyInnerDomain {
+			server.CopyFile(s.Workdir, join(wpsOutputsDir, "wrfbdy_d01_da03"), join(wrf00dir, "wrfbdy_d01"))
+		} else {
+			server.CopyFile(s.Workdir, join(da00dir[1], "wrfbdy_d01"), join(wrf00dir, "wrfbdy_d01"))
+		}
+		// run WRF from D for the duration of the forecast. input and boundary conditions are copied from da dirs of third cycle.
+		for domain := firstDomain; domain <= 3; domain++ {
+			server.CopyFile(s.Workdir, join(da00dir[domain], "wrfvar_output"), join(wrf00dir, fmt.Sprintf("wrfinput_d%02d", domain)))
+		}
+		if conf.Values.AssimilateOnlyInnerDomain {
+			for domain := 1; domain <= 2; domain++ {
+				server.CopyFile(s.Workdir, join(wrf21dir, fmt.Sprintf("wrfvar_input_d%02d", domain)), join(wrf00dir, fmt.Sprintf("wrfinput_d%02d", domain)))
+			}
 		}
 	}
 
