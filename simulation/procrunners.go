@@ -216,15 +216,28 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 		errors.FailF("Not enough free nodes to run WRF")
 	}
 
-	logFile := join(path, "rsl.out.0000")
-	logf := errors.CheckResult(os.Open(logFile))
-	defer logf.Close()
-
-	prgs := wrfprocs.ShowProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
-
 	var p wrfprocs.Progress
 	var endLineFound chan bool = make(chan bool)
 	go func() {
+		logFile := join(path, "rsl.out.0000")
+		var logf *os.File
+		var err error
+		retryc := 0
+		log.Debug("Wait for 30 sec before opening log file.")
+		time.Sleep(30 * time.Second)
+		for {
+			logf, err = os.Open(logFile)
+			if err == nil || retryc > 10 {
+				break
+			}
+			log.Warning("WRF %s log file not found: %s. Wait for 30 sec and retry for the %d time.", descr, logFile, retryc+1)
+			time.Sleep(30 * time.Second)
+			retryc++
+		}
+		defer logf.Close()
+
+		prgs := wrfprocs.ShowProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
+
 		outfLogPath := filepath.Join(s.Workdir, "output_files.log")
 		for p = range prgs {
 			if p.Completed {
@@ -258,7 +271,7 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 	s.Nodes.Dispose(nodes)
 
 	if !<-endLineFound {
-		log.Warning("log file %s is malformed: completion line not found.", logFile)
+		log.Warning("log file is malformed: completion line not found.")
 	}
 
 	return nil
