@@ -186,6 +186,8 @@ func (s Simulation) RunDa(startTime time.Time, domain int) {
 }
 
 func (s Simulation) RunWrfEnsemble(startTime time.Time, ensnum int) (err error) {
+	defer errors.OnFailuresSet(&err)
+
 	return s.runWrf(startTime, ensnum, conf.Values.WrfProcCount)
 }
 
@@ -227,9 +229,7 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 
 	var p wrfprocs.Progress
 	var endLineFound bool
-	outfLogPath := filepath.Join(path, "", "output_files.log")
-	outfLog := errors.CheckResult(os.OpenFile(outfLogPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644))
-	defer outfLog.Close()
+	outfLogPath := filepath.Join(s.Workdir, "output_files.log")
 	for p = range prgs {
 		if p.Completed {
 			endLineFound = true
@@ -238,9 +238,17 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 			} else {
 				log.Info("  - WRF %s process completed successfully.", descr)
 			}
-			errors.CheckResult(outfLog.Write([]byte("COMPLETED\n")))
+			func() {
+				outfLog := errors.CheckResult(os.OpenFile(outfLogPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644))
+				defer outfLog.Close()
+				errors.CheckResult(outfLog.Write([]byte("COMPLETED\n")))
+			}()
 		} else if p.Filename != "" {
-			errors.CheckResult(outfLog.Write([]byte(p.Filename + "\n")))
+			func() {
+				outfLog := errors.CheckResult(os.OpenFile(outfLogPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644))
+				defer outfLog.Close()
+				errors.CheckResult(outfLog.Write([]byte(p.Filename + "\n")))
+			}()
 			log.Info("File produced by %s: %s\tDIR: $WORKDIR", descr, p.Filename, wrfRelDir)
 		}
 
