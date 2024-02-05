@@ -176,6 +176,7 @@ type Progress struct {
 	Err       error
 	Val       int
 	Completed bool
+	Filename  string
 }
 
 func ShowProgress(r io.Reader, start, end time.Time) chan Progress {
@@ -194,10 +195,16 @@ func ShowProgress(r io.Reader, start, end time.Time) chan Progress {
 					ch <- Progress{Val: currProgress}
 					lastProgress = currProgress
 				}
+				return
 			}
 
 			if p.Curr.Type == SuccessLine {
 				ch <- Progress{Err: p.Err, Completed: true, Val: 100}
+				return
+			}
+
+			if p.Curr.Type == FileOutLine {
+				ch <- Progress{Filename: p.Curr.Filename, Completed: false, Val: lastProgress}
 				return
 			}
 		}

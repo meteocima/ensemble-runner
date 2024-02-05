@@ -227,6 +227,9 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 
 	var p wrfprocs.Progress
 	var endLineFound bool
+	outfLogPath := filepath.Join(path, "", "output_files.log")
+	outfLog := errors.CheckResult(os.OpenFile(outfLogPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644))
+	defer outfLog.Close()
 	for p = range prgs {
 		if p.Completed {
 			endLineFound = true
@@ -235,7 +238,12 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 			} else {
 				log.Info("  - WRF %s process completed successfully.", descr)
 			}
+			errors.CheckResult(outfLog.Write([]byte("COMPLETED\n")))
+		} else if p.Filename != "" {
+			errors.CheckResult(outfLog.Write([]byte(p.Filename + "\n")))
+			log.Info("File produced by %s: %s\tDIR: $WORKDIR", descr, p.Filename, wrfRelDir)
 		}
+
 	}
 	if !endLineFound {
 		log.Warning("log file %s is malformed: completion line not found.", logFile)

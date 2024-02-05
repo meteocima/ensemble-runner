@@ -1,0 +1,18 @@
+GeogridProc: 36
+MetgridProc: 36
+WrfdaProc: 361
+RealProc: 361
+WrfProc: 1536
+
+MpiOptions:
+ObDataDir: not-used
+GeogDataDir: /leonardo_work/CIM21_prod_0/geog
+GfsDir: /leonardo_work/CIM21_prod_0/gfs
+CovarMatrixesDir: not-used
+RunWPS: true
+EnsembleMembers: 0
+EnsembleParallelism: 1
+AssimilateOnlyInnerDomain: false
+AssimilateFirstCycle: false
+AssimilateObservations: false
+CoresPerNode: 112

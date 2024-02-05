@@ -1,0 +1,19 @@
+GeogridProc: 36
+MetgridProc: 36
+WrfProc: 64
+WrfdaProc: 361
+RealProc: 361
+WrfStepProcCount: 361
+
+MpiOptions: --prefix /opt/share/comps/gcc-8.3.1/ompi-4.1.4 -bind-to core -x LD_LIBRARY_PATH
+ObDataDir: ./obs
+GeogDataDir: /data/unsafe/geog
+GfsDir: /data/unsafe/gfs
+CovarMatrixesDir: ./be
+RunWPS: true
+EnsembleMembers: 10
+EnsembleParallelism: 1
+AssimilateOnlyInnerDomain: false
+AssimilateFirstCycle: true
+AssimilateObservations: false
+CoresPerNode: 128
