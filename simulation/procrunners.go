@@ -210,16 +210,11 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 	wrfRelDir := errors.CheckResult(filepath.Rel(s.Workdir, path))
 
 	log.Info("Running WRF %s for %02d:00\tDIR: $WORKDIR/%s LOGS: %s", descr, startTime.Hour(), wrfRelDir, "wrf.detail.log rsl.out.* rsl.error.*")
-
 	//--cpu-set 0-15 --bind-to core
 	nodes, ok := s.Nodes.FindFreeNodes(int(math.Ceil(float64(procCount) / float64(conf.Values.CoresPerNode))))
 	if !ok {
 		errors.FailF("Not enough free nodes to run WRF")
 	}
-	cmd := fmt.Sprintf("mpirun %s %s -n %d ./wrf.exe", conf.Values.MpiOptions, nodes.String(), procCount)
-	log.Debug("Running command: %s", cmd)
-	server.ExecRetry(cmd, path, "wrf.detail.log", "{wrf.detail.log,rsl.out.????,rsl.error.????}")
-	s.Nodes.Dispose(nodes)
 
 	logFile := join(path, "rsl.out.0000")
 	logf := errors.CheckResult(os.Open(logFile))
@@ -228,32 +223,41 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 	prgs := wrfprocs.ShowProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
 
 	var p wrfprocs.Progress
-	var endLineFound bool
-	outfLogPath := filepath.Join(s.Workdir, "output_files.log")
-	for p = range prgs {
-		if p.Completed {
-			endLineFound = true
-			if p.Err != nil {
-				errors.FailF("WRF %s process failed: %w", descr, p.Err)
-			} else {
-				log.Info("  - WRF %s process completed successfully.", descr)
+	var endLineFound chan bool = make(chan bool)
+	go func() {
+		outfLogPath := filepath.Join(s.Workdir, "output_files.log")
+		for p = range prgs {
+			if p.Completed {
+				endLineFound <- true
+				if p.Err != nil {
+					errors.FailF("WRF %s process failed: %w", descr, p.Err)
+				} else {
+					log.Info("  - WRF %s process completed successfully.", descr)
+				}
+				func() {
+					outfLog := errors.CheckResult(os.OpenFile(outfLogPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644))
+					defer outfLog.Close()
+					errors.CheckResult(outfLog.Write([]byte("COMPLETED\n")))
+				}()
+			} else if p.Filename != "" {
+				func() {
+					outfLog := errors.CheckResult(os.OpenFile(outfLogPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644))
+					defer outfLog.Close()
+					errors.CheckResult(outfLog.Write([]byte(p.Filename + "\n")))
+				}()
+				log.Info("File produced by %s: %s\tDIR: $WORKDIR", descr, p.Filename, wrfRelDir)
 			}
-			func() {
-				outfLog := errors.CheckResult(os.OpenFile(outfLogPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644))
-				defer outfLog.Close()
-				errors.CheckResult(outfLog.Write([]byte("COMPLETED\n")))
-			}()
-		} else if p.Filename != "" {
-			func() {
-				outfLog := errors.CheckResult(os.OpenFile(outfLogPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644))
-				defer outfLog.Close()
-				errors.CheckResult(outfLog.Write([]byte(p.Filename + "\n")))
-			}()
-			log.Info("File produced by %s: %s\tDIR: $WORKDIR", descr, p.Filename, wrfRelDir)
-		}
 
-	}
-	if !endLineFound {
+		}
+		close(endLineFound)
+	}()
+
+	cmd := fmt.Sprintf("mpirun %s %s -n %d ./wrf.exe", conf.Values.MpiOptions, nodes.String(), procCount)
+	log.Debug("Running command: %s", cmd)
+	server.ExecRetry(cmd, path, "wrf.detail.log", "{wrf.detail.log,rsl.out.????,rsl.error.????}")
+	s.Nodes.Dispose(nodes)
+
+	if !<-endLineFound {
 		log.Warning("log file %s is malformed: completion line not found.", logFile)
 	}
 
