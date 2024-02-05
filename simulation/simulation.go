@@ -77,31 +77,47 @@ func (s *Simulation) Run() {
 	}
 
 	// create all directories for the various wrf cycles.
-	s.CreateWrfStepDir(s.Start.Add(-6 * time.Hour))
-	s.CreateWrfStepDir(s.Start.Add(-3 * time.Hour))
 	s.CreateWrfControlForecastDir(s.Start, s.Duration)
-	for domain := firstDomain; domain <= 3; domain++ {
-		s.CreateDaDir(s.Start.Add(-6*time.Hour), domain)
-		s.CreateDaDir(s.Start.Add(-3*time.Hour), domain)
-		s.CreateDaDir(s.Start, domain)
+	if conf.Values.AssimilateObservations {
+		s.CreateWrfStepDir(s.Start.Add(-6 * time.Hour))
+		s.CreateWrfStepDir(s.Start.Add(-3 * time.Hour))
+		for domain := firstDomain; domain <= 3; domain++ {
+			s.CreateDaDir(s.Start.Add(-6*time.Hour), domain)
+			s.CreateDaDir(s.Start.Add(-3*time.Hour), domain)
+			s.CreateDaDir(s.Start, domain)
+		}
 	}
-	rnd := rand.NewSource(0xfeedbabebadcafe)
 
-	for ensnum := 1; ensnum <= conf.Values.EnsembleMembers; ensnum++ {
-		seed := rnd.Int63()%100 + 1
-		os.Setenv("ENSEMBLE_SEED", fmt.Sprintf("%02d", seed))
-		log.Debug("Using seed %02d for member n.%d.", seed, ensnum)
+	if conf.Values.EnsembleMembers > 0 {
+		rnd := rand.NewSource(0xfeedbabebadcafe)
 
-		s.CreateWrfEnsembleMemberDir(s.Start, s.Duration, ensnum)
+		for ensnum := 1; ensnum <= conf.Values.EnsembleMembers; ensnum++ {
+			seed := rnd.Int63()%100 + 1
+			os.Setenv("ENSEMBLE_SEED", fmt.Sprintf("%02d", seed))
+			log.Debug("Using seed %02d for member n.%d.", seed, ensnum)
+
+			s.CreateWrfEnsembleMemberDir(s.Start, s.Duration, ensnum)
+		}
 	}
 
 	if conf.Values.RunWPS {
 		// WPS: create directory wps and run geogrid, ungrib, metgrid
-		s.CreateWpsDir(s.Start, s.Duration)
+		var start time.Time
+		var duration time.Duration
+		if conf.Values.AssimilateObservations {
+			start = s.Start.Add(-6 * time.Hour)
+			duration = s.Duration + 6*time.Hour
+		} else {
+			start = s.Start
+			duration = s.Duration
+		}
+
+		s.CreateWpsDir(start, duration)
 		s.RunGeogrid()
-		s.RunLinkGrib(s.Start.Add(-6 * time.Hour))
+
+		s.RunLinkGrib(start)
 		s.RunUngrib()
-		if s.Duration+6*time.Hour > 24*time.Hour {
+		if duration > 24*time.Hour {
 			s.RunAvgtsfc()
 		}
 		s.RunMetgrid()
@@ -372,7 +388,7 @@ func New(start time.Time, duration time.Duration, nodes mpiman.SlurmNodes) Simul
 }
 
 func (s Simulation) CreateWpsDir(start time.Time, duration time.Duration) {
-	server.RenderTemplate(folders.WPSProcWorkdir(s.Workdir), "wps", start.Add(-6*time.Hour), 6+int(duration.Hours()))
+	server.RenderTemplate(folders.WPSProcWorkdir(s.Workdir), "wps", start, int(duration.Hours()))
 }
 
 func (s Simulation) CreateWrfControlForecastDir(start time.Time, duration time.Duration) {
