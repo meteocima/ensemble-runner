@@ -6,10 +6,10 @@ RealProc: 361
 
 
 MpiOptions: --prefix /opt/share/comps/gcc-8.3.1/ompi-4.1.4 -bind-to core -x LD_LIBRARY_PATH
-ObDataDir: ./obs
+ObDataDir: /data/safe/nowcasting/obs
 GeogDataDir: /data/unsafe/geog
 GfsDir: /data/unsafe/gfs
-BeDir: ./be
+BeDir: /data/safe/wrfita
 TemplatesDir: ./templates
 Workdir: ./workdir
 Bindir: ./bin
