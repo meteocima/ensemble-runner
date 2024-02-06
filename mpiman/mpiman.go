@@ -56,6 +56,9 @@ func (sn SlurmNodes) All() SlurmNodesList {
 }
 
 func (lst SlurmNodesList) String() string {
+	if len(lst) == 0 {
+		return ""
+	}
 	return fmt.Sprintf("-hosts %s", strings.Join(lst, ","))
 }
 

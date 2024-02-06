@@ -5,6 +5,7 @@ import (
 	"os"
 	"sort"
 
+	"github.com/meteocima/ensemble-runner/dirprep"
 	"golang.org/x/exp/maps"
 )
 

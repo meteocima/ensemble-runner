@@ -1,5 +1,5 @@
-GeogridProc: 36
-MetgridProc: 36
+GeogridProc: 361
+MetgridProc: 361
 WrfProc: 361
 WrfdaProc: 50
 RealProc: 361
@@ -9,10 +9,14 @@ MpiOptions: --prefix /opt/share/comps/gcc-8.3.1/ompi-4.1.4 -bind-to core -x LD_L
 ObDataDir: /data/safe/nowcasting/obs
 GeogDataDir: /data/unsafe/geog
 GfsDir: /data/unsafe/gfs
-BeDir: /data/safe/wrfita
-TemplatesDir: ./templates
-Workdir: ./workdir
-Bindir: ./bin
+CovarMatrixesDir: /data/safe/wrfita
+CoresPerNode: 48
+RunWPS: true
+EnsembleMembers: 0
+EnsembleParallelism: 1
+AssimilateOnlyInnerDomain: false
+AssimilateFirstCycle: true
+AssimilateObservations: true
 
 PostprocRules:
   wrfout_d03*: $WRFITA_ROOTDIR/scripts/postproc-wrfout.sh $FILE $DOMAIN $INSTANT > postproc-`basename $FILE`.log
