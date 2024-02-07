@@ -2,6 +2,7 @@ package simulation
 
 import (
 	"fmt"
+	"io"
 	"math"
 	"os"
 	"path/filepath"
@@ -14,6 +15,7 @@ import (
 	"github.com/meteocima/ensemble-runner/mpiman"
 	"github.com/meteocima/ensemble-runner/server"
 	"github.com/meteocima/ensemble-runner/wrfprocs"
+	"github.com/parro-it/tailor"
 )
 
 func (s Simulation) RunGeogrid() {
@@ -226,13 +228,13 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 	var endLineFound chan bool = make(chan bool)
 	go func() {
 		logFile := join(path, "rsl.out.0000")
-		var logf *os.File
+		var logf io.ReadCloser
 		var err error
 		retryc := 0
 		log.Debug("Wait for 30 sec before opening log file.")
 		time.Sleep(30 * time.Second)
 		for {
-			logf, err = os.Open(logFile)
+			logf, err = tailor.OpenFile(logFile, 5*time.Second)
 			if err == nil || retryc > 10 {
 				break
 			}
@@ -245,7 +247,9 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 		prgs := wrfprocs.ShowProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
 
 		outfLogPath := filepath.Join(s.Workdir, "output_files.log")
+		//log.Debug("file names written to %s", outfLogPath)
 		for p = range prgs {
+			//log.Debug("WRF log line %v", p)
 			if p.Completed {
 				endLineFound <- true
 				if p.Err != nil {
@@ -264,7 +268,7 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 					defer outfLog.Close()
 					errors.CheckResult(outfLog.Write([]byte(p.Filename + "\n")))
 				}()
-				log.Info("File produced by %s: %s\tDIR: $WORKDIR", descr, p.Filename, wrfRelDir)
+				log.Info("File produced by %s: %s", descr, p.Filename)
 			}
 
 		}
