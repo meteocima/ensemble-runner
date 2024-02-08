@@ -38,3 +38,4 @@
 # Go workspace file
 go.work
 build/
+ensrunner
