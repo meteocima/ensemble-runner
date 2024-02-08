@@ -39,3 +39,4 @@
 go.work
 build/
 ensrunner
+!cli/ensrunner
