@@ -198,18 +198,18 @@ func (s Simulation) RunWrfStep(startTime time.Time) {
 }
 
 func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err error) {
-	var path string
+	var workdirPath string
 	var descr string
 	defer errors.OnFailuresSet(&err)
 	if ensnum == 0 {
-		path = folders.WrfControlProcWorkdir(s.Workdir, startTime)
+		workdirPath = folders.WrfControlProcWorkdir(s.Workdir, startTime)
 		descr = "control"
 	} else {
-		path = folders.WrfEnsembleProcWorkdir(s.Workdir, startTime, ensnum)
+		workdirPath = folders.WrfEnsembleProcWorkdir(s.Workdir, startTime, ensnum)
 		descr = fmt.Sprintf("ensemble n. %d", ensnum)
 	}
 
-	wrfRelDir := errors.CheckResult(filepath.Rel(s.Workdir, path))
+	wrfRelDir := errors.CheckResult(filepath.Rel(s.Workdir, workdirPath))
 
 	log.Info("Running WRF %s for %02d:00\tDIR: $WORKDIR/%s LOGS: %s", descr, startTime.Hour(), wrfRelDir, "wrf.detail.log rsl.out.* rsl.error.*")
 	//--cpu-set 0-15 --bind-to core
@@ -223,13 +223,13 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 		}
 	}
 
-	logFile := join(path, "rsl.out.0000")
+	logFile := join(workdirPath, "rsl.out.0000")
 	endLineFound := make(chan bool)
-	go s.parseProgress(logFile, descr, endLineFound, &err)
+	go s.parseProgress(workdirPath, logFile, descr, endLineFound)
 
 	cmd := fmt.Sprintf("mpirun %s %s -n %d ./wrf.exe", conf.Values.MpiOptions, nodes.String(), procCount)
 	log.Debug("Running command: %s", cmd)
-	server.ExecRetry(cmd, path, "wrf.detail.log", "{wrf.detail.log,rsl.out.????,rsl.error.????}")
+	server.ExecRetry(cmd, workdirPath, "wrf.detail.log", "{wrf.detail.log,rsl.out.????,rsl.error.????}")
 	s.Nodes.Dispose(nodes)
 
 	if !<-endLineFound {
@@ -238,8 +238,10 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 
 	return nil
 }
-func (s Simulation) parseProgress(logFile string, descr string, endLineFound chan bool, err *error) {
-	defer errors.OnFailuresSet(err)
+func (s Simulation) parseProgress(outputDir, logFile, descr string, endLineFound chan bool) {
+	defer errors.OnFailuresDo(func(err errors.RunTimeError) {
+		log.Error("Error parsing WRF %s progress: %s", descr, err.Error())
+	})
 	logf := errors.CheckResult(tailor.OpenFile(logFile, 5*time.Second))
 	defer logf.Close()
 
@@ -264,7 +266,7 @@ func (s Simulation) parseProgress(logFile string, descr string, endLineFound cha
 
 		} else if p.Filename != "" && p.Filename != "restart" {
 			outfLog := errors.CheckResult(os.OpenFile(outfLogPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644))
-			_, err := outfLog.Write([]byte(p.Filename + "\n"))
+			_, err := outfLog.Write([]byte(filepath.Join(outputDir, p.Filename) + "\n"))
 			outfLog.Close()
 			errors.Check(err)
 
