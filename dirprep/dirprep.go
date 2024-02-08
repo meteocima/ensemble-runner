@@ -30,7 +30,9 @@ func isShellSpecialVar(c uint8) bool {
 // consumed to extract it. If the name is enclosed in {}, it's part of a ${}
 // expansion and two more bytes are needed than the length of the name.
 func getShellName(s string) (string, int) {
+
 	switch {
+
 	case s[0] == '{':
 		if len(s) > 2 && isShellSpecialVar(s[1]) && s[2] == '}' {
 			return s[1:2], 3
