@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Start ensemble-runner",
+            "name": "Start ensemble-runner on notebook",
             "type": "go",
             "request": "launch",
             "mode": "debug",
@@ -20,7 +20,24 @@
                 "ROOTDIR": "/home/parroit/repos/cima/ensemble-runner/build",
                 "PATH": "/home/parroit/repos/cima/ensemble-runner/fixtures/testbin:/home/parroit/repos/cima/ensemble-runner/build/bin:${env:PATH}"
             },
-            
+        },
+        {
+            "name": "Start ensemble-runner on filse",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/cli/ensrunner/ensrunner.go",
+            "env": {
+                "SLURM_NODELIST": "wn[01-08]",
+                "WRF_DIR": "/home/wrfprod/modules/sw/WRF/WRF-4.1.5-cima",
+                "WPS_DIR": "/home/wrfprod/modules/sw/WPS/WPS-4.1-smooth",
+                "WRFDA_DIR": "/home/wrfprod/modules/sw/WRFDA/WRFDA-4.1.5-cima",
+                "START_FORECAST": "2024-02-06-00",
+                "DURATION_HOURS": "48",
+                "ROOTDIR": "/home/wrfprod/repos/ensemble-runner/build",
+                "PATH": "/opt/share/comps/gcc-8.3.1/ompi-4.1.4/bin:/opt/share/sw/GCC/WRF-KIT/bin:/home/wrfprod/repos/ensemble-runner/build/bin:${env:PATH}",
+                "LD_LIBRARY_PATH": "/opt/share/comps/gcc-8.3.1/ompi-4.1.4/lib:/opt/share/sw/GCC/WRF-KIT/lib:${env:LD_LIBRARY_PATH}"
+            },
         }
     ]
 }

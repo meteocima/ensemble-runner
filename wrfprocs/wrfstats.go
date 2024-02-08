@@ -48,23 +48,31 @@ func (p *Parser) Read() bool {
 	for {
 		if !p.scanner.Scan() {
 			p.Err = p.scanner.Err()
+			fmt.Printf("\n\nINNER SCANNER RETURN FALSE. ERR is %v\n\n", p.Err)
 			return false
 		}
 
 		line := p.scanner.Text()
+		//fmt.Printf("line scanned: %s\n", line)
 		if strings.HasPrefix(line, "Timing for main") {
+			//fmt.Print("\t IS CALC\n")
 			return p.parseCalcLine(line)
 		}
 		if strings.HasPrefix(line, "Timing for Writing") {
+			//fmt.Print("\t IS OUT\n")
 			return p.parseOutLine(line)
 		}
 		if strings.HasPrefix(line, "Timing for processing") {
+			//fmt.Print("\t IS IMP\n")
 			return p.parseInpLine(line)
 		}
 
 		if strings.Contains(line, "wrf: SUCCESS COMPLETE WRF") {
+			//fmt.Print("\t IS SUCCESS\n")
 			return p.parseSuccessLine(line)
 		}
+
+		//fmt.Print("\t IS UNKONOW\n")
 
 	}
 }
@@ -195,7 +203,7 @@ func ShowProgress(r io.Reader, start, end time.Time) chan Progress {
 					ch <- Progress{Val: currProgress}
 					lastProgress = currProgress
 				}
-				return
+				continue
 			}
 
 			if p.Curr.Type == SuccessLine {
@@ -205,7 +213,7 @@ func ShowProgress(r io.Reader, start, end time.Time) chan Progress {
 
 			if p.Curr.Type == FileOutLine {
 				ch <- Progress{Filename: p.Curr.Filename, Completed: false, Val: lastProgress}
-				return
+				continue
 			}
 		}
 

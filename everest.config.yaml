@@ -15,4 +15,5 @@ EnsembleMembers: 10
 EnsembleParallelism: 11
 AssimilateOnlyInnerDomain: false
 AssimilateFirstCycle: true
+AssimilateObservations: true
 CoresPerNode: 128

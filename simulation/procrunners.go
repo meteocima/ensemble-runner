@@ -2,6 +2,7 @@ package simulation
 
 import (
 	"fmt"
+	"io"
 	"math"
 	"os"
 	"path/filepath"
@@ -11,8 +12,10 @@ import (
 	"github.com/meteocima/ensemble-runner/errors"
 	"github.com/meteocima/ensemble-runner/folders"
 	"github.com/meteocima/ensemble-runner/log"
+	"github.com/meteocima/ensemble-runner/mpiman"
 	"github.com/meteocima/ensemble-runner/server"
 	"github.com/meteocima/ensemble-runner/wrfprocs"
+	"github.com/parro-it/tailor"
 )
 
 func (s Simulation) RunGeogrid() {
@@ -211,22 +214,27 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 
 	log.Info("Running WRF %s for %02d:00\tDIR: $WORKDIR/%s LOGS: %s", descr, startTime.Hour(), wrfRelDir, "wrf.detail.log rsl.out.* rsl.error.*")
 	//--cpu-set 0-15 --bind-to core
-	nodes, ok := s.Nodes.FindFreeNodes(int(math.Ceil(float64(procCount) / float64(conf.Values.CoresPerNode))))
-	if !ok {
-		errors.FailF("Not enough free nodes to run WRF")
+	var nodes mpiman.SlurmNodesList
+
+	if conf.Values.EnsembleMembers > 0 {
+		var ok bool
+		nodes, ok = s.Nodes.FindFreeNodes(int(math.Ceil(float64(procCount) / float64(conf.Values.CoresPerNode))))
+		if !ok {
+			errors.FailF("Not enough free nodes to run WRF")
+		}
 	}
 
 	var p wrfprocs.Progress
 	var endLineFound chan bool = make(chan bool)
 	go func() {
 		logFile := join(path, "rsl.out.0000")
-		var logf *os.File
+		var logf io.ReadCloser
 		var err error
 		retryc := 0
 		log.Debug("Wait for 30 sec before opening log file.")
 		time.Sleep(30 * time.Second)
 		for {
-			logf, err = os.Open(logFile)
+			logf, err = tailor.OpenFile(logFile, 5*time.Second)
 			if err == nil || retryc > 10 {
 				break
 			}
@@ -239,7 +247,9 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 		prgs := wrfprocs.ShowProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
 
 		outfLogPath := filepath.Join(s.Workdir, "output_files.log")
+		//log.Debug("file names written to %s", outfLogPath)
 		for p = range prgs {
+			//log.Debug("WRF log line %v", p)
 			if p.Completed {
 				endLineFound <- true
 				if p.Err != nil {
@@ -258,7 +268,7 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 					defer outfLog.Close()
 					errors.CheckResult(outfLog.Write([]byte(p.Filename + "\n")))
 				}()
-				log.Info("File produced by %s: %s\tDIR: $WORKDIR", descr, p.Filename, wrfRelDir)
+				log.Info("File produced by %s: %s", descr, p.Filename)
 			}
 
 		}

@@ -325,9 +325,10 @@ func RunForecast(s *Simulation) chan bool {
 			w.Add(ensnum)
 		}
 		outfLogPath := filepath.Join(s.Workdir, "output_files.log")
-		if err := os.Remove(outfLogPath); err != nil {
+		os.Remove(outfLogPath)
+		/*if err := os.Remove(outfLogPath); err != nil {
 			log.Warning("Cannot remove %s: %s", outfLogPath, err)
-		}
+		}*/
 		w.Do(conf.Values.EnsembleParallelism, func(ensnum int) {
 			err := s.RunWrfEnsemble(s.Start, ensnum)
 			if err != nil {
