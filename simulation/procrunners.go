@@ -2,7 +2,6 @@ package simulation
 
 import (
 	"fmt"
-	"io"
 	"math"
 	"os"
 	"path/filepath"
@@ -224,56 +223,9 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 		}
 	}
 
-	var p wrfprocs.Progress
-	var endLineFound chan bool = make(chan bool)
-	go func() {
-		logFile := join(path, "rsl.out.0000")
-		var logf io.ReadCloser
-		var err error
-		retryc := 0
-		log.Debug("Wait for 30 sec before opening log file.")
-		time.Sleep(30 * time.Second)
-		for {
-			logf, err = tailor.OpenFile(logFile, 5*time.Second)
-			if err == nil || retryc > 10 {
-				break
-			}
-			log.Warning("WRF %s log file not found: %s. Wait for 30 sec and retry for the %d time.", descr, logFile, retryc+1)
-			time.Sleep(30 * time.Second)
-			retryc++
-		}
-		defer logf.Close()
-
-		prgs := wrfprocs.ShowProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
-
-		outfLogPath := filepath.Join(s.Workdir, "output_files.log")
-		//log.Debug("file names written to %s", outfLogPath)
-		for p = range prgs {
-			//log.Debug("WRF log line %v", p)
-			if p.Completed {
-				endLineFound <- true
-				if p.Err != nil {
-					errors.FailF("WRF %s process failed: %w", descr, p.Err)
-				} else {
-					log.Info("  - WRF %s process completed successfully.", descr)
-				}
-				func() {
-					outfLog := errors.CheckResult(os.OpenFile(outfLogPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644))
-					defer outfLog.Close()
-					errors.CheckResult(outfLog.Write([]byte("COMPLETED\n")))
-				}()
-			} else if p.Filename != "" {
-				func() {
-					outfLog := errors.CheckResult(os.OpenFile(outfLogPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644))
-					defer outfLog.Close()
-					errors.CheckResult(outfLog.Write([]byte(p.Filename + "\n")))
-				}()
-				log.Info("File produced by %s: %s", descr, p.Filename)
-			}
-
-		}
-		close(endLineFound)
-	}()
+	logFile := join(path, "rsl.out.0000")
+	endLineFound := make(chan bool)
+	go s.parseProgress(logFile, descr, endLineFound, &err)
 
 	cmd := fmt.Sprintf("mpirun %s %s -n %d ./wrf.exe", conf.Values.MpiOptions, nodes.String(), procCount)
 	log.Debug("Running command: %s", cmd)
@@ -285,4 +237,40 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 	}
 
 	return nil
+}
+func (s Simulation) parseProgress(logFile string, descr string, endLineFound chan bool, err *error) {
+	defer errors.OnFailuresSet(err)
+	logf := errors.CheckResult(tailor.OpenFile(logFile, 5*time.Second))
+	defer logf.Close()
+
+	prgs := wrfprocs.ShowProgress(logf, time.Time{}, time.Time{}.Add(time.Hour))
+
+	outfLogPath := filepath.Join(s.Workdir, "output_files.log")
+	var p wrfprocs.Progress
+
+	for p = range prgs {
+		if p.Completed {
+			endLineFound <- true
+			if p.Err != nil {
+				errors.FailF("WRF %s process failed: %w", descr, p.Err)
+			} else {
+				log.Info("  - WRF %s process completed successfully.", descr)
+			}
+
+			outfLog := errors.CheckResult(os.OpenFile(outfLogPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644))
+			_, err := outfLog.Write([]byte("COMPLETED\n"))
+			outfLog.Close()
+			errors.Check(err)
+
+		} else if p.Filename != "" && p.Filename != "restart" {
+			outfLog := errors.CheckResult(os.OpenFile(outfLogPath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644))
+			_, err := outfLog.Write([]byte(p.Filename + "\n"))
+			outfLog.Close()
+			errors.Check(err)
+
+			log.Info("File produced by %s: %s", descr, p.Filename)
+		}
+
+	}
+	close(endLineFound)
 }
