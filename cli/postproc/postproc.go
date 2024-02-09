@@ -64,9 +64,6 @@ func main() {
 						failed = append(failed, file)
 						failedLock.Unlock()
 					})
-					os.Setenv("FILE_PATH", file)
-					os.Setenv("FILE", filepath.Base(file))
-					os.Setenv("DIR", filepath.Dir(file))
 
 					chunk := domainRe.FindSubmatch([]byte(file))[1]
 					var domain string
@@ -75,7 +72,10 @@ func main() {
 					} else {
 						domain = string(chunk)
 					}
-					os.Setenv("DOMAIN", domain)
+
+					for len(domain) > 1 && domain[0] == '0' {
+						domain = domain[1:]
+					}
 
 					chunk = instantRe.Find([]byte(file))
 					var instant string
@@ -84,12 +84,17 @@ func main() {
 					} else {
 						instant = string(chunk)
 					}
-					os.Setenv("INSTANT", instant)
 
 					defer func() { <-maxConcurrent }()
 					fmt.Printf("Running `%s` for %s\n", cmd, file)
 
-					server.Exec(cmd, simulation.Workdir(startInstant), "")
+					server.Exec(cmd, simulation.Workdir(startInstant), "",
+						"FILE_PATH", line,
+						"FILE", file,
+						"DIR", filepath.Dir(line),
+						"DOMAIN", domain,
+						"INSTANT", instant,
+					)
 					fmt.Printf("Postprocess completed for %s\n", file)
 					allDone.Done()
 				}(line, cmd)

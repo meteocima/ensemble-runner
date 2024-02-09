@@ -33,7 +33,7 @@ func CopyFile(workdir, src, dst string) {
 	errors.Check(os.WriteFile(dst, bytesRead, 0664))
 }
 
-func ExecRetry(cmd, cwd, collectStdErr, logsToSave string) {
+func ExecRetry(cmd, cwd, logto, logsToSave string, envVars ...string) {
 	var err error
 	var g glob.Glob
 	if logsToSave != "" {
@@ -50,7 +50,7 @@ func ExecRetry(cmd, cwd, collectStdErr, logsToSave string) {
 		} else {
 			retryS = fmt.Sprintf(" Retry n.%d in 1 minute...", i+1)
 		}
-		err = tryExec(cmd, cwd, collectStdErr)
+		err = tryExec(cmd, cwd, logto, envVars...)
 		if err == nil {
 			break
 		}
@@ -88,17 +88,17 @@ func ExecRetry(cmd, cwd, collectStdErr, logsToSave string) {
 	errors.Check(err)
 }
 
-func Exec(cmd, cwd, collectStdErr string) {
-	errors.Check(tryExec(cmd, cwd, collectStdErr))
+func Exec(cmd, cwd, logto string, envVars ...string) {
+	errors.Check(tryExec(cmd, cwd, logto, envVars...))
 }
 
-func tryExec(cmd, cwd, collectStdErr string) error {
+func tryExec(cmd, cwd, logto string, envVars ...string) error {
 	var log *os.File
-	if collectStdErr != "" {
+	if logto != "" {
 
-		l, err := os.Create(filepath.Join(cwd, collectStdErr))
+		l, err := os.Create(filepath.Join(cwd, logto))
 		if err != nil {
-			return fmt.Errorf("cannot write log file %s: %s", collectStdErr, err)
+			return fmt.Errorf("cannot write log file %s: %s", logto, err)
 		}
 		defer l.Close()
 		log = l
@@ -111,6 +111,17 @@ func tryExec(cmd, cwd, collectStdErr string) error {
 	c := exec.Command("bash", "-c", cmd)
 	c.Dir = cwd
 	c.Stdout = log
+
+	if len(envVars) > 0 {
+		env := os.Environ()
+		for i := 1; i < len(envVars); i += 2 {
+			name := envVars[i-1]
+			val := envVars[i]
+			env = append(env, fmt.Sprintf("%s=%s", name, val))
+		}
+
+		c.Env = env
+	}
 
 	stderrPipe, err := c.StderrPipe()
 	if err != nil {
