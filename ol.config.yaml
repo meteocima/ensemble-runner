@@ -15,3 +15,9 @@ AssimilateOnlyInnerDomain: false
 AssimilateFirstCycle: false
 AssimilateObservations: false
 CoresPerNode: 112
+
+
+PostprocRules:
+  wrfout_d03.*: $ROOTDIR/scripts/postproc-wrfout.sh $FILE $DOMAIN $INSTANT > $WORKDIR/postproc-`basename $FILE`.log
+  auxhist23_d03.*: $ROOTDIR/scripts/postproc-aux.sh $FILE $DOMAIN $INSTANT > $WORKDIR/postproc-`basename $FILE`.log
+  
