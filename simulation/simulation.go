@@ -422,7 +422,7 @@ func RunForecastFromEnv() {
 }
 
 func New(start time.Time, duration time.Duration, nodes mpiman.SlurmNodes) Simulation {
-	workdir := join(folders.WorkDir, start.Format(ShortDtFormat))
+	workdir := Workdir(start)
 
 	sim := Simulation{
 		Start:    start,
@@ -431,6 +431,11 @@ func New(start time.Time, duration time.Duration, nodes mpiman.SlurmNodes) Simul
 		Nodes:    nodes,
 	}
 	return sim
+}
+
+func Workdir(start time.Time) string {
+	workdir := join(folders.WorkDir, start.Format(ShortDtFormat))
+	return workdir
 }
 
 func (s Simulation) CreateWpsDir(start time.Time, duration time.Duration) {

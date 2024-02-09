@@ -111,6 +111,7 @@ func tryExec(cmd, cwd, collectStdErr string) error {
 	c := exec.Command("bash", "-c", cmd)
 	c.Dir = cwd
 	c.Stdout = log
+
 	stderrPipe, err := c.StderrPipe()
 	if err != nil {
 		return err
