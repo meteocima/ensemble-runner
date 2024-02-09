@@ -1,0 +1,1 @@
+$UPP_DIR/parm/postxconfig-NT.txt
