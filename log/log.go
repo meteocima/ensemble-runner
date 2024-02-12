@@ -2,7 +2,6 @@ package log
 
 import (
 	"fmt"
-	"os"
 	"time"
 )
 
@@ -43,7 +42,7 @@ func write(msgLevel Level, msgText string, args []interface{}) {
 		return
 	}
 	dt := time.Now().Format(time.Stamp)
-	fmt.Fprintf(os.Stderr, dt+" - "+msgLevel.String()+": "+msgText+"\n", args...)
+	fmt.Printf(dt+" - "+msgLevel.String()+": "+msgText+"\n", args...)
 }
 
 // SetLevel set the maximum
