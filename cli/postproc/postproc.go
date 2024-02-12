@@ -25,16 +25,16 @@ func main() {
 	ReadConf()
 	folders.Initialize()
 
-	fmt.Println(Conf.PostprocRules)
-	log := errors.CheckResult(tailor.OpenFile("fixtures/output_files.log", time.Second))
-	defer log.Close()
-
-	domainRe := errors.CheckResult(regexp.Compile(`_d(\d\d)_`))
-	instantRe := errors.CheckResult(regexp.Compile(`\d\d\d\d-\d\d-\d\d_\d\d:\d\d:\d\d`))
 	startInstant := errors.CheckResult(time.Parse(
 		simulation.ShortDtFormat,
 		os.Getenv("START_FORECAST"),
 	))
+	outfile := filepath.Join(simulation.Workdir(startInstant), "output_files.log")
+	log := errors.CheckResult(tailor.OpenFile(outfile, time.Second))
+	defer log.Close()
+
+	domainRe := errors.CheckResult(regexp.Compile(`_d(\d\d)_`))
+	instantRe := errors.CheckResult(regexp.Compile(`\d\d\d\d-\d\d-\d\d_\d\d:\d\d:\d\d`))
 
 	scan := bufio.NewScanner(log)
 	maxConcurrent := make(chan struct{}, 5)

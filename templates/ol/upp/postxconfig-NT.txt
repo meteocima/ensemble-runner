@@ -1,1 +1,1 @@
-$UPP_DIR/parm/postxconfig-NT.txt
+${UPP_DIR}/postxconfig-NT.txt

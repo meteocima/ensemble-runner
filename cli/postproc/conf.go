@@ -12,7 +12,7 @@ var Conf = struct {
 }{}
 
 func ReadConf() {
-	cfgFile := "/home/parroit/repos/cima/ensemble-runner/ol.config.yaml"
+	cfgFile := "./config.yaml"
 	cfg := errors.CheckResult(os.ReadFile(cfgFile))
 	errors.Check(yaml.Unmarshal(cfg, &Conf))
 
