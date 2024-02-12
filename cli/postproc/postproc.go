@@ -88,12 +88,14 @@ func main() {
 					defer func() { <-maxConcurrent }()
 					fmt.Printf("Running `%s` for %s\n", cmd, file)
 
-					server.Exec(cmd, simulation.Workdir(startInstant), "",
+					simWorkdir := simulation.Workdir(startInstant)
+					server.Exec(cmd, simWorkdir, "",
 						"FILE_PATH", line,
 						"FILE", file,
 						"DIR", filepath.Dir(line),
 						"DOMAIN", domain,
 						"INSTANT", instant,
+						"SIM_WORKDIR", simWorkdir,
 					)
 					fmt.Printf("Postprocess completed for %s\n", file)
 					allDone.Done()
