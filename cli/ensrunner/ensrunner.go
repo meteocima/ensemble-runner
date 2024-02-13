@@ -18,7 +18,7 @@ func main() {
 		os.Exit(1)
 	})
 
-	folders.Initialize()
+	folders.Initialize(false)
 	conf.Initialize()
 	log.SetLevel(log.LevelDebug)
 

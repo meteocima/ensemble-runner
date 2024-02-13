@@ -45,7 +45,7 @@ func PrintVer(varname string) {
 }
 
 // Initialize folder vars and check environment validity
-func Initialize() {
+func Initialize(silent bool) {
 	WRF = envVar("WRF_DIR")
 	WPS = envVar("WPS_DIR")
 	WRFDA = envVar("WRFDA_DIR")
@@ -65,11 +65,12 @@ func Initialize() {
 
 	}
 
-	PrintVer("WRF_DIR")
-	PrintVer("WPS_DIR")
-	PrintVer("WRFDA_DIR")
-	log.Info("ROOTDIR=%s", Rootdir)
-
+	if !silent {
+		PrintVer("WRF_DIR")
+		PrintVer("WPS_DIR")
+		PrintVer("WRFDA_DIR")
+		log.Info("ROOTDIR=%s", Rootdir)
+	}
 	if info, err := os.Stat(TemplatesDir); err != nil {
 		log.Error("Invalid root directory: `templates` directory not accessible:\n Path: %s\n Error: %s\n", TemplatesDir, err)
 		os.Exit(1)
@@ -77,8 +78,9 @@ func Initialize() {
 		log.Error("Invalid root directory: `templates` directory exists and is not a directory.\n Path: %s", TemplatesDir)
 		os.Exit(1)
 	}
-	log.Info("  -- Found templates directory")
-
+	if !silent {
+		log.Info("  -- Found templates directory")
+	}
 	WorkDir = filepath.Join(Rootdir, "workdir")
 	if info, err := os.Stat(WorkDir); err != nil {
 		log.Error("Invalid root directory: `workdir` directory not accessible:\n Path: %s\n Error: %s\n", TemplatesDir, err)
@@ -87,8 +89,9 @@ func Initialize() {
 		log.Error("Invalid root directory: `workdir` directory exists and is not a directory.\n Path: %s", WorkDir)
 		os.Exit(1)
 	}
-	log.Info("  -- Found workdir directory")
-
+	if !silent {
+		log.Info("  -- Found workdir directory")
+	}
 	// check for availability in path of dirprep, prepvars, chdates
 
 }

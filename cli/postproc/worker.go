@@ -100,13 +100,20 @@ func (w *Worker) Run() {
 }
 
 func RunPostProcessing(startInstant time.Time) {
-	completedCh := make(chan PostProcessCompleted)
-	go func() {
-		for completed := range completedCh {
-			log.Info("DELIVERY %v", completed)
-		}
-	}()
 	simWorkdir := simulation.Workdir(startInstant)
+	outfile := filepath.Join(simWorkdir, "output_files.log")
+
+	completedCh := make(chan PostProcessCompleted)
+	status := PostProcessStatus{
+		CompletedCh: completedCh,
+		SimWorkdir:  simWorkdir,
+		//AUXDone:     [49]bool{},
+		OUTDone: [49]bool{},
+		//Phases:      [4]bool{},
+		Done: make(chan struct{}),
+	}
+	go status.Run()
+
 	cmds := make(chan PostProcessCommand, 49*6)
 	allDone := sync.WaitGroup{}
 	allDone.Add(5)
@@ -124,7 +131,6 @@ func RunPostProcessing(startInstant time.Time) {
 		go w.Run()
 	}
 
-	outfile := filepath.Join(simWorkdir, "output_files.log")
 	outlog := errors.CheckResult(tailor.OpenFile(outfile, time.Second))
 	defer outlog.Close()
 	scan := bufio.NewScanner(outlog)
@@ -173,8 +179,11 @@ func RunPostProcessing(startInstant time.Time) {
 			filesFailed = append(filesFailed, filepath.Base(ppc.FilePath))
 		}
 		filesFailedS := "\n\t" + strings.Join(filesFailed, "\n\t")
-		log.Error("Some processes failed after 5 retries. Failed files: %v", filesFailedS)
+		log.Error("Postprocessing completed, some processes failed after 5 retries. Failed files: %v", filesFailedS)
+	} else {
+		log.Error("Postprocessing completed, all files successfully postprocessed.")
 	}
-
+	close(completedCh)
+	<-status.Done
 	errors.Check(scan.Err())
 }

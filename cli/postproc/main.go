@@ -16,7 +16,7 @@ func main() {
 		os.Exit(1)
 	})
 	ReadConf()
-	folders.Initialize()
+	folders.Initialize(true)
 
 	startInstant := errors.CheckResult(time.Parse(
 		simulation.ShortDtFormat,
