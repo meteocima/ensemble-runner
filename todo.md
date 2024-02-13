@@ -24,3 +24,13 @@ OK * aggiungere assimilazione nel cicli delle 18
 OK * nei log, indicare le dir relative a workdir/DATA. indicare all'inizio del log la directory WORKDIR
 OK * rename WRFITA_ROOTDIR to ROOTDIR
 OK * creare $WORKDIR come workdir/YYYY-MM-DD-HH ed usare nei logs
+
+
+DELIVERIES OL 
+
+continuum - aux 3 non regridded
+dewetra - aux 3 regridded+merged
+dewetra - aux 1 regridded+merged
+arpal - out 3 upped
+repo - out 3 upped + phases
+vda - out 3 upped
