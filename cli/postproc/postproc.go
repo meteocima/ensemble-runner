@@ -97,7 +97,7 @@ func main() {
 			}
 
 			defer func() { <-maxConcurrent }()
-			log.Info("Running `%s` for %s", cmd, file)
+			log.Debug("Running `%s` for %s", cmd, file)
 
 			simWorkdir := simulation.Workdir(startInstant)
 			server.Exec(cmd, simWorkdir, "",
