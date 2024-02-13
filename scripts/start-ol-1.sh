@@ -38,6 +38,11 @@ export WRFIO_NCD_LARGE_FILE_SUPPORT=1
 export DURATION_HOURS=48
 export START_FORECAST=`date '+%Y-%m-%d-00'`
 
-./bin/postproc&
+function do_postproc {
+    sleep 60
+    ./bin/postproc
+}
+
+do_postproc&
 ./bin/ensrunner
 wait

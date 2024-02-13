@@ -19,7 +19,7 @@ import (
 
 func main() {
 	defer errors.OnFailuresDo(func(err errors.RunTimeError) {
-		log.Error("Error: %s\n", err)
+		log.Error("Error: %s", err)
 		os.Exit(1)
 	})
 	ReadConf()
@@ -56,13 +56,13 @@ func main() {
 				continue
 			}
 			allDone.Add(1)
-			log.Info("Postprocess enqueued for %s\n", file)
+			log.Info("Postprocess enqueued for %s", file)
 			command = cmd
 			break
 		}
 
 		if command == "" {
-			log.Info("No postprocess rule found for %s\n", line)
+			log.Info("No postprocess rule found for %s", filepath.Base(line))
 			continue
 		}
 
@@ -70,7 +70,7 @@ func main() {
 			maxConcurrent <- struct{}{}
 			file := filepath.Base(line)
 			defer errors.OnFailuresDo(func(err errors.RunTimeError) {
-				log.Error("Error: %s\n", err)
+				log.Error("Error: %s", err)
 				failedLock.Lock()
 				failed = append(failed, file)
 				failedLock.Unlock()
@@ -97,7 +97,7 @@ func main() {
 			}
 
 			defer func() { <-maxConcurrent }()
-			log.Info("Running `%s` for %s\n", cmd, file)
+			log.Info("Running `%s` for %s", cmd, file)
 
 			simWorkdir := simulation.Workdir(startInstant)
 			server.Exec(cmd, simWorkdir, "",
@@ -108,7 +108,7 @@ func main() {
 				"INSTANT", instant,
 				"SIM_WORKDIR", simWorkdir,
 			)
-			log.Info("Postprocess completed for %s\n", file)
+			log.Info("Postprocess completed for %s", file)
 			allDone.Done()
 		}(line, command)
 
@@ -116,7 +116,7 @@ func main() {
 	errors.Check(scan.Err())
 	allDone.Wait()
 	if len(failed) > 0 {
-		log.Warning("Postprocess for these files failed: %s\n", strings.Join(failed, ", "))
+		log.Warning("Postprocess for these files failed: %s", strings.Join(failed, ", "))
 	}
 
 }
