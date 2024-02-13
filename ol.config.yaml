@@ -8,7 +8,7 @@ ObDataDir: not-used
 GeogDataDir: /leonardo_work/CIM21_prod_0/geog
 GfsDir: /leonardo_work/CIM21_prod_0/gfs
 CovarMatrixesDir: not-used
-RunWPS: true
+RunWPS: false
 EnsembleMembers: 0
 EnsembleParallelism: 1
 AssimilateOnlyInnerDomain: false

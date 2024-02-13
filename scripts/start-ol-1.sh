@@ -22,7 +22,7 @@ export UPP_DIR=$PRG/UPP4.1
 export DEPS=$PRG/deps/out
 export UPP_DEPS=$PRG/NCEPlibs
 
-PATH=$PATH:$ROOTDIR/bin:$ROOTDIR/scripts
+PATH=$PATH:$ROOTDIR/bin:$ROOTDIR/scripts:$PRG
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$DEPS/lib:$UPP_DEPS/lib
 
 module use /leonardo/prod/opt/modulefiles/global/libraries
@@ -36,7 +36,8 @@ export HDF5=$DEPS
 export NETCDF=$DEPS
 export WRFIO_NCD_LARGE_FILE_SUPPORT=1 
 export DURATION_HOURS=48
+export START_FORECAST=`date '+%Y-%m-%d-00'`
 
-
-
+./bin/postproc&
 ./bin/ensrunner
+wait
