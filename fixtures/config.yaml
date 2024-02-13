@@ -1,0 +1,23 @@
+GeogridProc: 36
+MetgridProc: 36
+RealProc: 361
+WrfProc: 1536
+
+MpiOptions:
+ObDataDir: not-used
+GeogDataDir: /leonardo_work/CIM21_prod_0/geog
+GfsDir: /leonardo_work/CIM21_prod_0/gfs
+CovarMatrixesDir: not-used
+RunWPS: false
+EnsembleMembers: 0
+EnsembleParallelism: 1
+AssimilateOnlyInnerDomain: false
+AssimilateFirstCycle: false
+AssimilateObservations: false
+CoresPerNode: 112
+
+
+PostprocRules:
+  wrfout_d03.*: sleep .1; echo $ROOTDIR $FILE_PATH $DIR $FILE $DOMAIN $INSTANT > postproc-$FILE.log
+  auxhist23_d03.*: if [[ ! $INSTANT =~ 19 ]]; then echo $ROOTDIR $FILE_PATH $DIR $FILE $DOMAIN $INSTANT; else echo 'FAKED FAIL' >&2; false; fi > postproc-$FILE.log
+  

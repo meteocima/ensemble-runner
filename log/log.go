@@ -35,7 +35,7 @@ func (ll Level) String() string {
 	}
 }
 
-var level Level = LevelDebug
+var level Level = LevelInfo
 
 func write(msgLevel Level, msgText string, args []interface{}) {
 	if msgLevel > level {

@@ -31,12 +31,13 @@ type Worker struct {
 	AllDone        *sync.WaitGroup
 	Failures       []PostProcessCommand
 	StartInstant   time.Time
+	Index          int
 }
 
 func (w *Worker) runCommand(ppc PostProcessCommand) {
 	file := filepath.Base(ppc.FilePath)
 	defer errors.OnFailuresDo(func(err errors.RunTimeError) {
-		log.Warning("Postprocess failed for file %w. Will be retried at end. Error: %s", filepath.Base(ppc.FilePath), err)
+		log.Warning("WORKER %d: postprocess failed for file %s. Will be retried at end. Error: %s", w.Index, filepath.Base(ppc.FilePath), err)
 		w.Failures = append(w.Failures, ppc)
 	})
 
@@ -54,7 +55,8 @@ func (w *Worker) runCommand(ppc PostProcessCommand) {
 	}
 	instant := errors.CheckResult(time.Parse("2006-01-02_15:04:05", instantS))
 
-	log.Debug("Running `%s` for %s", ppc.Cmd, file)
+	log.Info("Running postprocessing for file %s", file)
+	log.Debug("\t Command for file %s: `%s` ", file, ppc.Cmd)
 
 	server.Exec(ppc.Cmd, w.SimWorkdir, "",
 		"FILE_PATH", ppc.FilePath,
@@ -85,25 +87,30 @@ func (w *Worker) Run() {
 	for ppc := range w.Cmds {
 		w.runCommand(ppc)
 	}
-	for i := 1; i <= 5; i++ {
-		if len(w.Failures) == 0 {
-			break
-		}
-		log.Info("Retrying failed postprocesses. Iteration %d", i)
-		for _, ppc := range w.Failures {
+	for i := 1; i <= 5 && len(w.Failures) > 0; i++ {
+		log.Info("WORKER %d: Retrying failed processes. Iteration %d", w.Index, i)
+		failures := w.Failures
+		w.Failures = nil
+		for _, ppc := range failures {
 			w.runCommand(ppc)
 		}
 	}
+
 	w.AllDone.Done()
 }
 
 func RunPostProcessing(startInstant time.Time) {
 	completedCh := make(chan PostProcessCompleted)
-
+	go func() {
+		for completed := range completedCh {
+			log.Debug("DELIVERY %v", completed)
+		}
+	}()
 	simWorkdir := simulation.Workdir(startInstant)
 	cmds := make(chan PostProcessCommand, 49*6)
 	allDone := sync.WaitGroup{}
 	allDone.Add(5)
+	var workers []*Worker
 	for i := 0; i < 5; i++ {
 		w := Worker{
 			Cmds:           cmds,
@@ -111,7 +118,9 @@ func RunPostProcessing(startInstant time.Time) {
 			AllDone:        &allDone,
 			StartInstant:   startInstant,
 			FilesCompleted: completedCh,
+			Index:          i,
 		}
+		workers = append(workers, &w)
 		go w.Run()
 	}
 
@@ -138,7 +147,7 @@ func RunPostProcessing(startInstant time.Time) {
 		}
 
 		if command == "" {
-			log.Info("No postprocess rule found for %s", filepath.Base(line))
+			log.Debug("No postprocess rule found for %s", filepath.Base(line))
 			continue
 		}
 
@@ -151,5 +160,21 @@ func RunPostProcessing(startInstant time.Time) {
 	}
 	close(cmds)
 	allDone.Wait()
+
+	var allFailures []PostProcessCommand
+
+	for _, w := range workers {
+		allFailures = append(allFailures, w.Failures...)
+	}
+
+	if len(allFailures) > 0 {
+		var filesFailed []string
+		for _, ppc := range allFailures {
+			filesFailed = append(filesFailed, filepath.Base(ppc.FilePath))
+		}
+		filesFailedS := "\n\t" + strings.Join(filesFailed, "\n\t")
+		log.Error("Some processes failed after 5 retries. Failed files: %v", filesFailedS)
+	}
+
 	errors.Check(scan.Err())
 }
