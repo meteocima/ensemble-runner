@@ -103,7 +103,7 @@ func RunPostProcessing(startInstant time.Time) {
 	completedCh := make(chan PostProcessCompleted)
 	go func() {
 		for completed := range completedCh {
-			log.Debug("DELIVERY %v", completed)
+			log.Info("DELIVERY %v", completed)
 		}
 	}()
 	simWorkdir := simulation.Workdir(startInstant)
