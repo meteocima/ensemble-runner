@@ -77,6 +77,13 @@ func (w *Worker) runCommand(ppc PostProcessCommand) {
 	} else if strings.HasPrefix(file, "aux") {
 		kind = AuxFile
 		filePath = filepath.Join(w.SimWorkdir, fmt.Sprintf("results/aux/aux_regr_%s.nc", instantS))
+
+		w.FilesCompleted <- PostProcessCompleted{
+			Domain:    int(domain),
+			ProgrHour: progrHour,
+			Kind:      RawAuxFile,
+			FilePath:  filepath.Join(w.SimWorkdir, "results/rawaux", file),
+		}
 	} else {
 		errors.FailF("Unknown file kind for %s", file)
 	}

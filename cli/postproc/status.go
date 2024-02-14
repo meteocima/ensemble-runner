@@ -15,10 +15,27 @@ import (
 type FileKind int
 
 const (
-	WrfOutFile = FileKind(0)
-	AuxFile    = FileKind(1)
-	Phase      = FileKind(2)
+	WrfOutFile FileKind = iota
+	AuxFile
+	RawAuxFile
+	Phase
+	Unknown
 )
+
+var fileKindNames = []string{
+	"WrfOutFile",
+	"AuxFile",
+	"RawAuxFile",
+	"Phase",
+	"Unknown",
+}
+
+func (fk FileKind) String() string {
+	if fk < 0 || fk > Unknown {
+		fk = Unknown
+	}
+	return fileKindNames[fk]
+}
 
 type PostProcessCompleted struct {
 	Domain    int
@@ -98,16 +115,5 @@ func (stat *PostProcessStatus) checkPhaseCompleted(completed PostProcessComplete
 
 	if phaseCompleted {
 		fmt.Fprintf(postProcd, `{"progr": %d, "kind": "Phase"}`+"\n", phase)
-	}
-}
-
-func (fk FileKind) String() string {
-	switch fk {
-	case WrfOutFile:
-		return "WrfOutFile"
-	case AuxFile:
-		return "AuxFile"
-	default:
-		return "Unknown"
 	}
 }
