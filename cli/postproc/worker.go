@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -69,10 +70,13 @@ func (w *Worker) runCommand(ppc PostProcessCommand) {
 	log.Info("Postprocess completed for %s", file)
 	progrHour := int(instant.Sub(w.StartInstant).Hours())
 	var kind FileKind
+	var filePath string
 	if strings.HasPrefix(file, "wrfout") {
 		kind = WrfOutFile
+		filePath = filepath.Join(w.SimWorkdir, fmt.Sprintf("results/out/out_regr_%s.grb", instantS))
 	} else if strings.HasPrefix(file, "aux") {
 		kind = AuxFile
+		filePath = filepath.Join(w.SimWorkdir, fmt.Sprintf("results/aux/aux_regr_%s.nc", instantS))
 	} else {
 		errors.FailF("Unknown file kind for %s", file)
 	}
@@ -80,6 +84,7 @@ func (w *Worker) runCommand(ppc PostProcessCommand) {
 		Domain:    int(domain),
 		ProgrHour: progrHour,
 		Kind:      kind,
+		FilePath:  filePath,
 	}
 }
 

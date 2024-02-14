@@ -20,6 +20,7 @@ type PostProcessCompleted struct {
 	Domain    int
 	ProgrHour int
 	Kind      FileKind
+	FilePath  string
 }
 
 type PostProcessStatus struct {
@@ -35,7 +36,7 @@ func (stat *PostProcessStatus) Run() {
 	defer postProcd.Close()
 
 	for completed := range stat.CompletedCh {
-		fmt.Fprintf(postProcd, `{"domain": %d, "progr": %d, "kind": "%s"}`+"\n", completed.Domain, completed.ProgrHour, completed.Kind.String())
+		fmt.Fprintf(postProcd, `{"domain": %d, "progr": %d, "kind": "%s", "file": "%s"}`+"\n", completed.Domain, completed.ProgrHour, completed.Kind.String(), completed.FilePath)
 		if completed.Kind != WrfOutFile || completed.Domain != 3 {
 			continue
 		}

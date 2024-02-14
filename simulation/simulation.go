@@ -248,7 +248,7 @@ func (s *Simulation) Run() {
 	}
 
 	log.Info("Post-processing results.")
-	server.ExecRetry(fmt.Sprintf("ROOTDIR='%s' delivery.sh > delivery.log 2>&1", folders.Rootdir), s.Workdir, "delivery.log", "delivery.log")
+	//server.ExecRetry(fmt.Sprintf("ROOTDIR='%s' delivery.sh > delivery.log 2>&1", folders.Rootdir), s.Workdir, "delivery.log", "delivery.log")
 
 	log.Info("Simulation completed successfully.")
 
