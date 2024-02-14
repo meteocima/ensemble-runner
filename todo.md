@@ -30,7 +30,7 @@ DELIVERIES OL
 
 continuum - aux 3 non regridded
 dewetra - aux 3 regridded+merged
-dewetra - aux 2 regridded+merged
+dewetra - aux 1 regridded+merged
 
 arpal - out 3 upped
 repo - out 3 upped + phases
