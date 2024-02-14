@@ -70,7 +70,8 @@ func main() {
 
 			// delivery arpal
 			cmd = fmt.Sprintf("sftp del-arpal <<< put %s /cima2lig/WRF/%s", ppc.FilePath, filename)
-			server.ExecRetry(cmd, workDir, "deliv-vda.log", "deliv-vda.log")
+			server.ExecRetry(cmd, workDir, "deliv-arpal.log", "deliv-arpal.log")
+
 		} else if ppc.Kind == Phase {
 			var firstPhaseHour int
 			var lastPhaseHour int

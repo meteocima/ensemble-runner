@@ -30,7 +30,18 @@ DELIVERIES OL
 
 continuum - aux 3 non regridded
 dewetra - aux 3 regridded+merged
-dewetra - aux 1 regridded+merged
+dewetra - aux 2 regridded+merged
+
 arpal - out 3 upped
 repo - out 3 upped + phases
 vda - out 3 upped
+
+
+
+# Consegna su repository AWS per ETT solutions
+AWS_SRV=wrfrepo@34.245.16.170 
+OL_PATH=repository/ol
+ssh -i /home/antonio/.ssh/id_rsa.wrfprod $AWS_SRV "rm -rf $OL_PATH; mkdir -p $OL_PATH"
+scp -i /home/antonio/.ssh/id_rsa.wrfprod rg_wrf-${RUNDATE}_00UTC.nc $AWS_SRV:$OL_PATH/rg_wrf-${RUNDATE}_00UTC.nc.tmp
+ssh -i /home/antonio/.ssh/id_rsa.wrfprod $AWS_SRV mv $OL_PATH/rg_wrf-${RUNDATE}_00UTC.nc.tmp $OL_PATH/rg_wrf-${RUNDATE}_00UTC.nc
+

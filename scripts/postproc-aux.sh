@@ -2,7 +2,7 @@
 set -e
 
 mkdir -p results/aux
-regridded=results/aux/aux_regr_${INSTANT}.nc
+regridded=results/aux/aux-d0${DOMAIN}-${INSTANT}.nc
 
 script="${ROOTDIR}/scripts/italy-cdo-d0${DOMAIN}-grid.txt"
 

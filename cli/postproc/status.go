@@ -5,8 +5,11 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/meteocima/ensemble-runner/errors"
+	"github.com/meteocima/ensemble-runner/folders"
+	"github.com/meteocima/ensemble-runner/server"
 )
 
 type FileKind int
@@ -14,6 +17,7 @@ type FileKind int
 const (
 	WrfOutFile = FileKind(0)
 	AuxFile    = FileKind(1)
+	Phase      = FileKind(2)
 )
 
 type PostProcessCompleted struct {
@@ -24,10 +28,12 @@ type PostProcessCompleted struct {
 }
 
 type PostProcessStatus struct {
-	CompletedCh <-chan PostProcessCompleted
-	SimWorkdir  string
-	OUTDone     [49]bool
-	Done        chan struct{}
+	CompletedCh     <-chan PostProcessCompleted
+	SimWorkdir      string
+	SimStartInstant time.Time
+	OUTDone         [49]bool
+	AUXDone         [49]bool
+	Done            chan struct{}
 }
 
 func (stat *PostProcessStatus) Run() {
@@ -38,38 +44,61 @@ func (stat *PostProcessStatus) Run() {
 	for completed := range stat.CompletedCh {
 		fmt.Fprintf(postProcd, `{"domain": %d, "progr": %d, "kind": "%s", "file": "%s"}`+"\n", completed.Domain, completed.ProgrHour, completed.Kind.String(), completed.FilePath)
 		if completed.Kind != WrfOutFile || completed.Domain != 3 {
+			stat.AUXDone[completed.ProgrHour] = true
+			stat.checkAllAUXCompleted(completed, postProcd)
 			continue
 		}
 		stat.OUTDone[completed.ProgrHour] = true
-
-		var phase int
-		var firstPhaseHour int
-		var lastPhaseHour int
-
-		if completed.ProgrHour == 0 {
-			phase = 1
-			firstPhaseHour = 0
-		} else {
-			phase = int(math.Ceil(float64(completed.ProgrHour) / 12))
-			firstPhaseHour = (phase-1)*12 + 1
-		}
-
-		lastPhaseHour = phase * 12
-		phaseCompleted := true
-		for i := firstPhaseHour; i <= lastPhaseHour; i++ {
-			if !stat.OUTDone[i] {
-				phaseCompleted = false
-				break
-			}
-		}
-
-		if phaseCompleted {
-			fmt.Fprintf(postProcd, `{"progr": %d, "kind": "phase"}`+"\n", phase)
-		}
+		stat.checkPhaseCompleted(completed, postProcd)
 
 	}
 
 	close(stat.Done)
+}
+
+func (stat *PostProcessStatus) checkAllAUXCompleted(completed PostProcessCompleted, postProcd *os.File) {
+	allDone := true
+	for i := 0; i <= 48; i++ {
+		if !stat.AUXDone[i] {
+			allDone = false
+			break
+		}
+	}
+	if allDone {
+		script := filepath.Join(folders.Rootdir, "scripts/postproc-aux-end.sh")
+		log := "postproc-aux-end.log"
+		server.ExecRetry(script, stat.SimWorkdir, log, log,
+			"SIM_WORKDIR", stat.SimWorkdir,
+			"RUNDATE", stat.SimStartInstant.Format("2006-01-02-15"),
+		)
+	}
+}
+
+func (stat *PostProcessStatus) checkPhaseCompleted(completed PostProcessCompleted, postProcd *os.File) {
+	var phase int
+	var firstPhaseHour int
+	var lastPhaseHour int
+
+	if completed.ProgrHour == 0 {
+		phase = 1
+		firstPhaseHour = 0
+	} else {
+		phase = int(math.Ceil(float64(completed.ProgrHour) / 12))
+		firstPhaseHour = (phase-1)*12 + 1
+	}
+
+	lastPhaseHour = phase * 12
+	phaseCompleted := true
+	for i := firstPhaseHour; i <= lastPhaseHour; i++ {
+		if !stat.OUTDone[i] {
+			phaseCompleted = false
+			break
+		}
+	}
+
+	if phaseCompleted {
+		fmt.Fprintf(postProcd, `{"progr": %d, "kind": "Phase"}`+"\n", phase)
+	}
 }
 
 func (fk FileKind) String() string {
