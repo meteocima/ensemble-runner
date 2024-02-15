@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/meteocima/ensemble-runner/errors"
@@ -86,8 +87,8 @@ func main() {
 		var ppc PostProcessCompleted
 		errors.Check(json.Unmarshal(line, &ppc))
 
-		if ppc.Kind == RawAuxFile {
-			cmd := fmt.Sprintf("scp %s del-continuum:/home/silvestro/Flood_Proofs_Italia2p0/MeteoModel/WrfOL/%s", ppc.FilePath, ppc.FilePath)
+		if ppc.Kind == RawAuxFile && ppc.Domain == 3 {
+			cmd := fmt.Sprintf("scp %s del-continuum:/home/silvestro/Flood_Proofs_Italia2p0/MeteoModel/WrfOL/%s", ppc.FilePath, filepath.Base(ppc.FilePath))
 			//server.ExecRetry(cmd, workDir, "deliv-continuum.log", "deliv-continuum.log")
 			fmt.Println(cmd)
 		} else if ppc.Kind == WrfOutFile && ppc.Domain == 3 {
@@ -108,7 +109,6 @@ func main() {
 			cmd = fmt.Sprintf("sftp del-arpal <<< put %s /cima2lig/WRF/%s", ppc.FilePath, filename)
 			//server.ExecRetry(cmd, workDir, "deliv-arpal.log", "deliv-arpal.log")
 			fmt.Println(cmd)
-			fmt.Println(cmd, workDir, "deliv-aws.log", "deliv-aws.log")
 
 		} else if ppc.Kind == Phase {
 			var firstPhaseHour int
@@ -128,12 +128,26 @@ func main() {
 			}
 			phaseF.Close()
 
-			cmd := fmt.Sprintf("scp %s del-repo:/share/wrf_repository/%s", ppc.FilePath, phaseFname)
+			cmd := fmt.Sprintf("scp %s del-repo:/share/wrf_repository/%s", phaseFname, filepath.Base(phaseFname))
 			//server.ExecRetry(cmd, workDir, "deliv-aws.log", "deliv-aws.log")
 			fmt.Println(cmd)
 			os.Remove(phaseFname)
 
 		} else if ppc.Kind == Completed {
+			fileInstS := startInstant.Format("2006-01-02-15")
+			filename := fmt.Sprintf("regr-d01-%s.nc", fileInstS)
+			targetDir := fmt.Sprintf("/wrf-world/Native/%04d/%02d/%02d/%04d", startInstant.Year(), startInstant.Month(), startInstant.Day(), startInstant.Hour())
+			targetName := fmt.Sprintf("rg_wrf_d01-%s_00UTC.nc", startInstant.Format("2006010215"))
+			cmd := fmt.Sprintf("scp %s drihm:%s", filepath.Join(workDir, "results/aux", filename), filepath.Join(targetDir, targetName))
+			//server.ExecRetry(cmd, workDir, "deliv-dewetra-d01.log", "deliv-dewetra-d01.log")
+			fmt.Println(cmd)
+
+			filename = fmt.Sprintf("regr-d03-%s.nc", fileInstS)
+			targetDir = fmt.Sprintf("/share/archivio/experience/data/MeteoModels/WRF_ARPAL/%04d/%02d/%02d/%04d", startInstant.Year(), startInstant.Month(), startInstant.Day(), startInstant.Hour())
+			targetName = fmt.Sprintf("rg_wrf-%s_00UTC.nc", startInstant.Format("2006010215"))
+			cmd = fmt.Sprintf("scp %s del-dewetra:%s", filepath.Join(workDir, "results/aux", filename), filepath.Join(targetDir, targetName))
+			//server.ExecRetry(cmd, workDir, "deliv-dewetra-d01.log", "deliv-dewetra-d01.log")
+			fmt.Println(cmd)
 			break
 		}
 	}
