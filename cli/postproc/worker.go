@@ -117,12 +117,15 @@ func RunPostProcessing(startInstant time.Time) {
 
 	completedCh := make(chan PostProcessCompleted)
 	status := PostProcessStatus{
-		CompletedCh:     completedCh,
-		SimWorkdir:      simWorkdir,
-		AUXDone:         [49]bool{},
-		OUTDone:         [49]bool{},
-		SimStartInstant: startInstant,
-		Done:            make(chan struct{}),
+		CompletedCh:          completedCh,
+		SimWorkdir:           simWorkdir,
+		SimStartInstant:      startInstant,
+		OUTDone:              [49]bool{},
+		AUXDoneD1:            [49]bool{},
+		AUXDoneD3:            [49]bool{},
+		FinalAUXPostProcDone: false,
+		OutPhasesDone:        [4]bool{},
+		Done:                 make(chan struct{}),
 	}
 	go status.Run()
 

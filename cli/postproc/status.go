@@ -18,7 +18,6 @@ const (
 	WrfOutFile FileKind = iota
 	AuxFile
 	RawAuxFile
-	Phase
 	Unknown
 )
 
@@ -45,12 +44,15 @@ type PostProcessCompleted struct {
 }
 
 type PostProcessStatus struct {
-	CompletedCh     <-chan PostProcessCompleted
-	SimWorkdir      string
-	SimStartInstant time.Time
-	OUTDone         [49]bool
-	AUXDone         [49]bool
-	Done            chan struct{}
+	CompletedCh          <-chan PostProcessCompleted
+	SimWorkdir           string
+	SimStartInstant      time.Time
+	OUTDone              [49]bool
+	AUXDoneD1            [49]bool
+	AUXDoneD3            [49]bool
+	FinalAUXPostProcDone bool
+	OutPhasesDone        [4]bool
+	Done                 chan struct{}
 }
 
 func (stat *PostProcessStatus) Run() {
@@ -60,35 +62,61 @@ func (stat *PostProcessStatus) Run() {
 
 	for completed := range stat.CompletedCh {
 		fmt.Fprintf(postProcd, `{"domain": %d, "progr": %d, "kind": "%s", "file": "%s"}`+"\n", completed.Domain, completed.ProgrHour, completed.Kind.String(), completed.FilePath)
-		if completed.Kind != WrfOutFile || completed.Domain != 3 {
-			stat.AUXDone[completed.ProgrHour] = true
+		if completed.Kind == AuxFile {
+			if completed.Domain == 1 {
+				stat.AUXDoneD1[completed.ProgrHour] = true
+			} else if completed.Domain == 3 {
+				stat.AUXDoneD3[completed.ProgrHour] = true
+			} else {
+				errors.FailF("Unknown domain for AUX file %s: %d", completed.FilePath, completed.Domain)
+			}
+
 			stat.checkAllAUXCompleted(completed, postProcd)
-			continue
+		} else if completed.Kind == WrfOutFile {
+			stat.OUTDone[completed.ProgrHour] = true
+			stat.checkPhaseCompleted(completed, postProcd)
 		}
-		stat.OUTDone[completed.ProgrHour] = true
-		stat.checkPhaseCompleted(completed, postProcd)
+
+		stat.checkAllPostProcessingCompleted(postProcd)
 
 	}
 
 	close(stat.Done)
 }
 
-func (stat *PostProcessStatus) checkAllAUXCompleted(completed PostProcessCompleted, postProcd *os.File) {
-	allDone := true
-	for i := 0; i <= 48; i++ {
-		if !stat.AUXDone[i] {
-			allDone = false
-			break
+func (stat *PostProcessStatus) checkAllPostProcessingCompleted(postProcd *os.File) {
+
+	if !stat.FinalAUXPostProcDone {
+		return
+	}
+
+	for i := 0; i < 4; i++ {
+		if !stat.OutPhasesDone[i] {
+			return
 		}
 	}
-	if allDone {
-		script := filepath.Join(folders.Rootdir, "scripts/postproc-aux-end.sh")
-		log := "postproc-aux-end.log"
-		server.ExecRetry(script, stat.SimWorkdir, log, log,
-			"SIM_WORKDIR", stat.SimWorkdir,
-			"RUNDATE", stat.SimStartInstant.Format("2006-01-02-15"),
-		)
+
+	fmt.Fprintf(postProcd, `{"kind": "Completed"}`+"\n")
+
+}
+func (stat *PostProcessStatus) checkAllAUXCompleted(completed PostProcessCompleted, postProcd *os.File) {
+	for i := 0; i <= 48; i++ {
+		if !stat.AUXDoneD1[i] {
+			return
+		}
+
+		if !stat.AUXDoneD3[i] {
+			return
+		}
 	}
+
+	script := filepath.Join(folders.Rootdir, "scripts/postproc-aux-end.sh")
+	log := "postproc-aux-end.log"
+	server.ExecRetry(script, stat.SimWorkdir, log, log,
+		"SIM_WORKDIR", stat.SimWorkdir,
+		"RUNDATE", stat.SimStartInstant.Format("2006-01-02-15"),
+	)
+	stat.FinalAUXPostProcDone = true
 }
 
 func (stat *PostProcessStatus) checkPhaseCompleted(completed PostProcessCompleted, postProcd *os.File) {
@@ -105,15 +133,12 @@ func (stat *PostProcessStatus) checkPhaseCompleted(completed PostProcessComplete
 	}
 
 	lastPhaseHour = phase * 12
-	phaseCompleted := true
 	for i := firstPhaseHour; i <= lastPhaseHour; i++ {
 		if !stat.OUTDone[i] {
-			phaseCompleted = false
-			break
+			return
 		}
 	}
 
-	if phaseCompleted {
-		fmt.Fprintf(postProcd, `{"progr": %d, "kind": "Phase"}`+"\n", phase)
-	}
+	fmt.Fprintf(postProcd, `{"progr": %d, "kind": "Phase"}`+"\n", phase)
+	stat.OutPhasesDone[phase-1] = true
 }
