@@ -53,6 +53,7 @@ type PostProcessStatus struct {
 	FinalAUXPostProcDone bool
 	OutPhasesDone        [4]bool
 	Done                 chan struct{}
+	TotHours             int
 }
 
 func (stat *PostProcessStatus) Run() {
@@ -90,7 +91,7 @@ func (stat *PostProcessStatus) checkAllPostProcessingCompleted(postProcd *os.Fil
 		return
 	}
 
-	for i := 0; i < 4; i++ {
+	for i := 0; i < stat.TotHours/12; i++ {
 		if !stat.OutPhasesDone[i] {
 			return
 		}
@@ -100,7 +101,7 @@ func (stat *PostProcessStatus) checkAllPostProcessingCompleted(postProcd *os.Fil
 
 }
 func (stat *PostProcessStatus) checkAllAUXCompleted(completed PostProcessCompleted, postProcd *os.File) {
-	for i := 0; i <= 48; i++ {
+	for i := 0; i <= stat.TotHours; i++ {
 		if !stat.AUXDoneD1[i] {
 			return
 		}

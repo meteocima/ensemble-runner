@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/meteocima/ensemble-runner/errors"
@@ -23,6 +24,8 @@ func main() {
 		os.Getenv("START_FORECAST"),
 	))
 
-	RunPostProcessing(startInstant)
+	totHours := errors.CheckResult(strconv.ParseInt(os.Getenv("DURATION_HOURS"), 10, 64))
+
+	RunPostProcessing(startInstant, int(totHours))
 
 }

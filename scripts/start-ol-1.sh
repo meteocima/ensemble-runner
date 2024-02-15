@@ -35,7 +35,8 @@ module load cdo/2.1.0--gcc--11.3.0
 export HDF5=$DEPS
 export NETCDF=$DEPS
 export WRFIO_NCD_LARGE_FILE_SUPPORT=1 
-export DURATION_HOURS=48
+#export DURATION_HOURS=48
+export DURATION_HOURS=12
 export START_FORECAST=`date '+%Y-%m-%d-00'`
 
 function do_postproc {

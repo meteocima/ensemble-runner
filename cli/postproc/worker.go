@@ -111,7 +111,7 @@ func (w *Worker) Run() {
 	w.AllDone.Done()
 }
 
-func RunPostProcessing(startInstant time.Time) {
+func RunPostProcessing(startInstant time.Time, totHours int) {
 	simWorkdir := simulation.Workdir(startInstant)
 	outfile := filepath.Join(simWorkdir, "output_files.log")
 
@@ -126,6 +126,7 @@ func RunPostProcessing(startInstant time.Time) {
 		FinalAUXPostProcDone: false,
 		OutPhasesDone:        [4]bool{},
 		Done:                 make(chan struct{}),
+		TotHours:             totHours,
 	}
 	go status.Run()
 
@@ -196,7 +197,7 @@ func RunPostProcessing(startInstant time.Time) {
 		filesFailedS := "\n\t" + strings.Join(filesFailed, "\n\t")
 		log.Error("Postprocessing completed, some processes failed after 5 retries. Failed files: %v", filesFailedS)
 	} else {
-		log.Error("Postprocessing completed, all files successfully postprocessed.")
+		log.Info("Postprocessing completed, all files successfully postprocessed.")
 	}
 	close(completedCh)
 	<-status.Done
