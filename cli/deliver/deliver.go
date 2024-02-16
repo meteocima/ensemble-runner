@@ -106,7 +106,7 @@ func main() {
 			//server.ExecRetry(cmd, workDir, "deliv-vda.log", "deliv-vda.log")
 			fmt.Println(cmd)
 			// delivery arpal
-			cmd = fmt.Sprintf("sftp del-arpal <<< put %s /cima2lig/WRF/%s", ppc.FilePath, filename)
+			cmd = fmt.Sprintf("echo put %s /cima2lig/WRF/%s | sftp del-arpal", ppc.FilePath, filename)
 			//server.ExecRetry(cmd, workDir, "deliv-arpal.log", "deliv-arpal.log")
 			fmt.Println(cmd)
 

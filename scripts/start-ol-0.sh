@@ -37,7 +37,7 @@ export NETCDF=$DEPS
 export WRFIO_NCD_LARGE_FILE_SUPPORT=1 
 #export DURATION_HOURS=48
 export DURATION_HOURS=12
-export START_FORECAST=`date '+%Y-%m-%d-00'`
+export START_FORECAST=${START_FORECAST:-`date '+%Y-%m-%d-00'`}
 
 #gfsdn -c $PRG/gfs.toml -o $WORK/gfs  ol $DURATION_HOURS `date '+%Y%m%d00'`
 #sbatch $ROOTDIR/scripts/start-ol-1.sh 
