@@ -11,6 +11,7 @@ import (
 	"github.com/meteocima/ensemble-runner/errors"
 	"github.com/meteocima/ensemble-runner/folders"
 	"github.com/meteocima/ensemble-runner/log"
+	"github.com/meteocima/ensemble-runner/server"
 	"github.com/meteocima/ensemble-runner/simulation"
 	"github.com/parro-it/tailor"
 )
@@ -76,7 +77,7 @@ func main() {
 
 	workDir := simulation.Workdir(startInstant)
 	postprocd := workDir + "/postprocd_files.log"
-	//fmt.Printf("postprocd: %s\n", postprocd)
+	//log.Info("postprocd: %s\n", postprocd)
 
 	postprocdFile := errors.CheckResult(tailor.OpenFile(postprocd, time.Second*30))
 	defer postprocdFile.Close()
@@ -89,26 +90,26 @@ func main() {
 
 		if ppc.Kind == RawAuxFile && ppc.Domain == 3 {
 			cmd := fmt.Sprintf("scp %s del-continuum:/home/silvestro/Flood_Proofs_Italia2p0/MeteoModel/WrfOL/%s", ppc.FilePath, filepath.Base(ppc.FilePath))
-			//server.ExecRetry(cmd, workDir, "deliv-continuum.log", "deliv-continuum.log")
-			fmt.Println(cmd)
+			server.ExecRetry(cmd, workDir, "deliv-continuum.log", "deliv-continuum.log")
+			log.Info("Delivered file %s to continuum", filepath.Base(ppc.FilePath))
 		} else if ppc.Kind == WrfOutFile && ppc.Domain == 3 {
 
 			fileInst := startInstant.Add(time.Duration(ppc.ProgrHour) * time.Hour)
 			fileInstS := fileInst.Format("2006010215")
-			filename := fmt.Sprintf("wrfcima_%s-%d.grb2", fileInstS, ppc.ProgrHour)
+			filename := fmt.Sprintf("wrfcima_%s-%02d.grb2", fileInstS, ppc.ProgrHour)
 
 			// delivery AWS
 			cmd := fmt.Sprintf("scp %s del-repo:/share/wrf_repository/%s", ppc.FilePath, filename)
-			//server.ExecRetry(cmd, workDir, "deliv-aws.log", "deliv-aws.log")
-			fmt.Println(cmd)
+			server.ExecRetry(cmd, workDir, "deliv-aws.log", "deliv-aws.log")
+			log.Info("Delivered file %s to AWS", filename)
 			// delivery VdA
 			cmd = fmt.Sprintf("scp %s del-vda:/home/WRF/%s", ppc.FilePath, filename)
-			//server.ExecRetry(cmd, workDir, "deliv-vda.log", "deliv-vda.log")
-			fmt.Println(cmd)
+			server.ExecRetry(cmd, workDir, "deliv-vda.log", "deliv-vda.log")
+			log.Info("Delivered file %s to VdA", filename)
 			// delivery arpal
 			cmd = fmt.Sprintf("echo put %s /cima2lig/WRF/%s | sftp del-arpal", ppc.FilePath, filename)
-			//server.ExecRetry(cmd, workDir, "deliv-arpal.log", "deliv-arpal.log")
-			fmt.Println(cmd)
+			server.ExecRetry(cmd, workDir, "deliv-arpal.log", "deliv-arpal.log")
+			log.Info("Delivered file %s to ARPAL", filename)
 
 		} else if ppc.Kind == Phase {
 			var firstPhaseHour int
@@ -129,8 +130,8 @@ func main() {
 			phaseF.Close()
 
 			cmd := fmt.Sprintf("scp %s del-repo:/share/wrf_repository/%s", phaseFname, filepath.Base(phaseFname))
-			//server.ExecRetry(cmd, workDir, "deliv-aws.log", "deliv-aws.log")
-			fmt.Println(cmd)
+			server.ExecRetry(cmd, workDir, "deliv-aws.log", "deliv-aws.log")
+			log.Info("Delivered file %s to AWS", filepath.Base(phaseFname))
 			os.Remove(phaseFname)
 
 		} else if ppc.Kind == Completed {
@@ -139,15 +140,15 @@ func main() {
 			targetDir := fmt.Sprintf("/wrf-world/Native/%04d/%02d/%02d/%04d", startInstant.Year(), startInstant.Month(), startInstant.Day(), startInstant.Hour())
 			targetName := fmt.Sprintf("rg_wrf_d01-%s_00UTC.nc", startInstant.Format("2006010215"))
 			cmd := fmt.Sprintf("scp %s drihm:%s", filepath.Join(workDir, "results/aux", filename), filepath.Join(targetDir, targetName))
-			//server.ExecRetry(cmd, workDir, "deliv-dewetra-d01.log", "deliv-dewetra-d01.log")
-			fmt.Println(cmd)
+			server.ExecRetry(cmd, workDir, "deliv-dewetra-d01.log", "deliv-dewetra-d01.log")
+			log.Info("Delivered file %s to Dewetra World", targetName)
 
 			filename = fmt.Sprintf("regr-d03-%s.nc", fileInstS)
 			targetDir = fmt.Sprintf("/share/archivio/experience/data/MeteoModels/WRF_ARPAL/%04d/%02d/%02d/%04d", startInstant.Year(), startInstant.Month(), startInstant.Day(), startInstant.Hour())
 			targetName = fmt.Sprintf("rg_wrf-%s_00UTC.nc", startInstant.Format("2006010215"))
 			cmd = fmt.Sprintf("scp %s del-dewetra:%s", filepath.Join(workDir, "results/aux", filename), filepath.Join(targetDir, targetName))
-			//server.ExecRetry(cmd, workDir, "deliv-dewetra-d01.log", "deliv-dewetra-d01.log")
-			fmt.Println(cmd)
+			server.ExecRetry(cmd, workDir, "deliv-dewetra-d01.log", "deliv-dewetra-d01.log")
+			log.Info("Delivered file %s to Dewetra", targetName)
 			break
 		}
 	}
