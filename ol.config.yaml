@@ -18,9 +18,7 @@ CoresPerNode: 112
 
 
 PostprocRules:
-#  wrfout_d03.*: echo $ROOTDIR $FILE_PATH $DIR $FILE $DOMAIN $INSTANT > postproc-$FILE.log
-#  auxhist23_d03.*: echo $ROOTDIR $FILE_PATH $DIR $FILE $DOMAIN $INSTANT > postproc-$FILE.log
   wrfout_d03.*: postproc-wrfout.sh > postproc-$FILE.log
-  auxhist23_d03.*: postproc-aux.sh > postproc-d03-$FILE.log
-  auxhist23_d01.*: postproc-aux.sh > postproc-d01-$FILE.log
+  auxhist23_d03.*: postproc-aux.sh > postproc-$FILE.log
+  auxhist23_d01.*: postproc-aux.sh > postproc-$FILE.log
   

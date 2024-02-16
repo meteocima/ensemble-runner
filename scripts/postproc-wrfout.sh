@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-
+sleep 30
 mkdir -p $SIM_WORKDIR/results/out
 regridded=$SIM_WORKDIR/results/out/out_regr_${INSTANT}.grb
 
@@ -11,8 +11,8 @@ cd $wrk_dir
 dirprep $ROOTDIR/templates/upp $wrk_dir
 
 export tmmark=d03
-export MP_SHARED_MEMORY=yes
-export MP_LABELIO=yes
+export MP_SHARED_MEMORY=no
+export MP_LABELIO=no
 
 mpirun -n 1 ./unipost.exe
 
