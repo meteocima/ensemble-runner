@@ -95,8 +95,8 @@ func main() {
 			log.Info("Delivered file %s to continuum", filepath.Base(ppc.FilePath))
 		} else if ppc.Kind == WrfOutFile && ppc.Domain == 3 {
 
-			fileInst := startInstant.Add(time.Duration(ppc.ProgrHour) * time.Hour)
-			fileInstS := fileInst.Format("2006010215")
+			//fileInst := startInstant.Add(time.Duration(ppc.ProgrHour) * time.Hour)
+			fileInstS := startInstant.Format("2006010215")
 			filename := fmt.Sprintf("wrfcima_%s-%02d.grb2", fileInstS, ppc.ProgrHour)
 
 			// delivery AWS
