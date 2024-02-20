@@ -162,7 +162,7 @@ func deliverFile(ppc PostProcessCompleted, workDir string, startInstant time.Tim
 		phaseFname := fmt.Sprintf("%s/index%d.txt", os.TempDir(), ppc.ProgrHour-1)
 		phaseF := errors.CheckResult(os.OpenFile(phaseFname, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644))
 		for i := firstPhaseHour; i <= lastPhaseHour; i++ {
-			fmt.Fprintf(phaseF, "wrfcima_%s-%d.grb2\n", startInstant.Format("2006010215"), i)
+			fmt.Fprintf(phaseF, "wrfcima_%s-%02d.grb2\n", startInstant.Format("2006010215"), i)
 		}
 		phaseF.Close()
 
@@ -194,7 +194,7 @@ func deliverFile(ppc PostProcessCompleted, workDir string, startInstant time.Tim
 		log.Info("Start delivery file %s to Dewetra", targetName)
 		server.ExecRetry("ssh del-dewetra mkdir -p "+targetDir, workDir, "", "")
 
-		cmd = fmt.Sprintf("scp %s del-dewetra:%s", filepath.Join(workDir, "results/aux", filename), filepath.Join(targetDir, targetName))
+		cmd = fmt.Sprintf("scp %s 2024-02-21_20%s", filepath.Join(workDir, "results/aux", filename), filepath.Join(targetDir, targetName))
 		server.ExecRetry(cmd, workDir, "deliv-dewetra-d01.log", "deliv-dewetra-d01.log")
 		log.Info("Delivered file %s to Dewetra", targetName)
 
