@@ -204,15 +204,9 @@ func deliverFile(ppc PostProcessCompleted, workDir string, startInstant time.Tim
 		log.Info("Start delivery file %s to Dewetra", targetName)
 		server.ExecRetry("ssh del-dewetra mkdir -p "+targetDir, workDir, "", "")
 
-		cmd = fmt.Sprintf("scp %s 2024-02-21_20%s", filepath.Join(workDir, "results/aux", filename), filepath.Join(targetDir, targetName))
+		cmd = fmt.Sprintf("scp %s del-dewetra:%s", filepath.Join(workDir, "results/aux", filename), filepath.Join(targetDir, targetName))
 		server.ExecRetry(cmd, workDir, "deliv-dewetra-d01.log", "deliv-dewetra-d01.log")
 		log.Info("Delivered file %s to Dewetra", targetName)
-
-		// delivery domain 3 to AWS
-		cmd = fmt.Sprintf("scp %s del-repo:/share/wrf_repository/ol/%s", filepath.Join(workDir, "results/aux", filename), targetName)
-		log.Info("Start delivery file %s to AWS", targetName)
-		server.ExecRetry(cmd, workDir, "deliv-aws-tt-d01.log", "deliv-aws-tt-d01.log")
-		log.Info("Delivered file %s to AWS", targetName)
 
 	}
 }
