@@ -200,13 +200,19 @@ func deliverFile(ppc PostProcessCompleted, workDir string, startInstant time.Tim
 		// delivery domain 3 to Dewetra
 		filename = fmt.Sprintf("regr-d03-%s.nc", fileInstS)
 		targetDir = fmt.Sprintf("/share/archivio/experience/data/MeteoModels/WRF_ARPAL/%04d/%02d/%02d/%04d", startInstant.Year(), startInstant.Month(), startInstant.Day(), startInstant.Hour())
-		targetName = fmt.Sprintf("rg_wrf-%s_00UTC.nc", startInstant.Format("2006010215"))
+		targetName = fmt.Sprintf("rg_wrf-%s_00UTC.nc", startInstant.Format("200601021504"))
 		log.Info("Start delivery file %s to Dewetra", targetName)
 		server.ExecRetry("ssh del-dewetra mkdir -p "+targetDir, workDir, "", "")
 
 		cmd = fmt.Sprintf("scp %s del-dewetra:%s", filepath.Join(workDir, "results/aux", filename), filepath.Join(targetDir, targetName))
 		server.ExecRetry(cmd, workDir, "deliv-dewetra-d01.log", "deliv-dewetra-d01.log")
 		log.Info("Delivered file %s to Dewetra", targetName)
+
+		// delivery domain 3 to AWS
+		cmd = fmt.Sprintf("scp %s del-repo:/share/wrf_repository/ol/%s", filepath.Join(workDir, "results/aux", filename), targetName)
+		log.Info("Start delivery file %s to AWS", targetName)
+		server.ExecRetry(cmd, workDir, "deliv-aws-tt-d01.log", "deliv-aws-tt-d01.log")
+		log.Info("Delivered file %s to AWS", targetName)
 
 	}
 }

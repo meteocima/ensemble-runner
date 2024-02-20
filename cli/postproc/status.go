@@ -9,6 +9,7 @@ import (
 
 	"github.com/meteocima/ensemble-runner/errors"
 	"github.com/meteocima/ensemble-runner/folders"
+	"github.com/meteocima/ensemble-runner/log"
 	"github.com/meteocima/ensemble-runner/server"
 )
 
@@ -112,11 +113,13 @@ func (stat *PostProcessStatus) checkAllAUXCompleted(completed PostProcessComplet
 	}
 
 	script := filepath.Join(folders.Rootdir, "scripts/postproc-aux-end.sh")
-	log := "postproc-aux-end.log"
-	server.ExecRetry(script, stat.SimWorkdir, log, log,
+	logf := "postproc-aux-end.log"
+	log.Info("Running final merge of AUX files")
+	server.ExecRetry(script, stat.SimWorkdir, logf, logf,
 		"SIM_WORKDIR", stat.SimWorkdir,
 		"RUNDATE", stat.SimStartInstant.Format("2006-01-02-15"),
 	)
+	log.Info("Final merge of AUX files completed")
 	stat.FinalAUXPostProcDone = true
 }
 
