@@ -172,6 +172,16 @@ func deliverFile(ppc PostProcessCompleted, workDir string, startInstant time.Tim
 		server.ExecRetry(cmd, workDir, "deliv-aws.log", "deliv-aws.log")
 		log.Info("Delivered file %s to AWS", filepath.Base(phaseFname))
 		os.Remove(phaseFname)
+	} else if ppc.Kind == AuxFile && ppc.Domain == 3 {
+		// delivery domain 3 to dhrim for final merge and delivery to dewetra and AWS
+
+		targetDir := fmt.Sprintf("/share/ol_leo/%s", startInstant.Format("2006-01-02-15"))
+		log.Info("Start delivery file %s to drihm", filepath.Base(ppc.FilePath))
+		server.ExecRetry("ssh drihm mkdir -p "+targetDir, workDir, "", "")
+
+		cmd := fmt.Sprintf("scp %s drihm:%s/%s", ppc.FilePath, targetDir, filepath.Base(ppc.FilePath))
+		server.ExecRetry(cmd, workDir, "deliv-dewetra-d01.log", "deliv-dewetra-d01.log")
+		log.Info("Delivered file %s to Dewetra", filepath.Base(ppc.FilePath))
 
 	} else if ppc.Kind == Completed {
 		// delivery domain 1 to Dewetra

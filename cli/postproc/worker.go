@@ -76,7 +76,7 @@ func (w *Worker) runCommand(ppc PostProcessCommand) {
 		filePath = filepath.Join(w.SimWorkdir, fmt.Sprintf("results/out/out_regr_%s.grb", instantS))
 	} else if strings.HasPrefix(file, "aux") {
 		kind = AuxFile
-		filePath = filepath.Join(w.SimWorkdir, fmt.Sprintf("results/aux/aux_regr_%s.nc", instantS))
+		filePath = filepath.Join(w.SimWorkdir, fmt.Sprintf("results/aux/aux-regr-d%02d-%s.nc", domain, instantS))
 
 		w.FilesCompleted <- PostProcessCompleted{
 			Domain:    int(domain),
