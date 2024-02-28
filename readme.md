@@ -1,10 +1,13 @@
 # ensemble-runner
 
 This repository contain GO source code of a series of commands which allows
-to run a WRF simulation using either a GFS forecast as guiding conditions,
-assimilating radars and weather forecast observations.
+to run a WRF simulation using as input either a GFS forecast or an already existing
+dataset produced by the WPS system.
 
-## Work environment preparation.
+The scripts allows to assimilate radars and weather forecast observations in 2 or 3  
+cycle of 3 hours each.
+
+# Work environment preparation.
 
 The command must run in a work directory containing a `config.yaml` config file. 
 This file should be in `yaml`` format, and allows, among other things, to customize 
@@ -12,25 +15,26 @@ the path of all others external files and directories needed by the process.
 
 The config files contains following variables:
 
-* __GeogDataDir__					- path to a directory containing static geographic data used by geogrid.exe.
-* __CovarMatrixesDir__				- path to a directory containing background errors of covariance matrices.
 * __GeogridProc__ 					- number of MPI processes to use when running `geogrid.exe`
 * __MetgridProc__ 					- number of MPI processes to use when running `metgrid.exe`
-* __WrfProc__ 						- number of MPI processes to use when running `wrf.exe` to run the final forecast or ensemble members
+* __WrfProc__ 						- number of MPI processes to use when running `wrf.exe` to run the control forecast or ensemble members
+* __WWrfStepProc__ 					- number of cores to use for `wrf.exe` in the the intermediate steps of assimilation. 
 * __WrfdaProc__ 					- number of MPI processes to use when running `dawrf_var.exe`
 * __RealProc__ 						- number of MPI processes to use when running `real.exe`
-* __WrfStepProcCount__ 				- number of MPI processes to use when running `wrf.exe` to run the intermediate steps
 * __MpiOptions__					- additional arguments to pass in every invocation of `mpirun`
-* __RunWPS__						- specify if boundary conditions are produced or read from an `inputs` directory
+* __ObDataDir__                     - directory where the observation data to assimilate are stored.
+* __GeogDataDir__					- path to a directory containing static geographic data used by `geogrid.exe`.
+* __CovarMatrixesDir__				- path to a directory containing background errors of covariance matrices.
+* __RunWPS__						- specify if boundary and input conditions are produced with WPS or read from `inputs` directory
 * __EnsembleMembers__				- number of members in the ensemble (excluding the control forecast)
-* __EnsembleParallelism__			- how many ensemble members to run in parallel
+* __EnsembleParallelism__			- how many ensemble members to run in parallel. 
+* __AssimilateObservations__        - whether to assimilate observations or not.
 * __AssimilateOnlyInnerDomain__		- when true, assimilation of observation data is done only for the innermost domain
 * __AssimilateFirstCycle__			- when true, assimilation of observation data is done also in the first cycle
-* __CoresPerNode__					- specify how many cores each node has
+* __CoresPerNode__					- Number of cores per node in the cluster where the simulation is run.
 
-Additionally, some other informations are read from environment variables. Some of this variables
-are already defined by other parts of the system, other ones change for every simulations, so it
-does not make sense to have them in the config file.
+Additionally, some other informations are read from environment variables. Some of these variables
+are already defined by other parts of the system (e.g. by loaded shell modules). Other ones change for every simulations run (e.g. start date or duration of the forecast), so it does not make sense to have them in the config file. Herebelow a list of such variables:
 
 * __START_FORECAST__	-	start of forecast to simulate, in format YYYY-MM-DD-HH. If `START_FORECAST` is omitted, the system find the date or dates to run by reading the file `inputs/arguments.txt`
 * __DURATION_HOURS__	-	duration of the forecast. value is ignored when file `inputs/arguments.txt` is used.
@@ -41,6 +45,18 @@ does not make sense to have them in the config file.
 * __ROOTDIR__			-	path to the root directory of the simulation. This is the directory which contains `templates` directory, `workdir` directory, etc. 
 
 
+
+# $ROOTDIR directory organization
+
+This is the path of the directory containing `config.yaml` config file. 
+Inside this root directory, there are other subdirs whose names are not configurable:
+
+* `$ROOTDIR/workdir/$START_FORECAST` will be used as work directory for the commands while running the simulations. At the end of the simulation, the directory `$ROOTDIR/workdir` will contains a subdirectory for each date of simulation ran, each one containing the complete three of intermediates data and log files used. These directory are named using a YYYY-MM-DD-HH format; 
+
+* `$ROOTDIR/inputs` directory will be created after WPS run, and it will contains results of WPS execution, with a subdirectories for each date ran. This same directory must includes existings dataset if WPS is not configured.
+
+* `$ROOTDIR/results` will contains all output files after completion of the simulation.
+
 ## Command syntax
 
 Run the command without arguments to start the simulation:
@@ -49,15 +65,10 @@ Run the command without arguments to start the simulation:
 $ ensrunner
 ```
 
-#### $ROOTDIR directory
 
-This is the path of the directory containing `config.yaml` config file. 
-Directory `$ROOTDIR/workdir` will be used as starting work directory for the command while running the simulations.
 
-At the end of the simulation, the directory `$ROOTDIR/workdir` will contains a subdirectory for each date of simulation ran, each one directory containing the complete three of intermediates data and log files used. These directory are named using a YYYY-MM-DD-HH format; 
 
-Moreover, if WPS is run, an `$ROOTDIR/inputs` directory will be created containing a subdirectories for each date ran containing WPS results files. 
-Another directory will contains all output files of the simulation: `$ROOTDIR/results`
+
 
 #### Dates arguments
 

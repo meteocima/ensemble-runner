@@ -8,15 +8,15 @@ MetgridProc: 36
 # control forecast and for ensemble members.
 WrfProc: 361
 
-# WrfdaProc is the number of cores to use for da_wrfvar.exe process.
+# WrfdaProc is the number of cores to use for dawrf_var.exe process.
 WrfdaProc: 361
 
 # RealProc is the number of cores to use for real.exe
 RealProc: 361
 
-# WrfStepProcCount is the number of cores to use for wrf.exe during the
+# WrfStepProc is the number of cores to use for wrf.exe during the
 # assimilation cycles.
-WrfStepProcCount: 361
+WrfStepProc: 361
 
 # MpiOptions contains custom additional options to pass to the mpirun command
 # when running the WRF executables.

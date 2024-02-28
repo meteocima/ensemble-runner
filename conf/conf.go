@@ -20,8 +20,8 @@ var Values = struct {
 	WrfProcCount int `yaml:"WrfProc"`
 	// WrfStepProcCount is the number of cores to use for wrf.exe in the
 	// assimilation cycles.
-	WrfStepProcCount int `yaml:"WrfStepProcCount"`
-	// WrfdaProcCount is the number of cores to use for da_wrfvar.exe process.
+	WrfStepProcCount int `yaml:"WrfStepProc"`
+	// WrfdaProcCount is the number of cores to use for dawrf_var.exe process.
 	WrfdaProcCount int `yaml:"WrfdaProc"`
 	// RealProcCount is the number of cores to use for real.exe
 	RealProcCount int `yaml:"RealProc"`
