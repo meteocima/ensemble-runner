@@ -42,7 +42,7 @@ type SimDirs struct {
 	da00dir       []string
 }
 
-func (s *Simulation) Run() {
+func (s *Simulation) run() {
 	// define directories vars for the workdir of various steps of the simulation:
 	// da dirs have one dir for every domain
 	dirs := simDirs(s)
@@ -51,6 +51,7 @@ func (s *Simulation) Run() {
 	log.Info("Starting simulation from %s for %.0f hours", s.Start.Format(ShortDtFormat), s.Duration.Hours())
 	log.Info("  -- $WORKDIR=%s", s.Workdir)
 
+	// in case the workdir for this particular date already exists, it is removed.
 	if server.DirExists(s.Workdir) {
 		server.Rmdir(s.Workdir)
 	}
@@ -59,15 +60,20 @@ func (s *Simulation) Run() {
 		panic(err)
 	})
 
+	// assimilation happens in domain from firstDomain to 3,
+	// so if the configuration specifies to assimilate only the
+	// inner domain we set firstDomain=3
 	firstDomain := 1
 	if conf.Values.AssimilateOnlyInnerDomain {
 		firstDomain = 3
 	}
 
-	// create all directories for the various wrf cycles.
-	// WPS: create directory wps and run geogrid, ungrib, metgrid
+	// create all directories for the various wrf and wrfda cycles.
+	// and, if needed, for WPS
 	s.createSimulationDirectories()
 
+	// if an ensemble is requested, create the directories for the ensemble members
+	// and calculate the seed for each member
 	if conf.Values.EnsembleMembers > 0 {
 		rnd := rand.NewSource(0xfeedbabebadcafe)
 
@@ -76,14 +82,20 @@ func (s *Simulation) Run() {
 			os.Setenv("ENSEMBLE_SEED", fmt.Sprintf("%02d", seed))
 			log.Debug("Using seed %02d for member n.%d.", seed, ensnum)
 
-			s.CreateWrfEnsembleMemberDir(s.Start, s.Duration, ensnum)
+			s.createWrfEnsembleMemberDir(s.Start, s.Duration, ensnum)
 		}
 	}
 
+	// if WPS execution is requested, initial and boundary conditions are copied from the outputs of WPS.
+	// otherwise, they are copied from the inputs directory.
 	if conf.Values.RunWPS {
-		// WPS: create directory wps and run geogrid, ungrib, metgrid
+		// WPS: run geogrid, ungrib, metgrid
+		// if WPS preproccing is requested in configuration
 		var start time.Time
 		var duration time.Duration
+
+		// if assimilation is requested, we need to run WPS
+		// for 6 hours before the start of the forecast
 		if conf.Values.AssimilateObservations {
 			start = s.Start.Add(-6 * time.Hour)
 			duration = s.Duration + 6*time.Hour
@@ -96,15 +108,26 @@ func (s *Simulation) Run() {
 
 		s.RunLinkGrib(start)
 		s.RunUngrib()
+
+		// if the forecast is longer than 24 hours,
+		// eventually accounting for the 6 hours of
+		// assimilation, we need to run avgtsfc
 		if duration > 24*time.Hour {
 			s.RunAvgtsfc()
 		}
+
 		s.RunMetgrid()
 
+		// creates the directory for WPS outputs.
+		// it will be called inputs because it
+		// contains the input datasets for the forecast
 		server.MkdirAll(dirs.wpsOutputsDir, 0775)
 
 		if conf.Values.AssimilateObservations {
-			// run real for every cycle.
+			// run real for every cycle of assimilation and for the main forecast.
+			// initial conditions are copied from the outputs of execution of real.exe for the first cycle,
+			// boundary conditions are copied from the outputs of execution of real.exe for every cycle.
+			// namelist for the execution of the various real.exe are copied from the wrf directories of every cycle.
 			server.CopyFile(s.Workdir, join(dirs.wrf18dir, "namelist.input"), join(dirs.wpsdir, "namelist.input"))
 			s.RunReal(s.Start.Add(-6 * time.Hour))
 			server.CopyFile(s.Workdir, join(dirs.wpsdir, "wrfbdy_d01"), join(dirs.wpsOutputsDir, "wrfbdy_d01_da01"))
@@ -120,6 +143,9 @@ func (s *Simulation) Run() {
 			s.RunReal(s.Start)
 			server.CopyFile(s.Workdir, join(dirs.wpsdir, "wrfbdy_d01"), join(dirs.wpsOutputsDir, "wrfbdy_d01_da03"))
 		} else {
+			// run real for the main forecast.
+			// namelist for the execution of real.exe is copied from the wrf00 directory.
+			// initial and boundary conditions are copied from the outputs of execution of real.exe
 			server.CopyFile(s.Workdir, join(dirs.wrf00dir, "namelist.input"), join(dirs.wpsdir, "namelist.input"))
 			s.RunReal(s.Start)
 			server.CopyFile(s.Workdir, join(dirs.wpsdir, "wrfbdy_d01"), join(dirs.wpsOutputsDir, "wrfbdy_d01"))
@@ -130,7 +156,16 @@ func (s *Simulation) Run() {
 
 	}
 
+	// if assimilation is requested, we need to run the 3 cycles of assimilation.
+	// for every cycle, we need to run WRF from the start of the cycle to the end of the cycle,
+	// in order to advance the time of the initiali conditions for the next phase.
+	// Result sof the last cycle will be copied to the wrf directory of the main forecast.
+
+	// here we assimilate the 1 cycle.
 	if conf.Values.AssimilateObservations {
+		// Assimilation of first cycle is optional: if not requested,
+		// initial and boundary conditions are copied directly from wps
+		// into the first cycle wrf directory.
 		if conf.Values.AssimilateFirstCycle {
 			// assimilate D-6 (first cycle) for all domains
 			if !conf.Values.AssimilateOnlyInnerDomain {
@@ -171,6 +206,7 @@ func (s *Simulation) Run() {
 		}
 	}
 
+	// Assimilation cycles 2 and 3
 	if conf.Values.AssimilateObservations {
 		// run WRF from D-6 to D-3.
 		s.RunWrfStep(s.Start.Add(-6 * time.Hour))
@@ -240,7 +276,7 @@ func (s *Simulation) Run() {
 	}
 
 	// execute control forecast and all ensemble members
-	failed := RunForecast(s)
+	failed := runForecast(s)
 
 	if <-failed {
 		log.Warning("One or more members of the forecast failed to run.")
@@ -248,7 +284,6 @@ func (s *Simulation) Run() {
 	}
 
 	log.Info("Post-processing results.")
-	//server.ExecRetry(fmt.Sprintf("ROOTDIR='%s' delivery.sh > delivery.log 2>&1", folders.Rootdir), s.Workdir, "delivery.log", "delivery.log")
 
 	log.Info("Simulation completed successfully.")
 
@@ -259,14 +294,14 @@ func (s *Simulation) createSimulationDirectories() {
 	if conf.Values.AssimilateOnlyInnerDomain {
 		firstDomain = 3
 	}
-	s.CreateWrfControlForecastDir(s.Start, s.Duration)
+	s.createWrfControlForecastDir(s.Start, s.Duration)
 	if conf.Values.AssimilateObservations {
-		s.CreateWrfStepDir(s.Start.Add(-6 * time.Hour))
-		s.CreateWrfStepDir(s.Start.Add(-3 * time.Hour))
+		s.createWrfStepDir(s.Start.Add(-6 * time.Hour))
+		s.createWrfStepDir(s.Start.Add(-3 * time.Hour))
 		for domain := firstDomain; domain <= 3; domain++ {
-			s.CreateDaDir(s.Start.Add(-6*time.Hour), domain)
-			s.CreateDaDir(s.Start.Add(-3*time.Hour), domain)
-			s.CreateDaDir(s.Start, domain)
+			s.createDaDir(s.Start.Add(-6*time.Hour), domain)
+			s.createDaDir(s.Start.Add(-3*time.Hour), domain)
+			s.createDaDir(s.Start, domain)
 		}
 	}
 
@@ -282,7 +317,7 @@ func (s *Simulation) createSimulationDirectories() {
 			duration = s.Duration
 		}
 
-		s.CreateWpsDir(start, duration)
+		s.createWpsDir(start, duration)
 	}
 }
 
@@ -316,7 +351,7 @@ func simDirs(s *Simulation) SimDirs {
 	return dirs
 }
 
-func RunForecast(s *Simulation) chan bool {
+func runForecast(s *Simulation) chan bool {
 	failed := make(chan bool, conf.Values.EnsembleMembers)
 
 	go func() {
@@ -325,10 +360,11 @@ func RunForecast(s *Simulation) chan bool {
 			w.Add(ensnum)
 		}
 		outfLogPath := filepath.Join(s.Workdir, "output_files.log")
-		os.Remove(outfLogPath)
-		/*if err := os.Remove(outfLogPath); err != nil {
+
+		if err := os.Remove(outfLogPath); err != nil {
 			log.Warning("Cannot remove %s: %s", outfLogPath, err)
-		}*/
+		}
+
 		w.Do(conf.Values.EnsembleParallelism, func(ensnum int) {
 			err := s.RunWrfEnsemble(s.Start, ensnum)
 			if err != nil {
@@ -357,8 +393,8 @@ func RunForecastsFromInputs() {
 	for _, run := range readArgumentsFile() {
 		errors.Check(os.Setenv("START_FORECAST", run.start.Format(ShortDtFormat)))
 		errors.Check(os.Setenv("DURATION_HOURS", fmt.Sprintf("%.0f", run.duration.Hours())))
-		sim := New(run.start, run.duration, nodes)
-		sim.Run()
+		sim := new(run.start, run.duration, nodes)
+		sim.run()
 	}
 }
 
@@ -417,11 +453,11 @@ func RunForecastFromEnv() {
 		os.Exit(1)
 	}
 
-	sim := New(start, duration, nodes)
-	sim.Run()
+	sim := new(start, duration, nodes)
+	sim.run()
 }
 
-func New(start time.Time, duration time.Duration, nodes mpiman.SlurmNodes) Simulation {
+func new(start time.Time, duration time.Duration, nodes mpiman.SlurmNodes) Simulation {
 	workdir := Workdir(start)
 
 	sim := Simulation{
@@ -438,21 +474,21 @@ func Workdir(start time.Time) string {
 	return workdir
 }
 
-func (s Simulation) CreateWpsDir(start time.Time, duration time.Duration) {
+func (s Simulation) createWpsDir(start time.Time, duration time.Duration) {
 	server.RenderTemplate(folders.WPSProcWorkdir(s.Workdir), "wps", start, int(duration.Hours()))
 }
 
-func (s Simulation) CreateWrfControlForecastDir(start time.Time, duration time.Duration) {
+func (s Simulation) createWrfControlForecastDir(start time.Time, duration time.Duration) {
 	server.RenderTemplate(folders.WrfControlProcWorkdir(s.Workdir, start), "wrf-forecast", start, int(duration.Hours()))
 }
-func (s Simulation) CreateWrfEnsembleMemberDir(start time.Time, duration time.Duration, ensnum int) {
+func (s Simulation) createWrfEnsembleMemberDir(start time.Time, duration time.Duration, ensnum int) {
 	server.RenderTemplate(folders.WrfEnsembleProcWorkdir(s.Workdir, start, ensnum), "wrf-ensmember", start, int(duration.Hours()))
 }
 
-func (s Simulation) CreateWrfStepDir(start time.Time) {
+func (s Simulation) createWrfStepDir(start time.Time) {
 	server.RenderTemplate(folders.WrfControlProcWorkdir(s.Workdir, start), "wrf-step", start, 3)
 }
 
-func (s Simulation) CreateDaDir(start time.Time, domain int) {
+func (s Simulation) createDaDir(start time.Time, domain int) {
 	server.RenderTemplate(folders.DAProcWorkdir(s.Workdir, start, domain), fmt.Sprintf("wrfda_%02d", domain), start, 3)
 }
