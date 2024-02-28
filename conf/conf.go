@@ -11,24 +11,53 @@ import (
 )
 
 var Values = struct {
-	GeogridProcCount          int    `yaml:"GeogridProc"`
-	MetgridProcCount          int    `yaml:"MetgridProc"`
-	WrfProcCount              int    `yaml:"WrfProc"`
-	WrfStepProcCount          int    `yaml:"WrfStepProcCount"`
-	WrfdaProcCount            int    `yaml:"WrfdaProc"`
-	RealProcCount             int    `yaml:"RealProc"`
-	MpiOptions                string `yaml:"MpiOptions"`
-	ObDataDir                 string `yaml:"ObDataDir"`
-	GeogDataDir               string `yaml:"GeogDataDir"`
-	GfsDir                    string `yaml:"GfsDir"`
-	CovarMatrixesDir          string `yaml:"CovarMatrixesDir"`
-	RunWPS                    bool   `yaml:"RunWPS"`
-	EnsembleMembers           int    `yaml:"EnsembleMembers"`
-	EnsembleParallelism       int    `yaml:"EnsembleParallelism"`
-	AssimilateObservations    bool   `yaml:"AssimilateObservations"`
-	AssimilateOnlyInnerDomain bool   `yaml:"AssimilateOnlyInnerDomain"`
-	AssimilateFirstCycle      bool   `yaml:"AssimilateFirstCycle"`
-	CoresPerNode              int    `yaml:"CoresPerNode"`
+	// GeogridProcCount is the number of cores to use for geogrid.exe
+	GeogridProcCount int `yaml:"GeogridProc"`
+	// MetgridProcCount is the number of cores to use for metgrid.exe
+	MetgridProcCount int `yaml:"MetgridProc"`
+	// WrfProcCount is the number of cores to use for wrf.exe in the
+	// control forecast and for ensemble members.
+	WrfProcCount int `yaml:"WrfProc"`
+	// WrfStepProcCount is the number of cores to use for wrf.exe in the
+	// assimilation cycles.
+	WrfStepProcCount int `yaml:"WrfStepProcCount"`
+	// WrfdaProcCount is the number of cores to use for da_wrfvar.exe process.
+	WrfdaProcCount int `yaml:"WrfdaProc"`
+	// RealProcCount is the number of cores to use for real.exe
+	RealProcCount int `yaml:"RealProc"`
+	// MpiOptions contains additional options to pass to the mpirun command
+	// when running the WRF executables.
+	MpiOptions string `yaml:"MpiOptions"`
+	// ObDataDir is the directory where the observation data is stored.
+	ObDataDir string `yaml:"ObDataDir"`
+	// GeogDataDir is the directory where the input geogrid static data is stored.
+	GeogDataDir string `yaml:"GeogDataDir"`
+	// GfsDir is the directory where the input GFS data is stored.
+	GfsDir string `yaml:"GfsDir"`
+	// CovarMatrixesDir is the directory where the background error covariance data are stored
+	CovarMatrixesDir string `yaml:"CovarMatrixesDir"`
+	// Whever to run preprocessing step. If false, the WPS output files are expected to be already present
+	// inside 'inputs' directory. Otherwise, the WPS executables are run to generate the input files, using
+	// the data in 'GfsDir' and 'GeogDataDir' as inputs.
+	RunWPS bool `yaml:"RunWPS"`
+	// EnsembleMembers is the number of ensemble members to run. If 0, only the control
+	// forecast is run. This number does not include the control forecast.
+	EnsembleMembers int `yaml:"EnsembleMembers"`
+
+	// EnsembleParallelism contains the number of ensemble members to run in parallel
+	// The main control forecast is scheduled taking into accounts this value for parallelism,
+	// so `EnsembleParallelism` must be at least 1, even when no ensemble members is needed.
+	EnsembleParallelism int `yaml:"EnsembleParallelism"`
+
+	// Whether to assimilate observations or not.
+	AssimilateObservations bool `yaml:"AssimilateObservations"`
+	// Whether to assimilate observations only in the inner domain, or in the outer ones too.
+	AssimilateOnlyInnerDomain bool `yaml:"AssimilateOnlyInnerDomain"`
+	// Whether to assimilate observations only in the first cycle, or in each one of them.
+	AssimilateFirstCycle bool `yaml:"AssimilateFirstCycle"`
+	// Number of cores per node in the cluster where the simulation is run.
+	// This is used to calculate which nodes to use for each one of the ensemble members.
+	CoresPerNode int `yaml:"CoresPerNode"`
 }{}
 
 func Initialize() {

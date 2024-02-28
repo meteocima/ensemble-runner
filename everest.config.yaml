@@ -1,19 +1,66 @@
+# GeogridProc is the number of cores to use for geogrid.exe
 GeogridProc: 36
+
+# MetgridProc is the number of cores to use for metgrid.exe
 MetgridProc: 36
+
+# WrfProc is the number of cores to use for wrf.exe in the
+# control forecast and for ensemble members.
 WrfProc: 361
+
+# WrfdaProc is the number of cores to use for da_wrfvar.exe process.
 WrfdaProc: 361
+
+# RealProc is the number of cores to use for real.exe
 RealProc: 361
+
+# WrfStepProcCount is the number of cores to use for wrf.exe during the
+# assimilation cycles.
 WrfStepProcCount: 361
 
+# MpiOptions contains custom additional options to pass to the mpirun command
+# when running the WRF executables.
 MpiOptions: 
+
+# ObDataDir is the directory where the observation data is stored.
 ObDataDir: ./observations
+
+# GeogDataDir is the directory where the input geogrid static data is stored.
 GeogDataDir: not-used
+
+# GfsDir is the directory where the input GFS data is stored.
 GfsDir: not-used
-BeDir: ./covar-matrices-it
+
+# CovarMatrixesDir is the directory where the background error covariance 
+# data are stored
+CovarMatrixesDir: ./covar-matrices-it
+
+# Whever to run preprocessing step. If false, the WPS output files are expected 
+# to be already present inside 'inputs' directory. Otherwise, the WPS executables 
+# are run to generate the input files, using the data in 'GfsDir' and 
+# 'GeogDataDir' as inputs.
 RunWPS: false
+
+# EnsembleMembers is the number of ensemble members to run. If 0, only the control
+# forecast is run.
 EnsembleMembers: 10
+
+# EnsembleParallelism contains the number of ensemble members to run in parallel
+# The main control forecast is scheduled taking into accounts this value for parallelism,
+# so `EnsembleParallelism` must be at least 1, even when no ensemble members is needed.
 EnsembleParallelism: 11
-AssimilateOnlyInnerDomain: false
-AssimilateFirstCycle: true
+
+# Whether to assimilate observations or not.
 AssimilateObservations: true
+
+# Whether to assimilate observations only in 
+# the inner domain, or in the outer ones too.
+AssimilateOnlyInnerDomain: false
+
+# Whether to assimilate observations only in 
+# the first cycle, or in each one of them.
+AssimilateFirstCycle: true
+
+# CoresPerNode is the number of cores per node in the HPC cluster.
+# This is used to calculate which nodes to use for each one of the ensemble members.
 CoresPerNode: 128
