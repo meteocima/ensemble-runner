@@ -1,11 +1,34 @@
 # ensemble-runner
 
 This repository contain GO source code of a series of commands which allows
-to run a WRF simulation using as input either a GFS forecast or an already existing
+to run WRF simulations using as input either a GFS forecast or an already existing
 dataset produced by the WPS system.
 
-The scripts allows to assimilate radars and weather forecast observations in 2 or 3  
+The scripts allows to optionally assimilate radars and weather forecast observations in 2 or 3  
 cycle of 3 hours each.
+
+These simulation has following charactertics:
+
+1) They are guided either by IFS or GFS datasets. These datasets should be prepared by one or more WPS processes, either using this workflow or one of our dockers: [wps-da.gfs](https://github.com/meteocima/wps-da.gfs) or [wps-da.ifs](https://github.com/meteocima/wps-da.ifs). You can configure how to guide the forecast using the configuration variable `RunWPS`
+
+2) The simulation assimilates radars and/or weather stations data in 2 or 3 different cycles, according to `AssimilateFirstCycle` with the first one starting 3 or 6 hour before the start of the requested forecast, the subsequent ones at 3 hours each.
+
+4) The simulation consists of 3 nested domain, and assimilation can happens in the inner domain only or in all 3 domains, according to configuration value `AssimilateOnlyInnerDomain`
+
+# Command syntax to start the simulation
+
+Run the command without arguments to start the simulation:
+
+```bash
+$ ensrunner
+```
+
+# Processes organization within the WPS and DA phases.	
+
+The diagram above represent the main processes running in WPS and DA phases.
+
+![Environments processes](media/ResponsibilityPerEnvironment.png)	
+
 
 # Work environment preparation.
 
@@ -18,7 +41,7 @@ The config files contains following variables:
 * __GeogridProc__ 					- number of MPI processes to use when running `geogrid.exe`
 * __MetgridProc__ 					- number of MPI processes to use when running `metgrid.exe`
 * __WrfProc__ 						- number of MPI processes to use when running `wrf.exe` to run the control forecast or ensemble members
-* __WWrfStepProc__ 					- number of cores to use for `wrf.exe` in the the intermediate steps of assimilation. 
+* __WrfStepProc__ 					- number of cores to use for `wrf.exe` in the the intermediate steps of assimilation. 
 * __WrfdaProc__ 					- number of MPI processes to use when running `dawrf_var.exe`
 * __RealProc__ 						- number of MPI processes to use when running `real.exe`
 * __MpiOptions__					- additional arguments to pass in every invocation of `mpirun`
@@ -44,8 +67,6 @@ are already defined by other parts of the system (e.g. by loaded shell modules).
 * __WRFDA_DIR__			-	path to compiled binaries of the WRF-DA program.
 * __ROOTDIR__			-	path to the root directory of the simulation. This is the directory which contains `templates` directory, `workdir` directory, etc. 
 
-
-
 # $ROOTDIR directory organization
 
 This is the path of the directory containing `config.yaml` config file. 
@@ -57,93 +78,13 @@ Inside this root directory, there are other subdirs whose names are not configur
 
 * `$ROOTDIR/results` will contains all output files after completion of the simulation.
 
-## Command syntax
 
-Run the command without arguments to start the simulation:
-
-```bash
-$ ensrunner
-```
-
-
-
-
-
-
-#### Dates arguments
-
-All arguments that follows `workdir` are interpreted as start dates of multiple simulations that are executed serially.
-
-**N.B. When we refer to start date, we mean the date and hour of the first hour forecasted.**
-
-The forecast by default last for 48h from the start date, but can be customized using dates arguments syntax (see below)
-Guiding forecast and observations must contains date for the instants at 3 and 6 hours before the start date.
-
-The system creates, under the specified work directory, a separate directory for each simulation date requested, named after the start date of the simulation.
-Moreover, WPS outputs are copied in a `inputs` directory organize with a sub-directory for each simulation ran, again, named after the simulation start date.
-
-##### Date arguments syntax
-
-Each date argument can have one of the syntax's above. They must be separated by spaces.
-
-1) **Single date** - a single date, specified in format YYYYMMDDHH
-> e.g. 2020122523
-	
-2) **Date range** - a range of date, specified including, in format YYYYMMDDHH, the start and 
-	end dates of range, separated by a dash `-` 
->	e.g. 2020122523-2020122623
-
-Both 1 and 2 can be optionally followed by a comma and number of hours to forecast for the specified date or range of dates. 
-If not specified, number of hours default to 48.
->	e.g. 2020122523,48
-
-
-### Processes organization within the WPS and DA phases.	
-
-The diagram above represent the main processes running in WPS and DA phases.
-
-![Environments processes](media/ResponsibilityPerEnvironment.png)	
-
-
-# wrfda-runner-hpc
-
-This repository contains informations and scripts to run a WRFDA simulation on HPC infrastructure.
-
-These simulation has following charactertics:
-
-1) The simulation is guided either by IFS or GFS datasets. These datasets should be 
-    prepared by one or more WPS processes. You can use one of our dockers to do this, either 
-    [wps-da.gfs](https://github.com/meteocima/wps-da.gfs) or [wps-da.ifs](https://github.com/meteocima/wps-da.ifs).
-
-2) The simulation assimilates radars and/or weather stations data in three
-    different cycles, with the first one starting 6 hour before the start of 
-    the requested forecast, the second 3 hours before and the third the same 
-    instant of the start of the requested forecast.
-
-3) The simulation consists of one or more nested domain, and assimilation
-    of each of this domains happens in a separate process. 
-
-## HOWTO: prepare a directory for a WRFDA simulation on your HPC server.
-
-To run a simulation on your HPC premises you need to create a directory containig
-following subdirs and files:
-
-### wrfda-runner 
+# ensrunner
 
 This command takes care of running all the various
-WRF processes needed to complete a simulation with radars and weather
-stations assimilation data.
+WRF processes needed to complete a simulation with assimilation of radars and weather stations data.
 
-The command is written in Go and sources can be found here: 
-https://github.com/meteocima/wrfda-runner
-
-Prebuilt binaries should be downloaded from
-https://github.com/meteocima/wrfda-runner/releases/latest
-
-This repository already contains latest release of the binary bundled 
-in source code.
-
-### covar-matrices-* 
+# covar-matrices* 
 
 A directory containing pre-built dataset of data needed
 by the assimilation process. This data is common between all runs of a certain 
@@ -178,10 +119,7 @@ which is, you have to provide a file ending in _d0N for every N domain in your
 configuration, and you have to provide a dataset for each season (or at least,
 for the season of the simulation you want to run).
 
-> covar-matrices for use on LEXIS project will be available under DDI
-> both for italy and for france domain. 
-
-### inputs 
+# inputs directory
 
 This directory must contains initial and boundary conditions for the 
 simulation, as produced by WPS process. There should be a boundary file
@@ -207,7 +145,7 @@ inputs/20201126/wrfinput_d02
 inputs/20201126/wrfinput_d03
 ```
 
-### namelists.*
+# namelists*
 
 this directories must contains namelists for all the various processes
 of the simulation you want to run.
@@ -227,7 +165,7 @@ should be used for Italy domain, and namelists.france for France domain.
 The appropriate directory can be choosed by setting the property NamelistsDir in
 the .cfg file used.
 
-### observations
+# observations
 
 This directory contains weather stations and radars datasets you want to 
 assimilate during the simulation.
@@ -250,39 +188,7 @@ instant, but the name should nonetheless reflects the nominal instant, not the r
 In other words, you are allowed to assimilate e.g. radar datas acquired at
 2020-11-26 08:53, but the realative file should be named 2020112609.
 
-### *-config. *.cfg
-
-This is the main configuration files used by https://github.com/meteocima/wrfda-runner
-it could/should contains following configuration variables:
-
-
-* _GeodataDir_  - path to a directory containing static geo data. 
-* _CovarMatrixesDir_ - path to the directory containing covariance matrix. Default: ./covar-matrices
-            _stuff inside this dir should be organized as explained in [covar-matrices](#covar-matrices)_
-* _WPSPrg_ - path to the directory containing compiled WPS software. This should have been compiled from 
-             https://github.com/meteocima/WPS/tree/v4.1-smoothpasses-cima in order to get custom cima changes
-             from the off-the-shelve WPS software.
-* _WRFDAPrg_ - path to the directory containing WRFDA software. This should have been compiled from 
-             https://github.com/meteocima/WRF/tree/v4.1.5-cima in order to get custom cima changes
-             from the off-the-shelve WPS software.
-* _WRFMainRunPrg_ - path to the directory containing WRF software to use for 3 cycle. This should have been compiled from 
-             https://github.com/meteocima/WRF/tree/v4.1.5-cima in order to get custom cima changes
-             from the off-the-shelve WPS software.
-* _WRFAssStepPrg_- path to the directory containing WRF software to use for 3 cycle. This should have been compiled from 
-             https://github.com/meteocima/WRF/tree/v4.1.5-cima in order to get custom cima changes
-             from the off-the-shelve WPS software.
-* _GFSArchive_ - path to input data directory. Despite the name, you could use this configuration property both for GFS and IFS.  Default: ./input
-            _stuff inside this dir should be organized as explained in [inputs](#inputs)_
-* _ObservationsArchive_ - path to input observations data directory. 
-            _stuff inside this dir should be organized as explained in [covar-matrices](#covar-matrices)_
-* _NamelistsDir_ - path to namelists. Default: ./namelists
-            _stuff inside this dir should be organized as explained in [namelists](#namelists)_
-
-This repository contains two config files that could be used 
-to run simulation for France and Italy domain: [france-config.gfs.cfg](france-config.gfs.cfg)
-and [italy-config.gfs.cfg](italy-config.gfs.cfg).
-
-### schedule-run-*.sh
+# schedule-run-*.sh
 
 scripts to schedule the simulation. You'll probably have to change content
 of this scripts in order to accomodate your particular server scheduler and configuration.
@@ -303,6 +209,6 @@ italy-config.gfs.cfg
 2020073100 48
 ```
 
-This file is produced automatically by [wps-da.gfs](https://github.com/meteocima/wps-da.gfs) and [wps-da.ifs](https://github.com/meteocima/wps-da.ifs) dockers as part of the inputs directory.
+These files are produced automatically by [wps-da.gfs](https://github.com/meteocima/wps-da.gfs) and [wps-da.ifs](https://github.com/meteocima/wps-da.ifs) dockers as part of the inputs directory.
 
 
