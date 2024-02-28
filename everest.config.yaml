@@ -7,8 +7,8 @@ WrfStepProcCount: 361
 
 MpiOptions: 
 ObDataDir: ./observations
-GeogDataDir: /data/unsafe/geog
-GfsDir: /data/unsafe/gfs
+GeogDataDir: not-used
+GfsDir: not-used
 BeDir: ./covar-matrices-it
 RunWPS: false
 EnsembleMembers: 10
