@@ -215,7 +215,7 @@ func (s Simulation) runWrf(startTime time.Time, ensnum int, procCount int) (err 
 	//--cpu-set 0-15 --bind-to core
 	var nodes mpiman.SlurmNodesList
 
-	if conf.Values.EnsembleMembers > 0 {
+	if conf.Values.EnsembleMembers > 0 && conf.Values.EnsembleParallelism > 1 {
 		var ok bool
 		nodes, ok = s.Nodes.FindFreeNodes(int(math.Ceil(float64(procCount) / float64(conf.Values.CoresPerNode))))
 		if !ok {
