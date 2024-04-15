@@ -59,7 +59,7 @@ func (lst SlurmNodesList) String() string {
 	if len(lst) == 0 {
 		return ""
 	}
-	return fmt.Sprintf("-hosts %s", strings.Join(lst, ","))
+	return fmt.Sprintf("-host %s", strings.Join(lst, ","))
 }
 
 func (sn SlurmNodes) Dispose(lst SlurmNodesList) {
